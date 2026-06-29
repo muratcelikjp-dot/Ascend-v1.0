@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RPG — Rewards</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--ab:#020D18;--ab2:#04192E;--ab3:#071F38;--neon:#00E5FF;--oc:#00B4D8;--ocd:#005F87;--bd:rgba(0,180,216,0.18);--bd2:rgba(0,180,216,0.36);--tx:#C8EAF5;--txd:#4A7A90;--am:#EF9F27;--gr:#1D9E75;--re:#E24B4A;--pu:#7F77DD}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--ab);display:flex;justify-content:center}
+.app{max-width:390px;width:100%;background:var(--ab);min-height:100vh;padding-bottom:72px}
+.banner{background:var(--ab2);border-bottom:1px solid var(--bd);padding:14px 16px;position:relative;overflow:hidden}
+.scan{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--neon),transparent);animation:sc 3s linear infinite;opacity:.22;pointer-events:none}
+@keyframes sc{0%{top:0}100%{top:110%}}
+.bn-row{display:flex;align-items:center;justify-content:space-between;position:relative}
+.bn-title{font-size:15px;font-weight:500;color:var(--neon);letter-spacing:.05em}
+.bn-sub{font-size:10px;color:var(--txd);margin-top:2px;text-transform:uppercase;letter-spacing:.08em}
+.pill-xp{background:var(--ab3);color:var(--am);font-size:11px;padding:4px 10px;border:1px solid rgba(239,159,39,.3);border-radius:2px;letter-spacing:.05em;display:flex;align-items:center;gap:5px}
+
+.stats-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--bd);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)}
+.s-cell{background:var(--ab2);padding:10px 8px;text-align:center}
+.s-num{font-size:17px;font-weight:500;color:var(--tx)}
+.s-lbl{font-size:9px;color:var(--txd);margin-top:2px;text-transform:uppercase;letter-spacing:.06em}
+
+.cat-tabs{display:flex;gap:5px;padding:10px 16px;overflow-x:auto}
+.cat-tabs::-webkit-scrollbar{display:none}
+.cat-tab{padding:5px 11px;border-radius:2px;border:1px solid var(--bd);background:transparent;font-size:10px;color:var(--txd);cursor:pointer;white-space:nowrap;text-transform:uppercase;letter-spacing:.06em;transition:all .15s;flex-shrink:0;display:flex;align-items:center;gap:5px}
+.cat-tab i{font-size:12px}
+.cat-tab.on{background:rgba(0,180,216,.12);border-color:var(--oc);color:var(--neon)}
+
+.sec-bar{padding:10px 16px 8px;display:flex;align-items:center;justify-content:space-between}
+.sec-title{font-size:10px;color:var(--txd);text-transform:uppercase;letter-spacing:.1em}
+
+.reward-list{padding:0 16px;display:flex;flex-direction:column;gap:8px}
+.rw-card{background:var(--ab2);border:1px solid var(--bd);border-radius:4px;padding:13px 14px;display:flex;align-items:center;gap:12px;transition:border-color .15s,transform .15s;position:relative;overflow:hidden}
+.rw-card.afford{border-color:rgba(29,158,117,.3)}
+.rw-card.premium{border-color:rgba(127,119,221,.4);background:linear-gradient(135deg,var(--ab2),rgba(127,119,221,.06))}
+.rw-card.locked{opacity:.55}
+.rw-icon{width:34px;height:34px;border-radius:4px;background:var(--ab3);border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rw-card.premium .rw-icon{background:rgba(127,119,221,.15);border-color:var(--pu)}
+.rw-icon i{font-size:16px;color:var(--am)}
+.rw-card.premium .rw-icon i{color:var(--pu)}
+.rw-card.locked .rw-icon i{color:var(--txd)}
+.rw-body{flex:1;min-width:0}
+.rw-name{font-size:13px;color:var(--tx);display:flex;align-items:center;gap:6px}
+.rw-premium-tag{font-size:8px;color:var(--pu);background:rgba(127,119,221,.15);border:1px solid rgba(127,119,221,.35);padding:1px 5px;border-radius:2px;text-transform:uppercase;letter-spacing:.05em}
+.rw-cost{font-size:11px;color:var(--am);margin-top:3px;font-weight:500}
+.rw-lock-msg{font-size:10px;color:var(--txd);margin-top:3px}
+.rw-actions{display:flex;gap:6px;flex-shrink:0}
+.rw-btn{width:28px;height:28px;border-radius:4px;border:1px solid var(--bd2);background:transparent;color:var(--txd);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .15s}
+.rw-btn:hover{border-color:var(--neon);color:var(--neon)}
+.rw-btn.buy{background:var(--oc);border-color:var(--oc);color:var(--ab);width:auto;padding:0 13px;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.05em}
+.rw-btn.buy:hover{background:var(--neon)}
+.rw-btn.buy:disabled{background:var(--ab3);border-color:var(--bd);color:var(--txd);cursor:default}
+.rw-btn.danger:hover{border-color:var(--re);color:#F09595}
+
+@keyframes purchaseFlash{0%{background:rgba(29,158,117,0)}30%{background:rgba(29,158,117,.18)}100%{background:rgba(29,158,117,0)}}
+.rw-card.purchased-flash{animation:purchaseFlash .8s ease}
+.coin-burst{position:absolute;font-size:11px;font-weight:600;color:var(--am);pointer-events:none;opacity:0;right:14px;top:50%;text-transform:uppercase;letter-spacing:.04em}
+.coin-burst.fire{animation:coinFloat .8s ease-out forwards}
+@keyframes coinFloat{0%{opacity:0;transform:translateY(0) scale(.7)}20%{opacity:1;transform:translateY(-6px) scale(1.1)}100%{opacity:0;transform:translateY(-34px) scale(1)}}
+
+.add-btn{margin:12px 16px 0;width:calc(100% - 32px);padding:11px;background:transparent;border:1px dashed var(--bd2);border-radius:4px;font-size:10px;color:var(--txd);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;text-transform:uppercase;letter-spacing:.08em;transition:all .15s}
+.add-btn:hover{background:var(--ab3);border-color:var(--oc);color:var(--neon)}
+
+.history-list{padding:0 16px;display:flex;flex-direction:column;gap:6px}
+.hist-row{display:flex;justify-content:space-between;align-items:center;background:var(--ab2);border:1px solid var(--bd);border-radius:4px;padding:9px 12px}
+.hist-name{font-size:12px;color:var(--txd)}
+.hist-cost{font-size:11px;color:var(--re);font-weight:500}
+
+.cat-breakdown-list{padding:0 16px;display:flex;flex-direction:column;gap:6px}
+.cb-row{display:flex;align-items:center;gap:10px;background:var(--ab2);border:1px solid var(--bd);border-radius:4px;padding:9px 12px}
+.cb-icon{width:24px;height:24px;border-radius:2px;background:var(--ab3);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cb-icon i{font-size:12px;color:var(--neon)}
+.cb-label{flex:1;font-size:11px;color:var(--tx)}
+.cb-stat{font-size:10px;color:var(--txd)}
+
+.empty-state{margin:12px 16px 0;padding:20px;text-align:center;color:var(--txd);font-size:11px;font-style:italic;border:1px dashed var(--bd);border-radius:4px}
+.toast{margin:10px 16px 0;border-radius:4px;padding:10px 14px;display:flex;align-items:center;gap:8px;max-height:0;overflow:hidden;opacity:0;transition:max-height .35s,opacity .35s}
+.toast.show{max-height:50px;opacity:1}
+.toast.ok{background:rgba(29,158,117,.1);border:1px solid rgba(29,158,117,.3)}
+.toast.ok span{color:#5DCAA5}
+.toast.fail{background:rgba(226,75,74,.1);border:1px solid rgba(226,75,74,.3)}
+.toast.fail span{color:#F09595}
+.toast span{font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+.nav{display:flex;justify-content:space-around;padding:10px 0 20px;background:var(--ab2);border-top:1px solid var(--bd);position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:390px;z-index:10}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 6px;text-decoration:none}
+.ni i{font-size:20px;color:var(--txd)}
+.ni.on i{color:var(--neon)}
+.ni span{font-size:8.5px;color:var(--txd);text-transform:uppercase;letter-spacing:.05em}
+.ni.on span{color:var(--neon)}
+.modal-overlay{position:fixed;inset:0;background:rgba(2,13,24,.85);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{width:390px;background:var(--ab2);border-top:1px solid var(--bd2);padding:18px 16px 40px;transform:translateY(100%);transition:transform .25s ease;max-height:80vh;overflow-y:auto}
+.modal-overlay.open .modal{transform:translateY(0)}
+.m-title{font-size:12px;font-weight:500;color:var(--neon);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px}
+.m-lbl{font-size:10px;color:var(--txd);margin-bottom:4px;display:block;text-transform:uppercase;letter-spacing:.08em}
+.m-input{width:100%;padding:9px 11px;font-size:13px;border:1px solid var(--bd2);border-radius:2px;background:var(--ab3);color:var(--tx);margin-bottom:11px;outline:none}
+.m-input:focus{border-color:var(--neon)}
+.m-cat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:12px}
+.m-cat-opt{padding:8px 6px;border-radius:2px;border:1px solid var(--bd);font-size:10px;text-align:center;cursor:pointer;color:var(--txd);display:flex;flex-direction:column;align-items:center;gap:3px}
+.m-cat-opt i{font-size:14px}
+.m-cat-opt.sel{border-color:var(--oc);background:rgba(0,180,216,.1);color:var(--neon)}
+.m-toggle-row{display:flex;align-items:center;gap:8px;margin-bottom:14px;padding:9px 11px;background:var(--ab3);border-radius:2px}
+.m-toggle{width:36px;height:20px;border-radius:10px;background:var(--ab);border:1px solid var(--bd2);position:relative;cursor:pointer;flex-shrink:0}
+.m-toggle.on{background:rgba(127,119,221,.3);border-color:var(--pu)}
+.m-toggle-dot{width:14px;height:14px;border-radius:50%;background:var(--txd);position:absolute;top:2px;left:2px;transition:all .2s}
+.m-toggle.on .m-toggle-dot{background:var(--pu);left:18px}
+.m-toggle-label{font-size:11px;color:var(--tx)}
+.m-acts{display:flex;gap:7px}
+.m-cancel{flex:1;padding:10px;border:1px solid var(--bd);border-radius:2px;background:transparent;font-size:10px;cursor:pointer;color:var(--txd);text-transform:uppercase;letter-spacing:.07em}
+.m-ok{flex:2;padding:10px;border:none;background:var(--oc);border-radius:2px;color:var(--ab);font-size:10px;font-weight:500;cursor:pointer;text-transform:uppercase;letter-spacing:.07em;transition:background .15s}
+.m-ok:hover{background:var(--neon)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="banner">
+    <div class="scan"></div>
+    <div class="bn-row">
+      <div><div class="bn-title">Rewards shop</div><div class="bn-sub">Spend XP on rewards you define</div></div>
+      <div class="pill-xp"><i class="ti ti-bolt" style="font-size:12px"></i><span id="xp-balance">0</span></div>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="s-cell"><div class="s-num" id="s-spent">0</div><div class="s-lbl">XP spent</div></div>
+    <div class="s-cell"><div class="s-num" id="s-purchases">0</div><div class="s-lbl">Purchases</div></div>
+    <div class="s-cell"><div class="s-num" id="s-favcat">—</div><div class="s-lbl">Top category</div></div>
+  </div>
+
+  <div class="cat-tabs" id="cat-tabs"></div>
+
+  <div class="sec-bar"><span class="sec-title">Available rewards</span></div>
+  <div class="reward-list" id="reward-list"></div>
+  <button class="add-btn" onclick="openAddModal()"><i class="ti ti-plus"></i> Add custom reward</button>
+
+  <div class="toast" id="toast"><i class="ti ti-check" style="font-size:14px" id="toast-icon"></i><span id="toast-txt"></span></div>
+
+  <div class="sec-bar"><span class="sec-title">Spending by category</span></div>
+  <div class="cat-breakdown-list" id="cat-breakdown-list"></div>
+
+  <div class="sec-bar"><span class="sec-title">Purchase history</span></div>
+  <div class="history-list" id="history-list"></div>
+</div>
+
+<nav class="nav">
+  <a class="ni" href="quests.html"><i class="ti ti-list-check"></i><span>Quests</span></a>
+  <a class="ni" href="stats.html"><i class="ti ti-chart-bar"></i><span>Stats</span></a>
+  <a class="ni" href="boss.html"><i class="ti ti-skull"></i><span>Boss</span></a>
+  <a class="ni on" href="rewards.html"><i class="ti ti-gift"></i><span>Rewards</span></a>
+  <a class="ni" href="hero.html"><i class="ti ti-user"></i><span>Hero</span></a>
+</nav>
+
+<div class="modal-overlay" id="modal" onclick="bgClose(event)">
+  <div class="modal">
+    <div class="m-title" id="modal-title">Add reward</div>
+    <label class="m-lbl">Reward name</label>
+    <input class="m-input" id="rw-name" placeholder="e.g. Watch anime episode" />
+    <label class="m-lbl">XP cost</label>
+    <input class="m-input" id="rw-cost" type="number" min="1" placeholder="e.g. 250" />
+    <label class="m-lbl">Category</label>
+    <div class="m-cat-grid" id="m-cat-grid"></div>
+    <label class="m-lbl">Required level (lock until reached)</label>
+    <input class="m-input" id="rw-level" type="number" min="1" value="1" />
+    <div class="m-toggle-row">
+      <div class="m-toggle" id="premium-toggle" onclick="togglePremium()"><div class="m-toggle-dot"></div></div>
+      <div class="m-toggle-label">Premium reward (special highlight)</div>
+    </div>
+    <div class="m-acts">
+      <button class="m-cancel" onclick="closeModal()">Cancel</button>
+      <button class="m-ok" onclick="saveReward()">Save reward</button>
+    </div>
+  </div>
+</div>
+
+<script src="data/seed-data.js"></script>
+<script src="js/gamestate.js"></script>
+<script src="js/leveling.js"></script>
+<script src="js/attributes.js"></script>
+<script src="js/skills.js"></script>
+<script src="js/achievements.js"></script>
+<script src="js/bosses.js"></script>
+<script src="js/streak.js"></script>
+<script src="js/quests.js"></script>
+<script src="js/rewards.js"></script>
+<script src="js/shield.js"></script>
+<script src="js/gameloop.js"></script>
+<script>
+GameLoop.bootstrapDay();
+let gs=GameState.get();
+let editingRewardId=null;
+let activeCategory='all';
+let isPremiumToggle=false;
+let selectedCategory='other';
+
+function renderBalance(){
+  document.getElementById('xp-balance').textContent=gs.xp;
+}
+
+function renderStats(){
+  document.getElementById('s-spent').textContent=Rewards.getTotalXpSpent(gs);
+  document.getElementById('s-purchases').textContent=gs.rewards.purchased.length;
+  const breakdown=Rewards.getCategoryBreakdown(gs);
+  const cats=Object.keys(breakdown);
+  if(cats.length===0){
+    document.getElementById('s-favcat').textContent='—';
+  }else{
+    const top=cats.reduce((a,b)=>breakdown[a].totalXp>breakdown[b].totalXp?a:b);
+    const catMeta=SEED_DATA.rewardCategories.find(c=>c.id===top);
+    document.getElementById('s-favcat').textContent=catMeta?catMeta.label:top;
+  }
+}
+
+function renderCatTabs(){
+  const tabs=[{id:'all',label:'All',icon:'ti-layout-grid'},...SEED_DATA.rewardCategories];
+  document.getElementById('cat-tabs').innerHTML=tabs.map(c=>
+    `<button class="cat-tab${activeCategory===c.id?' on':''}" onclick="setCategory('${c.id}')"><i class="ti ${c.icon}"></i>${c.label}</button>`
+  ).join('');
+}
+
+function setCategory(id){
+  activeCategory=id;
+  renderCatTabs();renderRewards();
+}
+
+function renderRewards(){
+  const rewards=Rewards.getByCategory(gs,activeCategory);
+  const list=document.getElementById('reward-list');
+  if(rewards.length===0){
+    list.innerHTML='<div class="empty-state">No rewards in this category yet.</div>';
+    return;
+  }
+  list.innerHTML=rewards.map(r=>{
+    const canAfford=gs.xp>=r.cost;
+    const locked=Rewards.isLocked(gs,r);
+    const catMeta=SEED_DATA.rewardCategories.find(c=>c.id===r.category)||{icon:'ti-gift'};
+    let cls='rw-card';
+    if(r.isPremium) cls+=' premium';
+    if(locked) cls+=' locked';
+    else if(canAfford) cls+=' afford';
+
+    return `<div class="${cls}" id="card-${r.id}">
+      <div class="rw-icon"><i class="ti ${locked?'ti-lock':catMeta.icon}"></i></div>
+      <div class="rw-body">
+        <div class="rw-name">${r.name}${r.isPremium?'<span class="rw-premium-tag">Premium</span>':''}</div>
+        ${locked?`<div class="rw-lock-msg">Unlocks at level ${r.requiredLevel}</div>`:`<div class="rw-cost">${r.cost} XP</div>`}
+      </div>
+      <div class="rw-actions">
+        <button class="rw-btn" onclick="openEditModal('${r.id}')"><i class="ti ti-pencil"></i></button>
+        <button class="rw-btn danger" onclick="removeReward('${r.id}')"><i class="ti ti-trash"></i></button>
+        <button class="rw-btn buy" ${(canAfford&&!locked)?'':'disabled'} onclick="buyReward('${r.id}')">${locked?'Locked':'Buy'}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderCategoryBreakdown(){
+  const breakdown=Rewards.getCategoryBreakdown(gs);
+  const cats=Object.keys(breakdown);
+  const list=document.getElementById('cat-breakdown-list');
+  if(cats.length===0){
+    list.innerHTML='<div class="empty-state">No spending yet.</div>';
+    return;
+  }
+  list.innerHTML=cats.sort((a,b)=>breakdown[b].totalXp-breakdown[a].totalXp).map(catId=>{
+    const meta=SEED_DATA.rewardCategories.find(c=>c.id===catId)||{label:catId,icon:'ti-dots'};
+    const d=breakdown[catId];
+    return `<div class="cb-row">
+      <div class="cb-icon"><i class="ti ${meta.icon}"></i></div>
+      <div class="cb-label">${meta.label}</div>
+      <div class="cb-stat">${d.count} buys · ${d.totalXp} XP</div>
+    </div>`;
+  }).join('');
+}
+
+function renderHistory(){
+  const history=Rewards.getPurchaseHistory(gs).slice().reverse().slice(0,15);
+  const list=document.getElementById('history-list');
+  if(history.length===0){
+    list.innerHTML='<div class="empty-state">No purchases yet.</div>';
+    return;
+  }
+  list.innerHTML=history.map(h=>
+    `<div class="hist-row"><span class="hist-name">${h.rewardName}</span><span class="hist-cost">-${h.cost} XP</span></div>`
+  ).join('');
+}
+
+function renderAll(){
+  renderBalance();renderStats();renderCatTabs();renderRewards();renderCategoryBreakdown();renderHistory();
+}
+
+function buyReward(rewardId){
+  const cardEl=document.getElementById('card-'+rewardId);
+  let result;
+  gs=GameState.set(state=>{ result=Rewards.purchaseReward(state,rewardId); });
+
+  if(result.success){
+    showToast('ok','Purchased: '+result.reward.name);
+    if(cardEl){
+      cardEl.classList.add('purchased-flash');
+      const burst=document.createElement('div');
+      burst.className='coin-burst';
+      burst.textContent='-'+result.reward.cost+' XP';
+      cardEl.appendChild(burst);
+      requestAnimationFrame(()=>burst.classList.add('fire'));
+      setTimeout(()=>burst.remove(),850);
+    }
+  }else if(result.reason==='insufficient_xp'){
+    showToast('fail','Need '+result.shortfall+' more XP');
+  }else if(result.reason==='level_locked'){
+    showToast('fail','Requires level '+result.requiredLevel);
+  }
+  setTimeout(()=>renderAll(),result.success?250:0);
+}
+
+function removeReward(rewardId){
+  gs=GameState.set(state=>{ Rewards.deleteReward(state,rewardId); });
+  renderAll();
+}
+
+function openAddModal(){
+  editingRewardId=null;
+  isPremiumToggle=false;
+  document.getElementById('modal-title').textContent='Add reward';
+  document.getElementById('rw-name').value='';
+  document.getElementById('rw-cost').value='';
+  document.getElementById('rw-level').value='1';
+  document.getElementById('premium-toggle').classList.remove('on');
+  renderCatGrid('other');
+  document.getElementById('modal').classList.add('open');
+}
+
+function openEditModal(rewardId){
+  const reward=Rewards.getAll(gs).find(r=>r.id===rewardId);
+  if(!reward) return;
+  editingRewardId=rewardId;
+  isPremiumToggle=reward.isPremium;
+  document.getElementById('modal-title').textContent='Edit reward';
+  document.getElementById('rw-name').value=reward.name;
+  document.getElementById('rw-cost').value=reward.cost;
+  document.getElementById('rw-level').value=reward.requiredLevel;
+  document.getElementById('premium-toggle').classList.toggle('on',reward.isPremium);
+  renderCatGrid(reward.category);
+  document.getElementById('modal').classList.add('open');
+}
+
+function renderCatGrid(selected){
+  selectedCategory=selected;
+  document.getElementById('m-cat-grid').innerHTML=SEED_DATA.rewardCategories.map(c=>
+    `<div class="m-cat-opt${selectedCategory===c.id?' sel':''}" onclick="selectCategory('${c.id}')"><i class="ti ${c.icon}"></i>${c.label}</div>`
+  ).join('');
+}
+function selectCategory(id){
+  selectedCategory=id;
+  renderCatGrid(id);
+}
+
+function togglePremium(){
+  isPremiumToggle=!isPremiumToggle;
+  document.getElementById('premium-toggle').classList.toggle('on',isPremiumToggle);
+}
+
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+function bgClose(e){if(e.target===document.getElementById('modal'))closeModal()}
+
+function saveReward(){
+  const name=document.getElementById('rw-name').value.trim();
+  const cost=parseInt(document.getElementById('rw-cost').value,10);
+  const requiredLevel=parseInt(document.getElementById('rw-level').value,10)||1;
+  if(!name||!cost||cost<=0) return;
+
+  gs=GameState.set(state=>{
+    if(editingRewardId){
+      Rewards.editReward(state,editingRewardId,{name,cost,category:selectedCategory,requiredLevel,isPremium:isPremiumToggle});
+    }else{
+      Rewards.addReward(state,{name,cost,category:selectedCategory,requiredLevel,isPremium:isPremiumToggle});
+    }
+  });
+  closeModal();
+  renderAll();
+}
+
+function showToast(type,msg){
+  const t=document.getElementById('toast');
+  t.className='toast show '+type;
+  document.getElementById('toast-icon').className='ti '+(type==='ok'?'ti-check':'ti-x');
+  document.getElementById('toast-txt').textContent=msg;
+  setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+renderAll();
+</script>
+</body>
+</html>

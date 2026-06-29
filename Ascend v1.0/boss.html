@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RPG — Boss</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ab:#020D18;--ab2:#04192E;--ab3:#071F38;
+  --neon:#00E5FF;--oc:#00B4D8;--ocd:#005F87;
+  --bd:rgba(0,180,216,0.18);--bd2:rgba(0,180,216,0.36);
+  --tx:#C8EAF5;--txd:#4A7A90;--txm:#7BAFC8;
+  --am:#EF9F27;--gr:#1D9E75;--re:#E24B4A
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--ab);display:flex;justify-content:center}
+.app{max-width:390px;width:100%;background:var(--ab);min-height:100vh;padding-bottom:72px;position:relative;overflow-x:hidden}
+
+@keyframes sc{0%{top:0}100%{top:110%}}
+@keyframes pulseglow{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes flicker{0%,100%{opacity:1}45%{opacity:.85}55%{opacity:1}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes ringpulse{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.5);opacity:0}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+@keyframes popin{from{opacity:0;transform:scale(.85) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes dmgfloat{0%{opacity:0;transform:translate(-50%,0) scale(.6)}15%{opacity:1;transform:translate(-50%,-10px) scale(1.25)}100%{opacity:0;transform:translate(calc(-50% + var(--dx,0px)),-60px) scale(1)}}
+
+.top-banner{background:linear-gradient(180deg,var(--ab2),var(--ab));border-bottom:1px solid var(--bd);padding:18px 16px 16px;position:relative;overflow:hidden}
+.scan-line{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--neon),transparent);animation:sc 2.4s linear infinite;opacity:.3;pointer-events:none}
+.threat-label{font-size:10px;color:var(--re);text-transform:uppercase;letter-spacing:.14em;text-align:center;margin-bottom:8px;animation:flicker 2s ease-in-out infinite;display:flex;align-items:center;justify-content:center;gap:6px}
+
+.boss-portrait-wrap{display:flex;justify-content:center;margin:6px 0 10px;position:relative}
+.boss-ring{position:absolute;width:96px;height:96px;border-radius:50%;border:1px solid var(--re);top:0;left:50%;transform:translateX(-50%)}
+.boss-ring.r2{animation:ringpulse 2.5s ease-out infinite}
+.boss-ring.r3{animation:ringpulse 2.5s ease-out infinite .8s}
+.boss-portrait{width:96px;height:96px;border-radius:50%;background:var(--ab3);border:1.5px solid var(--re);display:flex;align-items:center;justify-content:center;font-size:40px;color:#F09595;position:relative;z-index:2;animation:float 3s ease-in-out infinite}
+
+.boss-name{font-size:17px;font-weight:500;color:var(--re);text-align:center;letter-spacing:.04em;text-transform:uppercase}
+.boss-desc{font-size:11px;color:var(--txd);text-align:center;margin-top:4px;font-style:italic}
+
+.lore-card{margin:12px 16px 0;background:var(--ab2);border:1px solid var(--bd);border-radius:4px;padding:13px 14px}
+.lore-label{font-size:9px;color:var(--txd);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.lore-text{font-size:12px;color:var(--tx);line-height:1.6}
+.ability-row{margin-top:10px;padding-top:10px;border-top:1px solid var(--bd);display:flex;gap:8px;align-items:flex-start}
+.ability-icon{width:24px;height:24px;border-radius:2px;background:rgba(226,75,74,.12);border:1px solid rgba(226,75,74,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ability-icon i{font-size:12px;color:#F09595}
+.ability-text{font-size:11px;color:var(--txd);line-height:1.55}
+
+.hp-section{margin:14px 16px 0;background:var(--ab2);border:1px solid var(--bd);border-radius:4px;padding:14px;position:relative;overflow:hidden}
+.hp-top{display:flex;justify-content:space-between;margin-bottom:6px}
+.hp-lbl{font-size:10px;color:var(--txd);text-transform:uppercase;letter-spacing:.1em}
+.hp-val{font-size:11px;font-weight:500;color:var(--re)}
+.hp-track{height:12px;background:var(--ab3);border-radius:2px;overflow:hidden;position:relative;border:1px solid rgba(226,75,74,0.2)}
+.hp-fill{height:100%;background:linear-gradient(90deg,#993D3D,var(--re));border-radius:2px;transition:width 1s cubic-bezier(.4,0,.2,1);position:relative}
+.hp-fill::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.08) 0 6px,transparent 6px 12px)}
+.dmg-popup{position:absolute;font-size:18px;font-weight:700;color:#fff;text-shadow:0 0 10px var(--re),0 2px 3px rgba(0,0,0,.6);pointer-events:none;z-index:10;opacity:0;left:50%;top:20%}
+.dmg-popup.fire{animation:dmgfloat .7s cubic-bezier(.2,.8,.3,1) forwards}
+
+.objectives-bar{padding:11px 16px 7px;display:flex;align-items:center;justify-content:space-between}
+.sec-title{font-size:10px;color:var(--txd);text-transform:uppercase;letter-spacing:.1em}
+
+.dmg-rules-list{padding:0 16px;display:flex;flex-direction:column;gap:6px}
+.rule-card{background:var(--ab2);border:1px solid var(--bd);border-radius:4px;padding:10px 12px;display:flex;align-items:center;gap:10px}
+.rule-icon{width:26px;height:26px;border-radius:2px;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rule-icon i{font-size:13px;color:var(--neon)}
+.rule-text{font-size:11px;color:var(--tx);flex:1}
+.rule-dmg{font-size:10px;color:var(--am);font-weight:500;white-space:nowrap}
+
+.reward-section{margin:14px 16px 0;background:var(--ab2);border:1px solid rgba(239,159,39,.25);border-radius:4px;padding:14px;position:relative;overflow:hidden}
+.reward-glow{position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(239,159,39,.12),transparent 70%);animation:pulseglow 3s ease-in-out infinite}
+.reward-title{font-size:10px;color:var(--am);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;display:flex;align-items:center;gap:6px;position:relative}
+.reward-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:relative}
+.reward-item{background:var(--ab3);border:1px solid rgba(239,159,39,.18);border-radius:2px;padding:9px 10px;text-align:center}
+.reward-val{font-size:14px;font-weight:500;color:var(--am)}
+.reward-lbl{font-size:9px;color:var(--txd);margin-top:2px;text-transform:uppercase;letter-spacing:.05em}
+
+.roster-list{padding:0 16px;display:flex;flex-direction:column;gap:7px}
+.roster-card{display:flex;align-items:center;gap:10px;background:var(--ab2);border:1px solid var(--bd);border-radius:4px;padding:11px 12px;opacity:1}
+.roster-card.locked{opacity:.4}
+.roster-icon{width:32px;height:32px;border-radius:2px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--ab3);border:1px solid var(--bd2)}
+.roster-card.defeated .roster-icon{background:rgba(29,158,117,.12);border-color:var(--gr)}
+.roster-card.current .roster-icon{background:rgba(226,75,74,.12);border-color:var(--re)}
+.roster-icon i{font-size:15px;color:var(--txd)}
+.roster-card.defeated .roster-icon i{color:var(--gr)}
+.roster-card.current .roster-icon i{color:#F09595}
+.roster-body{flex:1;min-width:0}
+.roster-name{font-size:12px;color:var(--tx)}
+.roster-status{font-size:9px;text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+.roster-card.defeated .roster-status{color:var(--gr)}
+.roster-card.current .roster-status{color:#F09595}
+.roster-card.locked .roster-status{color:var(--txd)}
+.roster-title{font-size:10px;color:var(--am);font-style:italic}
+
+.victory-overlay{position:fixed;inset:0;background:rgba(2,13,24,.96);display:none;align-items:center;justify-content:center;flex-direction:column;z-index:50;padding:24px;max-width:390px;margin:0 auto}
+.victory-overlay.show{display:flex;animation:popin .4s ease}
+.victory-icon{font-size:52px;color:var(--am);margin-bottom:12px}
+.victory-title{font-size:20px;font-weight:500;color:var(--am);text-transform:uppercase;letter-spacing:.08em;text-align:center}
+.victory-sub{font-size:12px;color:var(--txd);margin-top:8px;text-align:center;line-height:1.6}
+.victory-rewards{margin-top:20px;display:flex;gap:10px}
+.victory-pill{background:var(--ab2);border:1px solid rgba(239,159,39,.3);border-radius:4px;padding:10px 16px;text-align:center}
+.victory-pill-val{font-size:16px;font-weight:500;color:var(--am)}
+.victory-pill-lbl{font-size:9px;color:var(--txd);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+.victory-close{margin-top:24px;padding:11px 32px;background:var(--am);border:none;border-radius:4px;color:var(--ab);font-size:11px;font-weight:500;cursor:pointer;text-transform:uppercase;letter-spacing:.08em}
+
+.shaking{animation:shake .3s ease}
+
+.empty-state{margin:16px;padding:24px;text-align:center;background:var(--ab2);border:1px solid rgba(29,158,117,.25);border-radius:4px}
+.empty-state i{font-size:32px;color:var(--gr);margin-bottom:10px;display:block}
+.empty-title{font-size:14px;color:var(--tx);text-transform:uppercase;letter-spacing:.06em}
+.empty-sub{font-size:11px;color:var(--txd);margin-top:6px}
+
+.nav{display:flex;justify-content:space-around;padding:10px 0 20px;background:var(--ab2);border-top:1px solid var(--bd);position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:390px;z-index:10}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 6px;text-decoration:none}
+.ni i{font-size:20px;color:var(--txd)}
+.ni.on i{color:var(--neon)}
+.ni span{font-size:8.5px;color:var(--txd);text-transform:uppercase;letter-spacing:.05em}
+.ni.on span{color:var(--neon)}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <div id="boss-content"></div>
+
+  <div class="victory-overlay" id="victory">
+    <div class="victory-icon"><i class="ti ti-trophy"></i></div>
+    <div class="victory-title" id="victory-title">Boss defeated</div>
+    <div class="victory-sub" id="victory-sub"></div>
+    <div class="victory-rewards" id="victory-rewards"></div>
+    <button class="victory-close" onclick="closeVictory()">Continue</button>
+  </div>
+
+</div>
+
+<nav class="nav">
+  <a class="ni" href="quests.html"><i class="ti ti-list-check"></i><span>Quests</span></a>
+  <a class="ni" href="stats.html"><i class="ti ti-chart-bar"></i><span>Stats</span></a>
+  <a class="ni on" href="boss.html"><i class="ti ti-skull"></i><span>Boss</span></a>
+  <a class="ni" href="rewards.html"><i class="ti ti-gift"></i><span>Rewards</span></a>
+  <a class="ni" href="hero.html"><i class="ti ti-user"></i><span>Hero</span></a>
+</nav>
+
+<script src="data/seed-data.js"></script>
+<script src="js/gamestate.js"></script>
+<script src="js/leveling.js"></script>
+<script src="js/attributes.js"></script>
+<script src="js/skills.js"></script>
+<script src="js/achievements.js"></script>
+<script src="js/bosses.js"></script>
+<script src="js/streak.js"></script>
+<script src="js/quests.js"></script>
+<script src="js/rewards.js"></script>
+<script src="js/shield.js"></script>
+<script src="js/gameloop.js"></script>
+<script>
+GameLoop.bootstrapDay();
+let gs=GameState.get();
+
+const ATTR_LABELS={intelligence:'Intelligence',strength:'Strength',charisma:'Charisma',discipline:'Discipline',creativity:'Creativity',willpower:'Willpower'};
+const ATTR_ICONS={intelligence:'ti-book',strength:'ti-run',charisma:'ti-messages',discipline:'ti-clock',creativity:'ti-palette',willpower:'ti-flame'};
+
+function renderDamageRules(bossDef){
+  return bossDef.damageRules.map(rule=>{
+    if(rule.matchType==='attribute'){
+      return `<div class="rule-card">
+        <div class="rule-icon"><i class="ti ${ATTR_ICONS[rule.match]||'ti-bolt'}"></i></div>
+        <div class="rule-text">${ATTR_LABELS[rule.match]||rule.match} quests deal damage</div>
+        <div class="rule-dmg">${rule.damagePerXp}× XP</div>
+      </div>`;
+    }
+    return `<div class="rule-card">
+      <div class="rule-icon"><i class="ti ti-target"></i></div>
+      <div class="rule-text">Quests mentioning "${rule.match}"</div>
+      <div class="rule-dmg">+${rule.damage} dmg</div>
+    </div>`;
+  }).join('');
+}
+
+function renderRoster(state){
+  const roster=Bosses.getRoster(state);
+  return roster.map(b=>{
+    const titleEarned=state.bosses.titlesEarned&&b.status==='defeated'
+      ? state.bosses.titlesEarned.find(t=>t===b.rewards.title) : null;
+    return `<div class="roster-card ${b.status}">
+      <div class="roster-icon"><i class="ti ${b.icon||'ti-skull'}"></i></div>
+      <div class="roster-body">
+        <div class="roster-name">${b.name}</div>
+        <div class="roster-status">${b.status==='defeated'?'Defeated':b.status==='current'?'Current threat':'Locked'}</div>
+        ${titleEarned?`<div class="roster-title">"${titleEarned}" earned</div>`:''}
+      </div>
+      ${b.status!=='locked'?`<div style="font-size:10px;color:var(--txd)">+${b.rewards.xp} XP</div>`:'<i class="ti ti-lock" style="font-size:14px;color:var(--txd)"></i>'}
+    </div>`;
+  }).join('');
+}
+
+function renderBossScreen(){
+  const progress=Bosses.getBossProgress(gs);
+
+  if(!progress){
+    document.getElementById('boss-content').innerHTML=`
+      <div class="sec-title" style="padding:16px 16px 8px">Campaign complete</div>
+      <div class="empty-state">
+        <i class="ti ti-crown"></i>
+        <div class="empty-title">All bosses defeated</div>
+        <div class="empty-sub">You've cleared every threat in this campaign. New bosses will arrive in future seasons.</div>
+      </div>
+      <div class="objectives-bar"><span class="sec-title">Campaign roster</span></div>
+      <div class="roster-list">${renderRoster(gs)}</div>`;
+    return;
+  }
+
+  document.getElementById('boss-content').innerHTML=`
+    <div class="top-banner">
+      <div class="scan-line"></div>
+      <div class="threat-label"><i class="ti ti-alert-triangle"></i>Active threat</div>
+      <div class="boss-portrait-wrap">
+        <div class="boss-ring r2"></div><div class="boss-ring r3"></div>
+        <div class="boss-portrait"><i class="ti ${progress.icon||'ti-skull'}"></i></div>
+      </div>
+      <div class="boss-name">${progress.name}</div>
+      <div class="boss-desc">${progress.description}</div>
+    </div>
+
+    <div class="lore-card">
+      <div class="lore-label"><i class="ti ti-book-2"></i>Lore</div>
+      <div class="lore-text">${progress.lore}</div>
+      <div class="ability-row">
+        <div class="ability-icon"><i class="ti ti-bolt"></i></div>
+        <div class="ability-text"><strong style="color:var(--tx)">Ability:</strong> ${progress.ability}</div>
+      </div>
+    </div>
+
+    <div class="hp-section" id="hp-section">
+      <div class="hp-top"><span class="hp-lbl">Boss health</span><span class="hp-val" id="hp-val">${progress.pct}%</span></div>
+      <div class="hp-track"><div class="hp-fill" id="hp-fill" style="width:${progress.pct}%"></div></div>
+    </div>
+
+    <div class="objectives-bar"><span class="sec-title">Weak points</span></div>
+    <div class="dmg-rules-list">${renderDamageRules(SEED_DATA.bosses[progress.id])}</div>
+
+    <div class="reward-section">
+      <div class="reward-glow"></div>
+      <div class="reward-title"><i class="ti ti-gift"></i>Victory rewards</div>
+      <div class="reward-grid">
+        <div class="reward-item"><div class="reward-val">+${progress.rewards.xp} XP</div><div class="reward-lbl">All attributes</div></div>
+        <div class="reward-item"><div class="reward-val">Title</div><div class="reward-lbl">${progress.rewards.title}</div></div>
+      </div>
+    </div>
+
+    <div class="objectives-bar"><span class="sec-title">Campaign roster</span></div>
+    <div class="roster-list">${renderRoster(gs)}</div>
+  `;
+}
+
+function checkForRecentVictory(){
+  // Compares the defeated list against what THIS page last saw (tracked
+  // via a small marker in localStorage, separate from GameState, purely
+  // for this page's own "have I already celebrated this defeat" memory).
+  const seenKey="rpg_boss_last_seen_defeated_count";
+  const lastSeenCount=parseInt(localStorage.getItem(seenKey)||"0",10);
+  const currentCount=gs.bosses.defeated.length;
+
+  if(currentCount>lastSeenCount){
+    const justDefeatedId=gs.bosses.defeated[currentCount-1];
+    const justDefeatedDef=SEED_DATA.bosses[justDefeatedId];
+    if(justDefeatedDef) showVictory(justDefeatedDef);
+  }
+  localStorage.setItem(seenKey,String(currentCount));
+}
+
+function showVictory(bossDef){
+  document.getElementById('victory-title').textContent=bossDef.name+' defeated';
+  document.getElementById('victory-sub').innerHTML=bossDef.name+' has fallen.<br>You earned the title "'+bossDef.rewards.title+'".';
+  const nextDef=bossDef.nextBossId?SEED_DATA.bosses[bossDef.nextBossId]:null;
+  document.getElementById('victory-rewards').innerHTML=`
+    <div class="victory-pill"><div class="victory-pill-val">+${bossDef.rewards.xp}</div><div class="victory-pill-lbl">XP</div></div>
+    <div class="victory-pill"><div class="victory-pill-val">${nextDef?nextDef.name:'—'}</div><div class="victory-pill-lbl">Next threat</div></div>
+  `;
+  document.getElementById('victory').classList.add('show');
+}
+
+function closeVictory(){
+  document.getElementById('victory').classList.remove('show');
+  renderBossScreen();
+}
+
+renderBossScreen();
+checkForRecentVictory();
+</script>
+</body>
+</html>

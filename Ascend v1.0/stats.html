@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RPG — Stats</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--ab:#020D18;--ab2:#04192E;--ab3:#071F38;--neon:#00E5FF;--oc:#00B4D8;--ocd:#005F87;--bd:rgba(0,180,216,0.18);--bd2:rgba(0,180,216,0.36);--tx:#C8EAF5;--txd:#4A7A90;--txm:#7BAFC8;--am:#EF9F27;--gr:#1D9E75}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--ab);display:flex;justify-content:center}
+.app{max-width:390px;width:100%;background:var(--ab);min-height:100vh;padding-bottom:72px}
+.banner{background:var(--ab2);border-bottom:1px solid var(--bd);padding:14px 16px;position:relative;overflow:hidden}
+.scan{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--neon),transparent);animation:sc 3s linear infinite;opacity:.22;pointer-events:none}
+@keyframes sc{0%{top:0}100%{top:110%}}
+.bn-row{display:flex;align-items:center;justify-content:space-between}
+.hb-screen{font-size:10px;color:var(--txd);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
+.hb-week{font-size:20px;font-weight:500;color:var(--neon);letter-spacing:.04em}
+.bn-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.pill-lvl{background:var(--ab3);color:var(--neon);font-size:10px;padding:2px 9px;border:1px solid var(--ocd);border-radius:2px;letter-spacing:.08em}
+.metric-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--bd);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)}
+.m-cell{background:var(--ab2);padding:12px 14px}
+.m-lbl{font-size:10px;color:var(--txd);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;display:flex;align-items:center;gap:5px}
+.m-lbl i{font-size:13px}
+.m-val{font-size:22px;font-weight:500;color:var(--tx)}
+.m-delta{font-size:10px;margin-top:3px;display:flex;align-items:center;gap:3px;text-transform:uppercase;letter-spacing:.05em}
+.up{color:#5DCAA5}.down{color:#F09595}.flat{color:var(--txd)}
+.sec-bar{padding:12px 16px 8px;display:flex;align-items:center;justify-content:space-between}
+.sec-title{font-size:10px;color:var(--txd);text-transform:uppercase;letter-spacing:.1em}
+.chart-wrap{background:var(--ab2);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);padding:14px 14px 10px;margin:0 16px;border-radius:4px;border:1px solid var(--bd)}
+.chart-title{font-size:11px;color:var(--txm);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
+.attr-list{padding:0 16px;display:flex;flex-direction:column;gap:6px}
+.ab-row{display:flex;align-items:center;gap:10px;background:var(--ab2);border:1px solid var(--bd);border-radius:2px;padding:10px 12px}
+.ab-icon{width:30px;height:30px;border-radius:2px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ab-icon i{font-size:15px}
+.ab-info{flex:1;min-width:0}
+.ab-name{font-size:12px;color:var(--tx);text-transform:uppercase;letter-spacing:.05em}
+.ab-bar-bg{height:4px;background:var(--ab3);border-radius:2px;margin-top:5px;overflow:hidden}
+.ab-bar-fill{height:100%;border-radius:2px;transition:width 1s cubic-bezier(.4,0,.2,1)}
+.ab-xp{font-size:12px;font-weight:500;white-space:nowrap}
+.heatmap{margin:10px 16px 0;background:var(--ab2);border:1px solid var(--bd);border-radius:4px;padding:12px}
+.hm-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.hm-col{display:flex;flex-direction:column;align-items:center;gap:4px}
+.hm-lbl{font-size:9px;color:var(--txd);text-transform:uppercase}
+.hm-pip{width:100%;aspect-ratio:1;border-radius:2px;background:var(--ab3)}
+.hm-pip.active{background:var(--neon);opacity:.65}
+.hm-pip.today{outline:1px solid var(--neon);outline-offset:2px}
+.hm-xp{font-size:9px;color:var(--txd);font-weight:500}
+.nav{display:flex;justify-content:space-around;padding:10px 0 20px;background:var(--ab2);border-top:1px solid var(--bd);position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:390px;z-index:10}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 6px;text-decoration:none}
+.ni i{font-size:21px;color:var(--txd)}
+.ni.on i{color:var(--neon)}
+.ni span{font-size:9px;color:var(--txd);text-transform:uppercase;letter-spacing:.07em}
+.ni.on span{color:var(--neon)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="banner">
+    <div class="scan"></div>
+    <div class="bn-row">
+      <div><div class="hb-screen">Your stats</div><div class="hb-week">This week</div></div>
+      <div class="bn-right"><div class="pill-lvl" id="pill-lvl">LVL 01</div></div>
+    </div>
+  </div>
+
+  <div class="metric-grid">
+    <div class="m-cell"><div class="m-lbl"><i class="ti ti-bolt"></i>XP earned</div><div class="m-val" id="m-xp">0</div><div class="m-delta" id="m-xp-delta"></div></div>
+    <div class="m-cell"><div class="m-lbl"><i class="ti ti-check"></i>Quests done</div><div class="m-val" id="m-quests">0</div></div>
+    <div class="m-cell"><div class="m-lbl"><i class="ti ti-calendar"></i>Active days</div><div class="m-val" id="m-days">0 / 7</div></div>
+    <div class="m-cell"><div class="m-lbl"><i class="ti ti-flame"></i>Streak</div><div class="m-val" id="m-streak">0</div></div>
+  </div>
+
+  <div class="sec-bar"><span class="sec-title">XP per day (last 7 days)</span></div>
+  <div class="chart-wrap"><div style="position:relative;width:100%;height:160px"><canvas id="chart-daily"></canvas></div></div>
+
+  <div class="sec-bar"><span class="sec-title">4-week trend</span></div>
+  <div class="chart-wrap"><div style="position:relative;width:100%;height:140px"><canvas id="chart-trend"></canvas></div></div>
+
+  <div class="sec-bar"><span class="sec-title">By attribute</span></div>
+  <div class="attr-list" id="attr-list"></div>
+
+  <div class="heatmap">
+    <div class="sec-title" style="margin-bottom:10px">Activity heatmap</div>
+    <div class="hm-grid" id="hm-grid"></div>
+  </div>
+</div>
+
+<nav class="nav">
+  <a class="ni" href="quests.html"><i class="ti ti-list-check"></i><span>Quests</span></a>
+  <a class="ni on" href="stats.html"><i class="ti ti-chart-bar"></i><span>Stats</span></a>
+  <a class="ni" href="boss.html"><i class="ti ti-skull"></i><span>Boss</span></a>
+  <a class="ni" href="rewards.html"><i class="ti ti-gift"></i><span>Rewards</span></a>
+  <a class="ni" href="hero.html"><i class="ti ti-user"></i><span>Hero</span></a>
+</nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="data/seed-data.js"></script>
+<script src="js/gamestate.js"></script>
+<script src="js/leveling.js"></script>
+<script src="js/attributes.js"></script>
+<script src="js/skills.js"></script>
+<script src="js/achievements.js"></script>
+<script src="js/bosses.js"></script>
+<script src="js/streak.js"></script>
+<script src="js/quests.js"></script>
+<script src="js/rewards.js"></script>
+<script src="js/stats.js"></script>
+<script src="js/shield.js"></script>
+<script src="js/gameloop.js"></script>
+<script>
+const ATTR_META=[
+  {id:'intelligence',label:'Intelligence',icon:'ti-book',col:'#00E5FF',bg:'rgba(0,229,255,.08)'},
+  {id:'strength',    label:'Strength',    icon:'ti-run',col:'#1D9E75',bg:'rgba(29,158,117,.08)'},
+  {id:'charisma',    label:'Charisma',    icon:'ti-messages',col:'#D4537E',bg:'rgba(212,83,126,.08)'},
+  {id:'discipline',  label:'Discipline',  icon:'ti-clock',col:'#EF9F27',bg:'rgba(239,159,39,.08)'},
+  {id:'creativity',  label:'Creativity',  icon:'ti-palette',col:'#D85A30',bg:'rgba(216,90,48,.08)'},
+  {id:'willpower',   label:'Willpower',   icon:'ti-flame',col:'#E24B4A',bg:'rgba(226,75,74,.08)'},
+];
+
+GameLoop.bootstrapDay();
+const gs=GameState.get();
+
+function renderMetrics(){
+  document.getElementById('pill-lvl').textContent='LVL '+String(gs.level).padStart(2,'0');
+  const weekData=Stats.getThisWeekVsLastWeek(gs);
+  document.getElementById('m-xp').textContent=weekData.thisWeek;
+  const deltaEl=document.getElementById('m-xp-delta');
+  if(weekData.delta>0){deltaEl.textContent='+'+weekData.delta+' vs last week';deltaEl.className='m-delta up';}
+  else if(weekData.delta<0){deltaEl.textContent=weekData.delta+' vs last week';deltaEl.className='m-delta down';}
+  else{deltaEl.textContent='same as last week';deltaEl.className='m-delta flat';}
+
+  document.getElementById('m-quests').textContent=Stats.getQuestsCompletedThisWeek(gs);
+  document.getElementById('m-days').textContent=Stats.getActiveDaysThisWeek(gs)+' / 7';
+  document.getElementById('m-streak').textContent=gs.streak;
+}
+
+function renderDailyChart(){
+  const days=Stats.getLast7Days(gs);
+  const labels=days.map(d=>{const dt=new Date(d.date+'T00:00:00');return dt.toLocaleDateString('en',{weekday:'short'});});
+  const values=days.map(d=>d.xp);
+  new Chart(document.getElementById('chart-daily'),{
+    type:'bar',
+    data:{labels,datasets:[{data:values,backgroundColor:'rgba(0,180,216,0.4)',borderColor:'#00E5FF',borderWidth:1,borderRadius:2,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false},ticks:{color:'#4A7A90',font:{size:10}}},y:{grid:{color:'rgba(0,180,216,0.07)'},ticks:{color:'#4A7A90',font:{size:10}},beginAtZero:true}}}
+  });
+}
+
+function renderTrendChart(){
+  const weeks=Stats.get4WeekTrend(gs);
+  new Chart(document.getElementById('chart-trend'),{
+    type:'line',
+    data:{labels:['3 wks ago','2 wks ago','Last week','This week'],datasets:[{data:weeks,borderColor:'#00E5FF',backgroundColor:'rgba(0,229,255,0.07)',borderWidth:2,pointRadius:4,pointBackgroundColor:'#00E5FF',fill:true,tension:0.3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false},ticks:{color:'#4A7A90',font:{size:10}}},y:{grid:{color:'rgba(0,180,216,0.07)'},ticks:{color:'#4A7A90',font:{size:10}},beginAtZero:true}}}
+  });
+}
+
+function renderAttrs(){
+  const breakdown=Stats.getAttributeBreakdown(gs);
+  const maxXp=Math.max(1,...breakdown.map(a=>a.xp));
+  document.getElementById('attr-list').innerHTML=breakdown.map(a=>{
+    const meta=ATTR_META.find(m=>m.id===a.id);
+    const pct=Math.round((a.xp/maxXp)*100);
+    return `<div class="ab-row">
+      <div class="ab-icon" style="background:${meta.bg}"><i class="ti ${meta.icon}" style="color:${meta.col}"></i></div>
+      <div class="ab-info"><div class="ab-name">${meta.label}</div><div class="ab-bar-bg"><div class="ab-bar-fill" style="width:${pct}%;background:${meta.col}"></div></div></div>
+      <div class="ab-xp" style="color:${meta.col}">${a.xp} XP</div>
+    </div>`;
+  }).join('');
+}
+
+function renderHeatmap(){
+  const days=Stats.getLast7Days(gs);
+  const todayStr=new Date().toISOString().slice(0,10);
+  document.getElementById('hm-grid').innerHTML=days.map(d=>{
+    const dt=new Date(d.date+'T00:00:00');
+    const label=dt.toLocaleDateString('en',{weekday:'short'})[0];
+    const isToday=d.date===todayStr;
+    const cls='hm-pip'+(d.questsCompleted>0?' active':'')+(isToday?' today':'');
+    return `<div class="hm-col"><div class="hm-lbl">${label}</div><div class="${cls}"></div><div class="hm-xp">${d.xp>0?d.xp:''}</div></div>`;
+  }).join('');
+}
+
+renderMetrics();renderDailyChart();renderTrendChart();renderAttrs();renderHeatmap();
+</script>
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RPG — Quests</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--ab:#020D18;--ab2:#04192E;--ab3:#071F38;--neon:#00E5FF;--oc:#00B4D8;--ocd:#005F87;--bd:rgba(0,180,216,0.18);--bd2:rgba(0,180,216,0.36);--tx:#C8EAF5;--txd:#4A7A90;--txm:#7BAFC8;--am:#EF9F27;--gr:#1D9E75;--re:#E24B4A}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--ab);display:flex;justify-content:center}
+.app{max-width:390px;width:100%;background:var(--ab);min-height:100vh;padding-bottom:72px}
+.banner{background:var(--ab2);border-bottom:1px solid var(--bd);padding:14px 16px;position:relative;overflow:hidden}
+.scan{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--neon),transparent);animation:sc 3s linear infinite;opacity:.22;pointer-events:none}
+@keyframes sc{0%{top:0}100%{top:110%}}
+.bn-row{display:flex;align-items:center;gap:12px}
+.avatar{width:46px;height:46px;border-radius:4px;background:var(--ab3);border:1px solid var(--oc);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.bn-name{font-size:15px;font-weight:500;color:var(--neon);letter-spacing:.05em}
+.bn-class{font-size:10px;color:var(--txd);margin-top:2px;text-transform:uppercase;letter-spacing:.1em}
+.bn-right{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.pill-lvl{background:var(--ab3);color:var(--neon);font-size:10px;padding:2px 9px;border:1px solid var(--ocd);border-radius:2px;letter-spacing:.08em}
+.pill-str{background:rgba(239,159,39,.1);color:var(--am);font-size:10px;padding:2px 9px;border:1px solid rgba(239,159,39,.28);border-radius:2px;display:flex;align-items:center;gap:4px}
+.xp-wrap{margin-top:10px}
+.xp-lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--txd);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}
+.xp-track{height:3px;background:var(--ab3)}
+.xp-fill{height:100%;background:var(--neon);transition:width .7s cubic-bezier(.4,0,.2,1)}
+.seal-bar{background:rgba(29,158,117,.07);border-bottom:1px solid rgba(29,158,117,.18);padding:8px 16px;display:flex;align-items:center;gap:10px}
+.seal-ico{width:26px;height:26px;background:rgba(29,158,117,.12);border:1px solid rgba(29,158,117,.28);border-radius:2px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.seal-ico i{font-size:13px;color:var(--gr)}
+.seal-txt{font-size:11px;color:#5DCAA5;text-transform:uppercase;letter-spacing:.06em}
+.seal-xp{margin-left:auto;font-size:11px;color:#5DCAA5;font-weight:500}
+.stats-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--bd);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)}
+.s-cell{background:var(--ab2);padding:10px 8px;text-align:center}
+.s-num{font-size:18px;font-weight:500;color:var(--tx)}
+.s-lbl{font-size:9px;color:var(--txd);margin-top:2px;text-transform:uppercase;letter-spacing:.07em}
+.lvlup{background:rgba(0,229,255,.05);border-bottom:1px solid rgba(0,229,255,.18);padding:8px 16px;display:flex;align-items:center;gap:10px;max-height:0;overflow:hidden;opacity:0;transition:max-height .4s,opacity .4s}
+
+@keyframes achPopIn{0%{opacity:0;transform:scale(.7) translateY(10px)}60%{transform:scale(1.05) translateY(0)}100%{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes achGlow{0%,100%{box-shadow:0 0 20px rgba(239,159,39,.15)}50%{box-shadow:0 0 32px rgba(239,159,39,.35)}}
+.ach-popup-overlay{position:fixed;inset:0;background:rgba(2,13,24,.8);display:none;align-items:center;justify-content:center;z-index:60;padding:24px;max-width:390px;margin:0 auto}
+.ach-popup-overlay.show{display:flex}
+.ach-popup-card{background:var(--ab2);border:1px solid rgba(239,159,39,.4);border-radius:6px;padding:24px;text-align:center;animation:achPopIn .45s cubic-bezier(.34,1.56,.64,1),achGlow 2s ease-in-out infinite}
+.ach-popup-label{font-size:10px;color:var(--am);text-transform:uppercase;letter-spacing:.14em;margin-bottom:12px}
+.ach-popup-icon{width:64px;height:64px;border-radius:50%;background:rgba(239,159,39,.12);border:2px solid var(--am);display:flex;align-items:center;justify-content:center;font-size:30px;color:var(--am);margin:0 auto 14px}
+.ach-popup-name{font-size:16px;font-weight:600;color:var(--tx)}
+.ach-popup-desc{font-size:11px;color:var(--txd);margin-top:6px;line-height:1.5}
+.ach-popup-close{margin-top:18px;padding:9px 28px;background:var(--am);border:none;border-radius:4px;color:var(--ab);font-size:10px;font-weight:500;cursor:pointer;text-transform:uppercase;letter-spacing:.07em}
+.lvlup.show{max-height:44px;opacity:1}
+.lu-txt{font-size:11px;font-weight:500;color:var(--neon);text-transform:uppercase;letter-spacing:.07em}
+.lu-sub{font-size:10px;color:var(--txd);margin-top:1px}
+.sec-bar{display:flex;align-items:center;justify-content:space-between;padding:11px 16px 7px}
+.sec-title{font-size:10px;color:var(--txd);text-transform:uppercase;letter-spacing:.1em}
+.sec-badge{font-size:10px;color:var(--neon);background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.18);padding:2px 8px;border-radius:2px;letter-spacing:.05em}
+.filters{display:flex;gap:5px;padding:0 16px 9px;overflow-x:auto}
+.filters::-webkit-scrollbar{display:none}
+.fb{padding:4px 11px;border-radius:2px;border:1px solid var(--bd);background:transparent;font-size:10px;color:var(--txd);cursor:pointer;white-space:nowrap;text-transform:uppercase;letter-spacing:.07em;transition:all .15s;flex-shrink:0}
+.fb.on{background:rgba(0,180,216,.12);border-color:var(--oc);color:var(--neon)}
+.qlist{padding:0 16px;display:flex;flex-direction:column;gap:7px}
+.qc{background:var(--ab2);border:1px solid var(--bd);border-radius:4px;padding:13px 13px 13px 15px;cursor:pointer;transition:border-color .15s,background .15s;position:relative;overflow:hidden}
+.qc:hover{border-color:var(--bd2);background:var(--ab3)}
+.qc.done{opacity:.4}
+.qc.done .qt{text-decoration:line-through}
+.qc-accent{position:absolute;left:0;top:0;bottom:0;width:2px}
+.qc-top{display:flex;align-items:flex-start;gap:10px}
+.qchk{width:19px;height:19px;border-radius:2px;border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .2s;color:transparent;font-size:11px}
+.qc.done .qchk{background:var(--oc);border-color:var(--oc);color:var(--ab)}
+.qbody{flex:1;min-width:0}
+.qt{font-size:13px;color:var(--tx);line-height:1.4}
+.qmeta{display:flex;align-items:center;gap:5px;margin-top:6px;flex-wrap:wrap}
+.qattr{font-size:10px;padding:2px 7px;border-radius:2px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;display:flex;align-items:center;gap:3px}
+.qattr i{font-size:11px}
+.qdiff{font-size:10px;color:var(--txd);text-transform:uppercase;letter-spacing:.05em}
+.qxp{font-size:11px;font-weight:500;color:var(--neon);background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.16);padding:2px 7px;border-radius:2px;margin-left:auto;letter-spacing:.04em}
+.qc.done .qxp{color:var(--txd);background:transparent;border-color:var(--bd)}
+.qability{font-size:10px;color:var(--txd);margin-top:6px;padding-left:29px;font-style:italic;line-height:1.45}
+.xp-pop{position:relative;z-index:5;font-size:11px;font-weight:500;color:var(--neon);pointer-events:none;opacity:0;transition:opacity .3s,transform .6s ease-out;text-transform:uppercase;letter-spacing:.06em}
+.all-done{margin:14px 16px 0;background:var(--ab2);border:1px solid rgba(29,158,117,.22);border-radius:4px;padding:22px;text-align:center;display:none}
+.all-done i{font-size:26px;color:var(--gr);margin-bottom:8px;display:block}
+.ad-title{font-size:13px;font-weight:500;color:var(--tx);text-transform:uppercase;letter-spacing:.08em}
+.ad-sub{font-size:11px;color:var(--txd);margin-top:4px;font-style:italic}
+
+.report-banner{margin:0 16px 11px;background:var(--ab2);border:1px solid rgba(239,159,39,.3);border-radius:4px;padding:13px 14px}
+.report-title{font-size:10px;color:var(--am);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.report-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--bd)}
+.report-row:last-child{border-bottom:none}
+.report-lbl{font-size:11px;color:var(--txd)}
+.report-val{font-size:12px;font-weight:500;color:var(--tx)}
+.report-val.hit{color:#5DCAA5}
+.report-val.miss{color:#F09595}
+.report-close{margin-top:8px;width:100%;padding:7px;border:1px solid var(--bd);border-radius:2px;background:transparent;color:var(--txd);font-size:9px;cursor:pointer;text-transform:uppercase;letter-spacing:.06em}
+.add-btn{margin:11px 16px 0;width:calc(100% - 32px);padding:10px;background:transparent;border:1px dashed var(--bd2);border-radius:4px;font-size:10px;color:var(--txd);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;text-transform:uppercase;letter-spacing:.08em;transition:background .15s}
+.add-btn:hover{background:var(--ab3)}
+.add-btn i{font-size:14px}
+.nav{display:flex;justify-content:space-around;padding:10px 0 20px;background:var(--ab2);border-top:1px solid var(--bd);position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:390px;z-index:10}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 6px;text-decoration:none}
+.ni i{font-size:21px;color:var(--txd)}
+.ni.on i{color:var(--neon)}
+.ni span{font-size:9px;color:var(--txd);text-transform:uppercase;letter-spacing:.07em}
+.ni.on span{color:var(--neon)}
+.modal-overlay{position:fixed;inset:0;background:rgba(2,13,24,.85);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{width:390px;background:var(--ab2);border-top:1px solid var(--bd2);padding:18px 16px 40px;transform:translateY(100%);transition:transform .25s ease}
+.modal-overlay.open .modal{transform:translateY(0)}
+.m-title{font-size:12px;font-weight:500;color:var(--neon);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px}
+.m-lbl{font-size:10px;color:var(--txd);margin-bottom:4px;display:block;text-transform:uppercase;letter-spacing:.08em}
+.m-input{width:100%;padding:9px 11px;font-size:13px;border:1px solid var(--bd2);border-radius:2px;background:var(--ab3);color:var(--tx);margin-bottom:11px;outline:none}
+.m-input:focus{border-color:var(--neon)}
+.dg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin-bottom:11px}
+.do{padding:8px 4px;border-radius:2px;border:1px solid var(--bd);font-size:10px;text-align:center;cursor:pointer;color:var(--txd);text-transform:uppercase;letter-spacing:.05em;transition:all .15s}
+.do.se{border-color:var(--gr);background:rgba(29,158,117,.1);color:#5DCAA5}
+.do.sn{border-color:var(--oc);background:rgba(0,180,216,.1);color:var(--neon)}
+.do.sh{border-color:var(--re);background:rgba(226,75,74,.1);color:#F09595}
+.cg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin-bottom:14px}
+.co{padding:8px 10px;border-radius:2px;border:1px solid var(--bd);font-size:10px;cursor:pointer;display:flex;align-items:center;gap:6px;color:var(--txd);text-transform:uppercase;letter-spacing:.05em;transition:all .15s}
+.co.sel{border-color:var(--oc);background:rgba(0,180,216,.1);color:var(--neon)}
+.co i{font-size:13px}
+.m-acts{display:flex;gap:7px}
+.m-cancel{flex:1;padding:10px;border:1px solid var(--bd);border-radius:2px;background:transparent;font-size:10px;cursor:pointer;color:var(--txd);text-transform:uppercase;letter-spacing:.07em}
+.m-ok{flex:2;padding:10px;border:none;background:var(--oc);border-radius:2px;color:var(--ab);font-size:10px;font-weight:500;cursor:pointer;text-transform:uppercase;letter-spacing:.07em;transition:background .15s}
+.m-ok:hover{background:var(--neon)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="banner">
+    <div class="scan"></div>
+    <div class="bn-row">
+      <div class="avatar">⚔️</div>
+      <div><div class="bn-name">MURAT</div><div class="bn-class" id="h-class">Coder Apprentice</div></div>
+      <div class="bn-right">
+        <div class="pill-lvl" id="h-lvl">LVL 04</div>
+        <div class="pill-str"><i class="ti ti-flame" style="font-size:11px"></i><span>6-day streak</span></div>
+      </div>
+    </div>
+    <div class="xp-wrap">
+      <div class="xp-lbl"><span>Experience</span><span id="xp-txt">375 / 500</span></div>
+      <div class="xp-track"><div class="xp-fill" id="xp-fill" style="width:75%"></div></div>
+    </div>
+  </div>
+  <div class="seal-bar">
+    <div class="seal-ico"><i class="ti ti-shield-check"></i></div>
+    <div class="seal-txt">Seal broken — willpower +25 · streak +10</div>
+    <div class="seal-xp">+35 XP</div>
+  </div>
+  <div class="stats-row">
+    <div class="s-cell"><div class="s-num" id="s-done">0</div><div class="s-lbl">Done</div></div>
+    <div class="s-cell"><div class="s-num" id="s-xp">375</div><div class="s-lbl">Total XP</div></div>
+    <div class="s-cell"><div class="s-num" id="s-left">5</div><div class="s-lbl">Remaining</div></div>
+  </div>
+  <div class="lvlup" id="lvlup">
+    <i class="ti ti-trophy" style="font-size:15px;color:#00E5FF"></i>
+    <div><div class="lu-txt" id="lu-txt">Level 5 reached</div><div class="lu-sub">New perks available in skill tree</div></div>
+  </div>
+  <div class="sec-bar"><span class="sec-title">Today's quests</span><span class="sec-badge" id="prog">0 / 5 done</span></div>
+  <div class="filters" id="filters"></div>
+  <div class="qlist" id="qlist"></div>
+  <div class="all-done" id="all-done">
+    <i class="ti ti-circle-check"></i>
+    <div class="ad-title">All quests complete</div>
+    <div class="ad-sub">Rest, warrior. A new seal awaits tomorrow.</div>
+  </div>
+  <div id="day-report-banner"></div>
+  <button class="add-btn" onclick="openModal()"><i class="ti ti-plus"></i> New quest</button>
+  <button class="add-btn" onclick="window.location.href='plan.html'" style="margin-top:7px"><i class="ti ti-calendar-event"></i> Plan tomorrow</button>
+</div>
+
+<nav class="nav">
+  <a class="ni on" href="quests.html"><i class="ti ti-list-check"></i><span>Quests</span></a>
+  <a class="ni" href="stats.html"><i class="ti ti-chart-bar"></i><span>Stats</span></a>
+  <a class="ni" href="boss.html"><i class="ti ti-skull"></i><span>Boss</span></a>
+  <a class="ni" href="rewards.html"><i class="ti ti-gift"></i><span>Rewards</span></a>
+  <a class="ni" href="hero.html"><i class="ti ti-user"></i><span>Hero</span></a>
+</nav>
+
+<div class="ach-popup-overlay" id="ach-popup">
+  <div class="ach-popup-card">
+    <div class="ach-popup-label">Achievement unlocked</div>
+    <div class="ach-popup-icon" id="ach-popup-icon"><i class="ti ti-medal"></i></div>
+    <div class="ach-popup-name" id="ach-popup-name">—</div>
+    <div class="ach-popup-desc" id="ach-popup-desc">—</div>
+    <button class="ach-popup-close" onclick="closeAchievementPopup()">Continue</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal" onclick="bgClose(event)">
+  <div class="modal">
+    <div class="m-title">New quest</div>
+    <label class="m-lbl">Quest name</label>
+    <input class="m-input" id="qin" placeholder="e.g. Study Python for 1 hour"/>
+    <label class="m-lbl">Difficulty</label>
+    <div class="dg">
+      <div class="do se" data-d="easy" onclick="selD(this)">Easy<br><span style="font-size:9px;opacity:.7">+50 XP</span></div>
+      <div class="do" data-d="normal" onclick="selD(this)">Normal<br><span style="font-size:9px;opacity:.7">+100 XP</span></div>
+      <div class="do" data-d="hard" onclick="selD(this)">Hard<br><span style="font-size:9px;opacity:.7">+200 XP</span></div>
+    </div>
+    <label class="m-lbl">Attribute</label>
+    <div class="cg" id="catg"></div>
+    <div class="m-acts">
+      <button class="m-cancel" onclick="closeModal()">Cancel</button>
+      <button class="m-ok" onclick="addQ()">Deploy quest</button>
+    </div>
+  </div>
+</div>
+
+<script src="data/seed-data.js"></script>
+<script src="js/gamestate.js"></script>
+<script src="js/leveling.js"></script>
+<script src="js/attributes.js"></script>
+<script src="js/skills.js"></script>
+<script src="js/achievements.js"></script>
+<script src="js/bosses.js"></script>
+<script src="js/streak.js"></script>
+<script src="js/quests.js"></script>
+<script src="js/rewards.js"></script>
+<script src="js/shield.js"></script>
+<script src="js/gameloop.js"></script>
+<script>
+const CLASSES=['Coder Apprentice','Coder Journeyman','Coder Knight','Coder Champion','Coder Legend'];
+const ATTRS=[
+  {id:'intel',label:'Intelligence',icon:'ti-book',    col:'#00E5FF',bg:'rgba(0,229,255,.1)',  bd:'rgba(0,229,255,.3)',  ability:'Active Reader — you question what you read'},
+  {id:'str',  label:'Strength',   icon:'ti-run',     col:'#1D9E75',bg:'rgba(29,158,117,.1)', bd:'rgba(29,158,117,.3)', ability:'Daily Energy — your body fuels your mind'},
+  {id:'cha',  label:'Charisma',   icon:'ti-messages',col:'#D4537E',bg:'rgba(212,83,126,.1)', bd:'rgba(212,83,126,.3)', ability:'Comfortable Presence — ease in social settings'},
+  {id:'disc', label:'Discipline', icon:'ti-clock',   col:'#EF9F27',bg:'rgba(239,159,39,.1)', bd:'rgba(239,159,39,.3)', ability:'Habit Builder — your systems run automatically'},
+  {id:'cre',  label:'Creativity', icon:'ti-palette', col:'#D85A30',bg:'rgba(216,90,48,.1)',  bd:'rgba(216,90,48,.3)',  ability:'Maker Mindset — you build instead of consume'},
+  {id:'wil',  label:'Willpower',  icon:'ti-flame',   col:'#E24B4A',bg:'rgba(226,75,74,.1)',  bd:'rgba(226,75,74,.3)',  ability:'Do It Anyway — you act before you feel ready'},
+];
+function aById(id){return ATTRS.find(a=>a.id===id)||ATTRS[0]}
+
+
+// Maps between this page's short attribute ids (used by CSS/UI lookups
+// above) and the engine's full attribute names (used in GameState).
+const ATTR_ID_MAP={intel:'intelligence',str:'strength',cha:'charisma',disc:'discipline',cre:'creativity',wil:'willpower'};
+const ATTR_ID_REVERSE={intelligence:'intel',strength:'str',charisma:'cha',discipline:'disc',creativity:'cre',willpower:'wil'};
+
+let st={filter:'all',sd:'easy',sc:'intel'};
+let gs=null; // current GameState snapshot, refreshed after every mutation
+
+function refreshFromGameState(){
+  const report=GameLoop.bootstrapDay();
+  if(report.streakResult&&report.streakResult.penaltyApplied) showPenaltyToast(report.streakResult);
+  gs=GameState.get();
+  if(report.questsReset) renderDayReport();
+}
+
+function renderDayReport(){
+  const dates=Object.keys(gs.planning.dayReports).sort();
+  if(dates.length===0) return;
+  const lastDate=dates[dates.length-1];
+  const rep=gs.planning.dayReports[lastDate];
+  if(!rep) return;
+
+  const attrLabel=rep.targetAttribute?rep.targetAttribute.charAt(0).toUpperCase()+rep.targetAttribute.slice(1):null;
+
+  document.getElementById('day-report-banner').innerHTML=`
+    <div class="report-banner">
+      <div class="report-title"><i class="ti ti-clipboard-check"></i>Yesterday's report</div>
+      ${rep.targetXp!=null?`<div class="report-row"><span class="report-lbl">XP target</span><span class="report-val ${rep.actualXp>=rep.targetXp?'hit':'miss'}">${rep.actualXp} / ${rep.targetXp}</span></div>`:''}
+      ${attrLabel?`<div class="report-row"><span class="report-lbl">${attrLabel} focus</span><span class="report-val">${rep.actualAttributeXp||0} XP earned</span></div>`:''}
+      <div class="report-row"><span class="report-lbl">Quests completed</span><span class="report-val">${rep.questsCompleted} / ${rep.questsPlanned}</span></div>
+      <button class="report-close" onclick="document.getElementById('day-report-banner').innerHTML=''">Dismiss</button>
+    </div>`;
+}
+
+function renderHeader(){
+  const progress=Leveling.progressWithinLevel(gs.xp);
+  const pct=Math.round((progress.xpIntoLevel/progress.xpNeededForLevel)*100);
+  document.getElementById('xp-fill').style.width=pct+'%';
+  document.getElementById('xp-txt').textContent=progress.xpIntoLevel+' / '+progress.xpNeededForLevel;
+  document.getElementById('h-lvl').textContent='LVL '+String(gs.level).padStart(2,'0');
+  document.getElementById('h-class').textContent=CLASSES[Math.min(gs.level-1,CLASSES.length-1)].toUpperCase();
+  document.getElementById('s-xp').textContent=gs.lifetimeXp;
+}
+function renderFilters(){
+  const items=[{id:'all',label:'All'},...ATTRS.map(a=>({id:a.id,label:a.label}))];
+  document.getElementById('filters').innerHTML=items.map(f=>`<button class="fb${st.filter===f.id?' on':''}" onclick="setF('${f.id}')">${f.label}</button>`).join('');
+}
+function setF(id){st.filter=id;renderFilters();renderQuests()}
+function renderQuests(){
+  const tasks=gs.quests.active;
+  const vis=st.filter==='all'?tasks:tasks.filter(t=>ATTR_ID_REVERSE[t.attribute]===st.filter);
+  const list=document.getElementById('qlist');list.innerHTML='';
+  vis.forEach(t=>{
+    const a=aById(ATTR_ID_REVERSE[t.attribute]||'intel');
+    const c=document.createElement('div');
+    c.className='qc'+(t.done?' done':'');
+    c.innerHTML=`<div class="qc-accent" style="background:${a.col}"></div>
+      <div class="qc-top">
+        <div class="qchk">${t.done?'<i class="ti ti-check"></i>':''}</div>
+        <div class="qbody">
+          <div class="qt">${t.title}</div>
+          <div class="qmeta">
+            <span class="qattr" style="background:${a.bg};border:1px solid ${a.bd};color:${a.col}"><i class="ti ${a.icon}"></i>${a.label}</span>
+            <span class="qdiff">${t.difficulty}</span><span class="qxp">+${t.xp} XP</span>
+          </div>
+          <div class="qability">${a.ability}</div>
+        </div>
+      </div>`;
+    c.onclick=()=>toggle(t.id,c);list.appendChild(c);
+  });
+  const done=tasks.filter(t=>t.done).length,left=tasks.filter(t=>!t.done).length;
+  document.getElementById('s-done').textContent=done;
+  document.getElementById('s-left').textContent=left;
+  document.getElementById('prog').textContent=done+' / '+tasks.length+' done';
+  document.getElementById('all-done').style.display=(left===0&&tasks.length>0)?'block':'none';
+}
+function toggle(id,card){
+  let result;
+  gs=GameState.set(state=>{
+    result=Quests.toggleQuest(state,id);
+  });
+  if(!result) return;
+
+  if(result.completed){
+    burst(card,result.quest.xp);
+    if(result.playerLeveledUp) showLU();
+    if(result.newAchievements.length) result.newAchievements.forEach(a=>showAchievementToast(a));
+    if(result.bossDefeated) showBossDefeatedToast(result.bossDefeated);
+    else if(result.bossDamageDealt>0) bossDamageBurst(card,result.bossDamageDealt);
+  }
+  renderHeader();
+  renderQuests();
+}
+function bossDamageBurst(card,damage){
+  const bossDef=SEED_DATA.bosses[gs.bosses.currentBossId];
+  const b=document.createElement('div');
+  b.style.cssText='position:absolute;right:14px;bottom:10px;z-index:5;font-size:10px;font-weight:500;color:#F09595;pointer-events:none;opacity:0;transition:opacity .3s,transform .5s ease-out;text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:4px;';
+  b.innerHTML='<i class="ti ti-skull" style="font-size:11px"></i> -'+damage+' '+(bossDef?bossDef.name:'boss');
+  card.style.position='relative';
+  card.appendChild(b);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    b.style.opacity='1';b.style.transform='translateY(-4px)';
+    setTimeout(()=>{b.style.opacity='0';setTimeout(()=>b.remove(),300);},1400);
+  }));
+}
+function showLU(){const el=document.getElementById('lvlup');document.getElementById('lu-txt').textContent='Level '+gs.level+' reached';el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3500);}
+let achievementQueue=[];
+let achievementPopupShowing=false;
+
+function showAchievementToast(def){
+  achievementQueue.push(def);
+  if(!achievementPopupShowing) showNextAchievementPopup();
+}
+
+function showNextAchievementPopup(){
+  if(achievementQueue.length===0){ achievementPopupShowing=false; return; }
+  achievementPopupShowing=true;
+  const def=achievementQueue.shift();
+  document.getElementById('ach-popup-icon').innerHTML='<i class="ti '+(def.icon||'ti-medal')+'"></i>';
+  document.getElementById('ach-popup-name').textContent=def.name;
+  document.getElementById('ach-popup-desc').textContent=def.description;
+  document.getElementById('ach-popup').classList.add('show');
+}
+
+function closeAchievementPopup(){
+  document.getElementById('ach-popup').classList.remove('show');
+  setTimeout(()=>showNextAchievementPopup(),250);
+}
+function showBossDefeatedToast(bossId){
+  const el=document.getElementById('lvlup');
+  const bossDef=SEED_DATA.bosses[bossId];
+  document.getElementById('lu-txt').textContent=(bossDef?bossDef.name:bossId)+' defeated!';
+  el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3500);
+}
+function showPenaltyToast(streakResult){
+  const el=document.getElementById('lvlup');
+  document.getElementById('lu-txt').textContent='Discipline decay — streak reset, -'+streakResult.xpLost+' XP';
+  el.classList.add('show');setTimeout(()=>el.classList.remove('show'),4500);
+}
+function burst(card,xp){
+  const b=document.createElement('div');b.className='xp-pop';b.textContent='+'+xp+' XP';card.appendChild(b);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    b.style.opacity='1';b.style.transform='translateY(-16px)';
+    setTimeout(()=>{b.style.opacity='0';b.style.transform='translateY(-30px)';setTimeout(()=>b.remove(),400);},580);
+  }));
+}
+function openModal(){st.sd='easy';st.sc='intel';document.getElementById('qin').value='';renderCG();renderDG();document.getElementById('modal').classList.add('open');setTimeout(()=>document.getElementById('qin').focus(),300);}
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+function bgClose(e){if(e.target===document.getElementById('modal'))closeModal()}
+function selD(el){st.sd=el.dataset.d;renderDG()}
+function renderDG(){document.querySelectorAll('.do').forEach(el=>{el.className='do';if(el.dataset.d===st.sd)el.classList.add(st.sd==='easy'?'se':st.sd==='normal'?'sn':'sh');});}
+function renderCG(){const g=document.getElementById('catg');g.innerHTML='';ATTRS.forEach(a=>{const d=document.createElement('div');d.className='co'+(a.id===st.sc?' sel':'');d.innerHTML=`<i class="ti ${a.icon}"></i>${a.label}`;d.onclick=()=>{st.sc=a.id;renderCG()};g.appendChild(d);});}
+function addQ(){
+  const title=document.getElementById('qin').value.trim();
+  if(!title)return;
+  const xpMap={easy:50,normal:100,hard:200};
+  GameState.set(state=>{
+    Quests.addQuest(state,{title,attribute:ATTR_ID_MAP[st.sc],difficulty:st.sd,xp:xpMap[st.sd]});
+  });
+  refreshFromGameState();
+  closeModal();
+  renderHeader();
+  renderQuests();
+}
+
+refreshFromGameState();
+renderHeader();renderFilters();renderQuests();
+</script>
+</body>
+</html>
