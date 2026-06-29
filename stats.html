@@ -26,6 +26,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .m-delta{font-size:10px;margin-top:3px;display:flex;align-items:center;gap:3px;text-transform:uppercase;letter-spacing:.05em}
 .up{color:#5DCAA5}.down{color:#F09595}.flat{color:var(--txd)}
 .sec-bar{padding:12px 16px 8px;display:flex;align-items:center;justify-content:space-between}
+.range-tabs{display:flex;gap:3px}
+.range-tab{padding:3px 9px;border-radius:2px;border:1px solid var(--bd);background:transparent;font-size:9px;color:var(--txd);cursor:pointer;text-transform:uppercase;letter-spacing:.04em;transition:all .15s}
+.range-tab.on{background:rgba(0,180,216,.12);border-color:var(--oc);color:var(--neon)}
 .sec-title{font-size:10px;color:var(--txd);text-transform:uppercase;letter-spacing:.1em}
 .chart-wrap{background:var(--ab2);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);padding:14px 14px 10px;margin:0 16px;border-radius:4px;border:1px solid var(--bd)}
 .chart-title{font-size:11px;color:var(--txm);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
@@ -71,11 +74,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="m-cell"><div class="m-lbl"><i class="ti ti-flame"></i>Streak</div><div class="m-val" id="m-streak">0</div></div>
   </div>
 
-  <div class="sec-bar"><span class="sec-title">XP per day (last 7 days)</span></div>
+  <div class="sec-bar"><span class="sec-title">XP per day</span><div id="range-toggle"></div></div>
   <div class="chart-wrap"><div style="position:relative;width:100%;height:160px"><canvas id="chart-daily"></canvas></div></div>
 
   <div class="sec-bar"><span class="sec-title">4-week trend</span></div>
   <div class="chart-wrap"><div style="position:relative;width:100%;height:140px"><canvas id="chart-trend"></canvas></div></div>
+
+  <div class="sec-bar"><span class="sec-title">Attribute growth</span></div>
+  <div class="chart-wrap"><div style="position:relative;width:100%;height:170px"><canvas id="chart-growth"></canvas></div></div>
+
+  <div class="sec-bar"><span class="sec-title">Boss damage dealt</span></div>
+  <div class="chart-wrap"><div style="position:relative;width:100%;height:140px"><canvas id="chart-boss"></canvas></div></div>
 
   <div class="sec-bar"><span class="sec-title">By attribute</span></div>
   <div class="attr-list" id="attr-list"></div>
@@ -120,6 +129,12 @@ const ATTR_META=[
 
 GameLoop.bootstrapDay();
 const gs=GameState.get();
+let activeRange=7;
+let dailyChartInstance=null;
+let growthChartInstance=null;
+let bossChartInstance=null;
+
+const ATTR_COLORS={intelligence:'#00E5FF',strength:'#1D9E75',charisma:'#D4537E',discipline:'#EF9F27',creativity:'#D85A30',willpower:'#E24B4A'};
 
 function renderMetrics(){
   document.getElementById('pill-lvl').textContent='LVL '+String(gs.level).padStart(2,'0');
@@ -135,15 +150,44 @@ function renderMetrics(){
   document.getElementById('m-streak').textContent=gs.streak;
 }
 
+function renderRangeToggle(){
+  document.getElementById('range-toggle').innerHTML=`
+    <div class="range-tabs">
+      <button class="range-tab${activeRange===7?' on':''}" onclick="setRange(7)">7d</button>
+      <button class="range-tab${activeRange===30?' on':''}" onclick="setRange(30)">30d</button>
+      <button class="range-tab${activeRange===90?' on':''}" onclick="setRange(90)">90d</button>
+    </div>`;
+}
+
+function setRange(days){
+  activeRange=days;
+  renderRangeToggle();
+  renderDailyChart();
+  renderGrowthChart();
+  renderBossChart();
+}
+
+// Label density adapts to range: showing all 90 day labels would be
+// unreadable, so wider ranges only label every Nth point.
+function buildLabels(dayEntries,range){
+  const skip=range<=7?1:range<=30?5:10;
+  return dayEntries.map((d,i)=>{
+    if(i%skip!==0 && i!==dayEntries.length-1) return '';
+    const dt=new Date(d.date+'T00:00:00');
+    return range<=7?dt.toLocaleDateString('en',{weekday:'short'}):dt.toLocaleDateString('en',{month:'short',day:'numeric'});
+  });
+}
+
 function renderDailyChart(){
-  const days=Stats.getLast7Days(gs);
-  const labels=days.map(d=>{const dt=new Date(d.date+'T00:00:00');return dt.toLocaleDateString('en',{weekday:'short'});});
+  const days=Stats.getLastNDays(gs,activeRange);
+  const labels=buildLabels(days,activeRange);
   const values=days.map(d=>d.xp);
-  new Chart(document.getElementById('chart-daily'),{
+  if(dailyChartInstance) dailyChartInstance.destroy();
+  dailyChartInstance=new Chart(document.getElementById('chart-daily'),{
     type:'bar',
     data:{labels,datasets:[{data:values,backgroundColor:'rgba(0,180,216,0.4)',borderColor:'#00E5FF',borderWidth:1,borderRadius:2,borderSkipped:false}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{x:{grid:{display:false},ticks:{color:'#4A7A90',font:{size:10}}},y:{grid:{color:'rgba(0,180,216,0.07)'},ticks:{color:'#4A7A90',font:{size:10}},beginAtZero:true}}}
+      scales:{x:{grid:{display:false},ticks:{color:'#4A7A90',font:{size:9},maxRotation:0,autoSkip:false}},y:{grid:{color:'rgba(0,180,216,0.07)'},ticks:{color:'#4A7A90',font:{size:10}},beginAtZero:true}}}
   });
 }
 
@@ -154,6 +198,43 @@ function renderTrendChart(){
     data:{labels:['3 wks ago','2 wks ago','Last week','This week'],datasets:[{data:weeks,borderColor:'#00E5FF',backgroundColor:'rgba(0,229,255,0.07)',borderWidth:2,pointRadius:4,pointBackgroundColor:'#00E5FF',fill:true,tension:0.3}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
       scales:{x:{grid:{display:false},ticks:{color:'#4A7A90',font:{size:10}}},y:{grid:{color:'rgba(0,180,216,0.07)'},ticks:{color:'#4A7A90',font:{size:10}},beginAtZero:true}}}
+  });
+}
+
+function renderGrowthChart(){
+  const growth=Stats.getAttributeGrowth(gs,activeRange);
+  const days=Stats.getLastNDays(gs,activeRange);
+  const labels=buildLabels(days,activeRange);
+  const datasets=Object.keys(growth.series).map(attrId=>({
+    label:attrId,
+    data:growth.series[attrId],
+    borderColor:ATTR_COLORS[attrId],
+    backgroundColor:'transparent',
+    borderWidth:1.5,
+    pointRadius:0,
+    tension:0.25
+  }));
+  if(growthChartInstance) growthChartInstance.destroy();
+  growthChartInstance=new Chart(document.getElementById('chart-growth'),{
+    type:'line',
+    data:{labels,datasets},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'bottom',labels:{color:'#7BAFC8',font:{size:8},boxWidth:8,padding:6}}},
+      scales:{x:{grid:{display:false},ticks:{color:'#4A7A90',font:{size:9},maxRotation:0,autoSkip:false}},y:{grid:{color:'rgba(0,180,216,0.07)'},ticks:{color:'#4A7A90',font:{size:10}},beginAtZero:true}}}
+  });
+}
+
+function renderBossChart(){
+  const history=Stats.getBossDamageHistory(gs,activeRange);
+  const days=Stats.getLastNDays(gs,activeRange);
+  const labels=buildLabels(days,activeRange);
+  const values=history.map(h=>h.damage);
+  if(bossChartInstance) bossChartInstance.destroy();
+  bossChartInstance=new Chart(document.getElementById('chart-boss'),{
+    type:'bar',
+    data:{labels,datasets:[{data:values,backgroundColor:'rgba(226,75,74,0.4)',borderColor:'#E24B4A',borderWidth:1,borderRadius:2,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false},ticks:{color:'#4A7A90',font:{size:9},maxRotation:0,autoSkip:false}},y:{grid:{color:'rgba(226,75,74,0.07)'},ticks:{color:'#4A7A90',font:{size:10}},beginAtZero:true}}}
   });
 }
 
@@ -183,7 +264,7 @@ function renderHeatmap(){
   }).join('');
 }
 
-renderMetrics();renderDailyChart();renderTrendChart();renderAttrs();renderHeatmap();
+renderMetrics();renderRangeToggle();renderDailyChart();renderTrendChart();renderGrowthChart();renderBossChart();renderAttrs();renderHeatmap();
 </script>
 </body>
 </html>

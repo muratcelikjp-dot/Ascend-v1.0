@@ -59,10 +59,12 @@ const Shield = (function () {
   function completeRitual(state) {
     const streakBonus = Math.min(50, state.streak * 2);
     const totalXp = 25 + streakBonus;
+    const previousLevel = state.level;
 
     state.xp += totalXp;
     state.lifetimeXp += totalXp;
     state.level = Leveling.levelFromTotalXp(state.xp);
+    const playerLeveledUp = state.level > previousLevel;
 
     const attributeResult = Attributes.applyXp(state, "willpower", 25);
     const newSkills = Skills.checkAndUnlock(state, "willpower");
@@ -89,7 +91,9 @@ const Shield = (function () {
       newSkills,
       bossDamageDealt: bossOutcome.damageDealt,
       bossDefeated: bossOutcome.defeated ? bossOutcome.bossId : null,
-      newAchievements
+      newAchievements,
+      playerLeveledUp,
+      newLevel: state.level
     };
   }
 

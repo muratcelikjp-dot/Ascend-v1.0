@@ -83,6 +83,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;display:
 .b-sub{font-size:12px;color:var(--txd);text-align:center;margin-top:8px;opacity:0;transform:translateY(8px);transition:all .4s ease;line-height:1.7;text-transform:uppercase;letter-spacing:.06em}
 .b-sub.show{opacity:1;transform:translateY(0)}
 .xp-row{margin-top:22px;background:var(--ab2);border:1px solid rgba(0,180,216,.2);border-radius:4px;padding:14px 24px;display:flex;align-items:center;gap:16px;opacity:0;transform:translateY(8px);transition:all .4s ease}
+
+@keyframes levelUpPop{0%{opacity:0;transform:scale(.5) translateY(10px)}55%{transform:scale(1.15) translateY(0)}100%{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes levelUpGlow{0%,100%{box-shadow:0 0 10px rgba(0,229,255,.3)}50%{box-shadow:0 0 24px rgba(0,229,255,.6)}}
+.level-up-badge{margin-top:14px;display:none;align-items:center;gap:8px;background:rgba(0,229,255,.1);border:1px solid var(--neon);border-radius:4px;padding:10px 20px}
+.level-up-badge.show{display:flex;animation:levelUpPop .5s cubic-bezier(.34,1.56,.64,1),levelUpGlow 1.6s ease-in-out infinite}
+.level-up-badge-text{font-size:13px;font-weight:600;color:var(--neon);text-transform:uppercase;letter-spacing:.06em}
 .xp-row.show{opacity:1;transform:translateY(0)}
 .xp-val{font-size:18px;font-weight:600;color:var(--neon);letter-spacing:.04em}
 .xp-lbl{font-size:10px;color:var(--txd);margin-top:2px;text-transform:uppercase;letter-spacing:.08em}
@@ -135,6 +141,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;display:
     <div class="b-icon" id="b-icon">🛡️</div>
     <div class="b-title" id="b-title">Seal broken</div>
     <div class="b-sub" id="b-sub">Your day has begun, warrior.<br>The quests await.</div>
+    <div class="level-up-badge" id="level-up-badge"></div>
     <div class="xp-row" id="b-xp">
       <div style="text-align:center"><div class="xp-val">+25 XP</div><div class="xp-lbl">Willpower</div></div>
       <div style="width:1px;height:36px;background:rgba(0,180,216,.2)"></div>
@@ -372,6 +379,10 @@ function hitShield(evt){
 
       document.getElementById('b-streak-xp').textContent='+'+ritualResult.streakBonusXp+' XP';
 
+      if(ritualResult.playerLeveledUp){
+        document.getElementById('level-up-badge').innerHTML='<i class="ti ti-trophy" style="font-size:16px;color:var(--neon)"></i><span class="level-up-badge-text">Level '+ritualResult.newLevel+' reached</span>';
+      }
+
       // Surface anything the ritual triggered beyond the base XP — this is
       // the part that was previously missing: breaking the seal could
       // silently unlock a skill or damage the boss with zero feedback.
@@ -387,8 +398,9 @@ function hitShield(evt){
       setTimeout(()=>document.getElementById('b-icon').classList.add('show'),60);
       setTimeout(()=>document.getElementById('b-title').classList.add('show'),220);
       setTimeout(()=>document.getElementById('b-sub').classList.add('show'),340);
-      setTimeout(()=>document.getElementById('b-xp').classList.add('show'),500);
-      setTimeout(()=>document.getElementById('b-btn').classList.add('show'),660);
+      if(ritualResult.playerLeveledUp) setTimeout(()=>document.getElementById('level-up-badge').classList.add('show'),440);
+      setTimeout(()=>document.getElementById('b-xp').classList.add('show'),560);
+      setTimeout(()=>document.getElementById('b-btn').classList.add('show'),720);
     },420);
   }
 }

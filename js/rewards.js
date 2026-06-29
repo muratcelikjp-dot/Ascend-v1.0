@@ -68,7 +68,14 @@ const Rewards = (function () {
       purchasedAt: new Date().toISOString()
     });
 
-    return { success: true, reward, newXp: state.xp, newLevel: state.level };
+    // Check achievements right after the purchase counters update, so
+    // "First Purchase" and "Big Spender" (both defined against
+    // rewards.purchased.length / rewards.totalXpSpent) can actually
+    // unlock. Without this call they were dead data — defined in the
+    // roster but never evaluated by anything.
+    const newAchievements = Achievements.checkAll(state);
+
+    return { success: true, reward, newXp: state.xp, newLevel: state.level, newAchievements };
   }
 
   function getAll(state) {

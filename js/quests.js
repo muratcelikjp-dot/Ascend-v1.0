@@ -197,11 +197,16 @@ const Quests = (function () {
       // 3b. Daily history log, for the Stats page to render real charts
       // instead of hardcoded numbers. Keyed by date so it naturally
       // accumulates day-over-day without needing a separate rollup job.
+      // attributeXp is a per-day breakdown by attribute id, needed for
+      // attribute growth-over-time charts — without this, the stats page
+      // can only ever show a single current snapshot, never a trend.
       if (!state.dailyLog) state.dailyLog = {};
       const today = todayDateString();
-      if (!state.dailyLog[today]) state.dailyLog[today] = { xp: 0, questsCompleted: 0, questsMissed: 0 };
+      if (!state.dailyLog[today]) state.dailyLog[today] = { xp: 0, questsCompleted: 0, questsMissed: 0, attributeXp: {} };
+      if (!state.dailyLog[today].attributeXp) state.dailyLog[today].attributeXp = {};
       state.dailyLog[today].xp += effectiveXp;
       state.dailyLog[today].questsCompleted += 1;
+      state.dailyLog[today].attributeXp[quest.attribute] = (state.dailyLog[today].attributeXp[quest.attribute] || 0) + effectiveXp;
 
       // 4. Skill tree auto-unlock check (level-gated, no perk points in this version)
       Skills.checkAndUnlock(state, quest.attribute);
@@ -238,6 +243,9 @@ const Quests = (function () {
       if (state.dailyLog && state.dailyLog[today]) {
         state.dailyLog[today].xp = Math.max(0, state.dailyLog[today].xp - refundXp);
         state.dailyLog[today].questsCompleted = Math.max(0, state.dailyLog[today].questsCompleted - 1);
+        if (state.dailyLog[today].attributeXp && state.dailyLog[today].attributeXp[quest.attribute] != null) {
+          state.dailyLog[today].attributeXp[quest.attribute] = Math.max(0, state.dailyLog[today].attributeXp[quest.attribute] - refundXp);
+        }
       }
     }
 
