@@ -88,6 +88,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .report-val.hit{color:#5DCAA5}
 .report-val.miss{color:#F09595}
 .report-close{margin-top:8px;width:100%;padding:7px;border:1px solid var(--bd);border-radius:2px;background:transparent;color:var(--txd);font-size:9px;cursor:pointer;text-transform:uppercase;letter-spacing:.06em}
+
+.report-growth-title{font-size:10px;color:var(--neon);text-transform:uppercase;letter-spacing:.06em;margin-top:10px;padding-top:10px;border-top:1px solid var(--bd)}
+.report-growth-list{display:flex;flex-direction:column;gap:5px;margin-top:7px}
+.report-growth-row{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--txd)}
+.report-growth-row i{font-size:13px;color:var(--am);flex-shrink:0}
+.report-growth-row strong{color:var(--tx);font-weight:500}
 .add-btn{margin:11px 16px 0;width:calc(100% - 32px);padding:10px;background:transparent;border:1px dashed var(--bd2);border-radius:4px;font-size:10px;color:var(--txd);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;text-transform:uppercase;letter-spacing:.08em;transition:background .15s}
 .add-btn:hover{background:var(--ab3)}
 .add-btn i{font-size:14px}
@@ -213,9 +219,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <script src="js/quests.js"></script>
 <script src="js/rewards.js"></script>
 <script src="js/shield.js"></script>
+<script src="js/ranks.js"></script>
 <script src="js/gameloop.js"></script>
 <script>
-const CLASSES=['Coder Apprentice','Coder Journeyman','Coder Knight','Coder Champion','Coder Legend'];
 const ATTRS=[
   {id:'intel',label:'Intelligence',icon:'ti-book',    col:'#00E5FF',bg:'rgba(0,229,255,.1)',  bd:'rgba(0,229,255,.3)',  ability:'Active Reader — you question what you read'},
   {id:'str',  label:'Strength',   icon:'ti-run',     col:'#1D9E75',bg:'rgba(29,158,117,.1)', bd:'rgba(29,158,117,.3)', ability:'Daily Energy — your body fuels your mind'},
@@ -250,6 +256,16 @@ function renderDayReport(){
   if(!rep) return;
 
   const attrLabel=rep.targetAttribute?rep.targetAttribute.charAt(0).toUpperCase()+rep.targetAttribute.slice(1):null;
+  const events=rep.growthEvents||[];
+
+  const EVENT_ICON={level:'ti-trophy',skill:'ti-bolt',achievement:'ti-medal',title:'ti-crown',boss:'ti-skull'};
+  const EVENT_LABEL={level:'Reached level',skill:'Unlocked skill',achievement:'Earned achievement',title:'Earned title',boss:'Defeated boss'};
+
+  const growthHtml=events.length>0?`
+    <div class="report-growth-title">Your character grew today</div>
+    <div class="report-growth-list">
+      ${events.map(e=>`<div class="report-growth-row"><i class="ti ${EVENT_ICON[e.type]||'ti-star'}"></i><span>${EVENT_LABEL[e.type]||e.type}: <strong>${e.value}</strong></span></div>`).join('')}
+    </div>`:'';
 
   document.getElementById('day-report-banner').innerHTML=`
     <div class="report-banner">
@@ -257,6 +273,7 @@ function renderDayReport(){
       ${rep.targetXp!=null?`<div class="report-row"><span class="report-lbl">XP target</span><span class="report-val ${rep.actualXp>=rep.targetXp?'hit':'miss'}">${rep.actualXp} / ${rep.targetXp}</span></div>`:''}
       ${attrLabel?`<div class="report-row"><span class="report-lbl">${attrLabel} focus</span><span class="report-val">${rep.actualAttributeXp||0} XP earned</span></div>`:''}
       <div class="report-row"><span class="report-lbl">Quests completed</span><span class="report-val">${rep.questsCompleted} / ${rep.questsPlanned}</span></div>
+      ${growthHtml}
       <button class="report-close" onclick="document.getElementById('day-report-banner').innerHTML=''">Dismiss</button>
     </div>`;
 }
@@ -267,7 +284,7 @@ function renderHeader(){
   document.getElementById('xp-fill').style.width=pct+'%';
   document.getElementById('xp-txt').textContent=progress.xpIntoLevel+' / '+progress.xpNeededForLevel;
   document.getElementById('h-lvl').textContent='LVL '+String(gs.level).padStart(2,'0');
-  document.getElementById('h-class').textContent=CLASSES[Math.min(gs.level-1,CLASSES.length-1)].toUpperCase();
+  document.getElementById('h-class').textContent=Ranks.getRankForLevel(gs.level).toUpperCase();
   document.getElementById('s-xp').textContent=gs.lifetimeXp;
 }
 function renderFilters(){

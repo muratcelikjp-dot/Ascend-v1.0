@@ -60,7 +60,8 @@ const Quests = (function () {
         targetAttribute: targetAttr,
         actualAttributeXp: actualAttrXp,
         questsPlanned: state.quests.active.length,
-        questsCompleted: yesterdayCompletedCount
+        questsCompleted: yesterdayCompletedCount,
+        growthEvents: yesterdayLog.growthEvents || []
       };
     }
 
@@ -166,7 +167,9 @@ const Quests = (function () {
       newAchievements: [],
       bossDamageDealt: 0,
       bossDefeated: null,
-      bonusXpFromSkills: 0
+      bonusXpFromSkills: 0,
+      newMilestoneTitles: [],
+      newSkills: []
     };
 
     if (result.completed) {
@@ -209,7 +212,7 @@ const Quests = (function () {
       state.dailyLog[today].attributeXp[quest.attribute] = (state.dailyLog[today].attributeXp[quest.attribute] || 0) + effectiveXp;
 
       // 4. Skill tree auto-unlock check (level-gated, no perk points in this version)
-      Skills.checkAndUnlock(state, quest.attribute);
+      result.newSkills = Skills.checkAndUnlock(state, quest.attribute);
 
       // 5. Boss damage — uses a synthetic quest object carrying the
       // boosted XP, so a skill bonus also makes you hit harder against
@@ -220,6 +223,20 @@ const Quests = (function () {
 
       // 6. Achievement check (runs last so it can see all the updated counters)
       result.newAchievements = Achievements.checkAll(state);
+      result.newMilestoneTitles = Ranks.checkMilestoneTitles(state);
+
+      // Record every growth event into today's log, so the end-of-day
+      // report (built by ensureDailyReset) can summarize the full
+      // emotional picture of the day — not just an XP number — per the
+      // "your character genuinely got stronger today" goal. Without this,
+      // a level-up or skill unlock that happened mid-day would be visible
+      // only as a passing toast, never recalled in the day's recap.
+      if (!state.dailyLog[today].growthEvents) state.dailyLog[today].growthEvents = [];
+      if (result.playerLeveledUp) state.dailyLog[today].growthEvents.push({ type: "level", value: state.level });
+      result.newSkills.forEach(s => state.dailyLog[today].growthEvents.push({ type: "skill", value: s.name }));
+      result.newAchievements.forEach(a => state.dailyLog[today].growthEvents.push({ type: "achievement", value: a.name }));
+      result.newMilestoneTitles.forEach(t => state.dailyLog[today].growthEvents.push({ type: "title", value: t.name }));
+      if (result.bossDefeated) state.dailyLog[today].growthEvents.push({ type: "boss", value: result.bossDefeated });
 
       // Stash the effective XP on the quest record itself so the
       // uncomplete path below (toggling the same quest back off) reverses

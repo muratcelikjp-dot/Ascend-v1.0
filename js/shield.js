@@ -75,6 +75,7 @@ const Shield = (function () {
     const bossOutcome = Bosses.applyQuestDamage(state, syntheticQuest);
 
     const newAchievements = Achievements.checkAll(state);
+    const newMilestoneTitles = Ranks.checkMilestoneTitles(state);
     const nightOwlDef = Achievements.checkNightOwl(state);
     if (nightOwlDef) newAchievements.push(nightOwlDef);
 
@@ -92,6 +93,7 @@ const Shield = (function () {
       bossDamageDealt: bossOutcome.damageDealt,
       bossDefeated: bossOutcome.defeated ? bossOutcome.bossId : null,
       newAchievements,
+      newMilestoneTitles,
       playerLeveledUp,
       newLevel: state.level
     };

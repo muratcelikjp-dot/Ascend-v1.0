@@ -202,9 +202,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <script src="js/quests.js"></script>
 <script src="js/rewards.js"></script>
 <script src="js/shield.js"></script>
+<script src="js/ranks.js"></script>
 <script src="js/gameloop.js"></script>
 <script>
-const CLASSES=['Coder Apprentice','Coder Journeyman','Coder Knight','Coder Champion','Coder Legend'];
 const ATTR_META=[
   {id:'intelligence',label:'Intelligence',icon:'ti-book',col:'#00E5FF'},
   {id:'strength',    label:'Strength',    icon:'ti-run',col:'#1D9E75'},
@@ -224,7 +224,7 @@ function renderHeader(){
   document.getElementById('xp-fill').style.width=pct+'%';
   document.getElementById('xp-txt').textContent=progress.xpIntoLevel+' / '+progress.xpNeededForLevel;
   document.getElementById('h-lvl').textContent='LVL '+String(gs.level).padStart(2,'0');
-  document.getElementById('h-class').textContent=CLASSES[Math.min(gs.level-1,CLASSES.length-1)].toUpperCase();
+  document.getElementById('h-class').textContent=Ranks.getRankForLevel(gs.level).toUpperCase();
   document.getElementById('h-streak').innerHTML='<i class="ti ti-flame" style="font-size:10px"></i> '+gs.streak+'-day streak';
 
   // Level-progress ring around the avatar: circumference for r=32 is

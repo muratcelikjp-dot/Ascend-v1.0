@@ -26,6 +26,7 @@ const GameState = (function () {
     if (!state.bosses.titlesEarned) state.bosses.titlesEarned = [];
     if (!state.bosses.damageHistory) state.bosses.damageHistory = {};
     if (state.rewards && typeof state.rewards.totalXpSpent !== "number") state.rewards.totalXpSpent = 0;
+    if (!state.milestoneTitlesEarned) state.milestoneTitlesEarned = [];
     return state;
   }
 

@@ -5,6 +5,34 @@
 
 const SEED_DATA = {
 
+  // Rank system: the player's displayed "class" scales with level
+  // indefinitely (not capped at 5 tiers like the old hardcoded array each
+  // page used to duplicate). Beyond the last named tier, ranks continue
+  // generating procedurally (see Ranks.getRank in ranks.js) so there's
+  // always a next rank to reach, however high level goes.
+  ranks: [
+    { minLevel: 1,  name: "Coder Apprentice" },
+    { minLevel: 5,  name: "Coder Journeyman" },
+    { minLevel: 10, name: "Coder Knight" },
+    { minLevel: 15, name: "Coder Champion" },
+    { minLevel: 20, name: "Coder Legend" },
+    { minLevel: 25, name: "Coder Mythic" },
+    { minLevel: 30, name: "Coder Ascendant" }
+  ],
+
+  // Milestone titles — distinct from boss-defeat titles (which already
+  // exist in state.bosses.titlesEarned). These are earned by crossing
+  // thresholds in level, achievement count, or boss-defeat count, giving
+  // the player recognition beyond just "you did the thing," reinforcing
+  // identity growth over time.
+  milestoneTitles: [
+    { id: "title_level_10",  name: "The Persistent",   condition: { type: "level", threshold: 10 } },
+    { id: "title_level_20",  name: "The Unrelenting",  condition: { type: "level", threshold: 20 } },
+    { id: "title_ach_5",     name: "Collector",         condition: { type: "achievementCount", threshold: 5 } },
+    { id: "title_ach_10",    name: "The Decorated",     condition: { type: "achievementCount", threshold: 10 } },
+    { id: "title_boss_all",  name: "Campaign Victor",   condition: { type: "bossCount", threshold: 3 } }
+  ],
+
   // Default state for a brand new player with no save file yet.
   defaultState: {
     version: 1,
@@ -49,6 +77,8 @@ const SEED_DATA = {
       progress: {},
       _hadPenaltyEver: false
     },
+
+    milestoneTitlesEarned: [],
 
     bosses: {
       currentBossId: "procrastination",

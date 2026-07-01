@@ -74,8 +74,9 @@ const Rewards = (function () {
     // unlock. Without this call they were dead data — defined in the
     // roster but never evaluated by anything.
     const newAchievements = Achievements.checkAll(state);
+    const newMilestoneTitles = Ranks.checkMilestoneTitles(state);
 
-    return { success: true, reward, newXp: state.xp, newLevel: state.level, newAchievements };
+    return { success: true, reward, newXp: state.xp, newLevel: state.level, newAchievements, newMilestoneTitles };
   }
 
   function getAll(state) {
