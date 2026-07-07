@@ -28,6 +28,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .avatar{position:absolute;top:8px;left:8px;width:56px;height:56px;border-radius:50%;background:var(--ab3);border:1px solid var(--oc);display:flex;align-items:center;justify-content:center;font-size:26px}
 .bn-name{font-size:17px;font-weight:500;color:var(--neon);letter-spacing:.05em}
 .bn-class{font-size:10px;color:var(--txd);margin-top:2px;text-transform:uppercase;letter-spacing:.1em}
+.bn-title-earned{font-size:10px;color:var(--am);margin-top:2px;font-style:italic}
 .bn-right{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
 .pill-lvl{background:var(--ab3);color:var(--neon);font-size:10px;padding:2px 9px;border:1px solid var(--ocd);border-radius:2px;letter-spacing:.08em}
 .pill-streak{background:rgba(239,159,39,.1);color:var(--am);font-size:10px;padding:2px 9px;border:1px solid rgba(239,159,39,.28);border-radius:2px;letter-spacing:.05em}
@@ -61,6 +62,40 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .sum-cell:hover{background:var(--ab3)}
 .sum-num{font-size:18px;font-weight:500;color:var(--tx)}
 .sum-lbl{font-size:9px;color:var(--txd);margin-top:2px;text-transform:uppercase;letter-spacing:.06em}
+
+.prestige-card{margin:10px 16px 0;background:var(--ab2);border:1px solid rgba(127,119,221,.3);border-radius:4px;padding:13px 14px}
+.prestige-card.eligible{border-color:var(--pu);background:linear-gradient(135deg,var(--ab2),rgba(127,119,221,.08))}
+.prestige-top{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.prestige-icon{width:28px;height:28px;border-radius:50%;background:rgba(127,119,221,.12);border:1px solid var(--pu);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.prestige-icon i{font-size:14px;color:var(--pu)}
+.prestige-title{font-size:12px;font-weight:500;color:var(--tx)}
+.prestige-sub{font-size:10px;color:var(--txd);margin-top:1px}
+.prestige-bar-bg{height:4px;background:var(--ab3);border-radius:2px;overflow:hidden}
+.prestige-bar-fill{height:100%;background:var(--pu);border-radius:2px;transition:width .8s ease}
+.prestige-btn{margin-top:10px;width:100%;padding:9px;background:var(--pu);border:none;border-radius:2px;color:#fff;font-size:11px;font-weight:500;cursor:pointer;text-transform:uppercase;letter-spacing:.06em}
+.prestige-btn:hover{opacity:.9}
+.prestige-count-badge{font-size:10px;color:var(--pu);background:rgba(127,119,221,.12);border:1px solid rgba(127,119,221,.3);padding:2px 8px;border-radius:2px;margin-left:auto}
+
+.confirm-overlay{position:fixed;inset:0;background:rgba(2,13,24,.9);display:none;align-items:center;justify-content:center;z-index:70;padding:24px;max-width:390px;margin:0 auto}
+.confirm-overlay.show{display:flex}
+.confirm-card{background:var(--ab2);border:1px solid var(--pu);border-radius:6px;padding:22px}
+.confirm-title{font-size:14px;font-weight:600;color:var(--pu);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;text-align:center}
+.confirm-body{font-size:12px;color:var(--txd);line-height:1.6;margin-bottom:14px}
+.confirm-body strong{color:var(--tx)}
+.confirm-acts{display:flex;gap:8px}
+.confirm-cancel{flex:1;padding:10px;border:1px solid var(--bd);border-radius:2px;background:transparent;color:var(--txd);font-size:10px;cursor:pointer;text-transform:uppercase;letter-spacing:.06em}
+.confirm-ok{flex:1;padding:10px;border:none;border-radius:2px;background:var(--pu);color:#fff;font-size:10px;font-weight:500;cursor:pointer;text-transform:uppercase;letter-spacing:.06em}
+
+@keyframes achPopIn{0%{opacity:0;transform:scale(.7) translateY(10px)}60%{transform:scale(1.05) translateY(0)}100%{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes achGlow{0%,100%{box-shadow:0 0 20px rgba(239,159,39,.15)}50%{box-shadow:0 0 32px rgba(239,159,39,.35)}}
+.ach-popup-overlay{position:fixed;inset:0;background:rgba(2,13,24,.8);display:none;align-items:center;justify-content:center;z-index:80;padding:24px;max-width:390px;margin:0 auto}
+.ach-popup-overlay.show{display:flex}
+.ach-popup-card{background:var(--ab2);border:1px solid rgba(239,159,39,.4);border-radius:6px;padding:24px;text-align:center;animation:achPopIn .45s cubic-bezier(.34,1.56,.64,1),achGlow 2s ease-in-out infinite}
+.ach-popup-label{font-size:10px;color:var(--am);text-transform:uppercase;letter-spacing:.14em;margin-bottom:12px}
+.ach-popup-icon{width:64px;height:64px;border-radius:50%;background:rgba(239,159,39,.12);border:2px solid var(--am);display:flex;align-items:center;justify-content:center;font-size:30px;color:var(--am);margin:0 auto 14px}
+.ach-popup-name{font-size:16px;font-weight:600;color:var(--tx)}
+.ach-popup-desc{font-size:11px;color:var(--txd);margin-top:6px;line-height:1.5}
+.ach-popup-close{margin-top:18px;padding:9px 28px;background:var(--am);border:none;border-radius:4px;color:var(--ab);font-size:10px;font-weight:500;cursor:pointer;text-transform:uppercase;letter-spacing:.07em}
 
 .attr-tabs{display:flex;background:var(--ab2);border-bottom:1px solid var(--bd);overflow-x:auto}
 .attr-tabs::-webkit-scrollbar{display:none}
@@ -147,6 +182,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div>
       <div class="bn-name">MURAT</div>
       <div class="bn-class" id="h-class">Coder Apprentice</div>
+      <div class="bn-title-earned" id="h-title-earned"></div>
     </div>
     <div class="bn-right">
       <div class="pill-lvl" id="h-lvl">LVL 01</div>
@@ -167,6 +203,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="sum-cell"><div class="sum-num" id="s-bosses">0</div><div class="sum-lbl">Bosses defeated</div></div>
   <div class="sum-cell"><div class="sum-num" id="s-skills">0</div><div class="sum-lbl">Skills unlocked</div></div>
 </div>
+
+<div id="prestige-card"></div>
 
 <div class="attr-tabs" id="attr-tabs"></div>
 
@@ -191,6 +229,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="detail-sheet" id="detail-sheet"></div>
 </div>
 
+<div class="confirm-overlay" id="prestige-confirm">
+  <div class="confirm-card">
+    <div class="confirm-title">Confirm Prestige</div>
+    <div class="confirm-body" id="prestige-confirm-body"></div>
+    <div class="confirm-acts">
+      <button class="confirm-cancel" onclick="closePrestigeConfirm()">Cancel</button>
+      <button class="confirm-ok" onclick="doPrestigeConfirmed()">Ascend</button>
+    </div>
+  </div>
+</div>
+
+<div class="ach-popup-overlay" id="ach-popup">
+  <div class="ach-popup-card">
+    <div class="ach-popup-label">Achievement unlocked</div>
+    <div class="ach-popup-icon" id="ach-popup-icon"><i class="ti ti-medal"></i></div>
+    <div class="ach-popup-name" id="ach-popup-name">—</div>
+    <div class="ach-popup-desc" id="ach-popup-desc">—</div>
+    <button class="ach-popup-close" onclick="closeAchievementPopup()">Continue</button>
+  </div>
+</div>
+
 <script src="data/seed-data.js"></script>
 <script src="js/gamestate.js"></script>
 <script src="js/leveling.js"></script>
@@ -203,6 +262,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <script src="js/rewards.js"></script>
 <script src="js/shield.js"></script>
 <script src="js/ranks.js"></script>
+<script src="js/prestige.js"></script>
 <script src="js/gameloop.js"></script>
 <script>
 const ATTR_META=[
@@ -225,6 +285,8 @@ function renderHeader(){
   document.getElementById('xp-txt').textContent=progress.xpIntoLevel+' / '+progress.xpNeededForLevel;
   document.getElementById('h-lvl').textContent='LVL '+String(gs.level).padStart(2,'0');
   document.getElementById('h-class').textContent=Ranks.getRankForLevel(gs.level).toUpperCase();
+  const allTitles=Ranks.getAllEarnedTitles(gs);
+  document.getElementById('h-title-earned').textContent=allTitles.length>0?'"'+allTitles[allTitles.length-1].name+'"':'';
   document.getElementById('h-streak').innerHTML='<i class="ti ti-flame" style="font-size:10px"></i> '+gs.streak+'-day streak';
 
   // Level-progress ring around the avatar: circumference for r=32 is
@@ -303,6 +365,79 @@ function renderSummary(){
   document.getElementById('s-achievements').textContent=gs.achievements.unlocked.length;
   document.getElementById('s-bosses').textContent=gs.bosses.defeated.length;
   document.getElementById('s-skills').textContent=Skills.getTotalUnlockedCount(gs);
+}
+
+function renderPrestigeCard(){
+  const card=document.getElementById('prestige-card');
+  const eligible=Prestige.canPrestige(gs);
+  const threshold=SEED_DATA.prestigeConfig.levelThreshold;
+  const prestigeData=gs.prestige||{count:0,permanentXpBonus:0};
+  const bonusPct=Math.round((prestigeData.permanentXpBonus||0)*100);
+
+  if(eligible){
+    card.innerHTML=`
+      <div class="prestige-card eligible">
+        <div class="prestige-top">
+          <div class="prestige-icon"><i class="ti ti-infinity"></i></div>
+          <div><div class="prestige-title">Ready to Ascend</div><div class="prestige-sub">Reset level & attributes for a permanent XP bonus</div></div>
+          ${prestigeData.count>0?`<div class="prestige-count-badge">×${prestigeData.count}</div>`:''}
+        </div>
+        <button class="prestige-btn" onclick="openPrestigeConfirm()">Ascend now</button>
+      </div>`;
+  }else{
+    const pct=Math.min(100,Math.round((gs.level/threshold)*100));
+    card.innerHTML=`
+      <div class="prestige-card">
+        <div class="prestige-top">
+          <div class="prestige-icon"><i class="ti ti-infinity"></i></div>
+          <div><div class="prestige-title">Prestige — Level ${gs.level} / ${threshold}</div><div class="prestige-sub">${bonusPct>0?'Current bonus: +'+bonusPct+'% XP':'Unlocks a permanent XP bonus at level '+threshold}</div></div>
+        </div>
+        <div class="prestige-bar-bg"><div class="prestige-bar-fill" style="width:${pct}%"></div></div>
+      </div>`;
+  }
+}
+
+function openPrestigeConfirm(){
+  const nextBonus=Math.round((gs.prestige.permanentXpBonus+SEED_DATA.prestigeConfig.xpBonusPerPrestige)*100);
+  document.getElementById('prestige-confirm-body').innerHTML=
+    `Your level and attribute levels will reset to 1. <strong>Skills, achievements, boss defeats, titles, and rewards are permanently kept.</strong><br><br>
+     You'll gain a permanent XP bonus, bringing your total to <strong>+${nextBonus}%</strong> forever.<br><br>
+     This cannot be undone. Ascend?`;
+  document.getElementById('prestige-confirm').classList.add('show');
+}
+
+function closePrestigeConfirm(){
+  document.getElementById('prestige-confirm').classList.remove('show');
+}
+
+function doPrestigeConfirmed(){
+  let result;
+  gs=GameState.set(state=>{ result=Prestige.doPrestige(state); });
+  closePrestigeConfirm();
+  refreshAll();
+  if(result&&result.newAchievements.length){
+    result.newAchievements.forEach(a=>showAchievementPopup(a));
+  }
+}
+
+let achievementQueue=[];
+let achievementPopupShowing=false;
+function showAchievementPopup(def){
+  achievementQueue.push(def);
+  if(!achievementPopupShowing) showNextAchievementPopup();
+}
+function showNextAchievementPopup(){
+  if(achievementQueue.length===0){ achievementPopupShowing=false; return; }
+  achievementPopupShowing=true;
+  const def=achievementQueue.shift();
+  document.getElementById('ach-popup-icon').innerHTML='<i class="ti '+(def.icon||'ti-medal')+'"></i>';
+  document.getElementById('ach-popup-name').textContent=def.name;
+  document.getElementById('ach-popup-desc').textContent=def.description;
+  document.getElementById('ach-popup').classList.add('show');
+}
+function closeAchievementPopup(){
+  document.getElementById('ach-popup').classList.remove('show');
+  setTimeout(()=>showNextAchievementPopup(),250);
 }
 
 function renderTabs(){
@@ -399,7 +534,7 @@ function switchAttr(id){
 
 function refreshAll(){
   gs=GameState.get();
-  renderHeader();renderSummary();renderRecentActivity();renderBossSummary();renderTabs();renderAttrBar();renderSkills();
+  renderHeader();renderSummary();renderPrestigeCard();renderRecentActivity();renderBossSummary();renderTabs();renderAttrBar();renderSkills();
 }
 
 const lastSeenUnlocked={};

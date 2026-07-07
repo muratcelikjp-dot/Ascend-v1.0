@@ -5,6 +5,18 @@
 
 const SEED_DATA = {
 
+  // Prestige configuration. Reaching levelThreshold unlocks the option to
+  // prestige: level and current xp reset to 1/0, but the player
+  // permanently keeps every skill, achievement, title, and boss defeat
+  // already earned, PLUS gains a permanent XP multiplier bonus that stacks
+  // across multiple prestiges. This is the "why keep playing after
+  // reaching the level cap" answer — there's always a next prestige to
+  // chase, and each one makes future leveling faster.
+  prestigeConfig: {
+    levelThreshold: 30,
+    xpBonusPerPrestige: 0.15 // +15% XP per prestige, stacking additively
+  },
+
   // Rank system: the player's displayed "class" scales with level
   // indefinitely (not capped at 5 tiers like the old hardcoded array each
   // page used to duplicate). Beyond the last named tier, ranks continue
@@ -30,8 +42,18 @@ const SEED_DATA = {
     { id: "title_level_20",  name: "The Unrelenting",  condition: { type: "level", threshold: 20 } },
     { id: "title_ach_5",     name: "Collector",         condition: { type: "achievementCount", threshold: 5 } },
     { id: "title_ach_10",    name: "The Decorated",     condition: { type: "achievementCount", threshold: 10 } },
-    { id: "title_boss_all",  name: "Campaign Victor",   condition: { type: "bossCount", threshold: 3 } }
+    { id: "title_boss_all",  name: "Threat Hunter",     condition: { type: "bossCount", threshold: 3 } }
   ],
+
+  // NOTE: endgame bosses (self_doubt, the_plateau) are NOT a separate
+  // gated system — they're simply the later entries in the single linear
+  // `bosses` chain below, encountered through normal nextBossId
+  // progression once phone_addiction is defeated. This is a deliberate
+  // simplification: the boss engine (bosses.js) has no concept of a
+  // second, prestige-gated unlock track, and building one would add a
+  // meaningful amount of new plumbing for a benefit (a hard "no farming
+  // early bosses forever" gate) the linear chain already delivers well
+  // enough on its own.
 
   // Default state for a brand new player with no save file yet.
   defaultState: {
@@ -57,6 +79,7 @@ const SEED_DATA = {
     // comparing this date against today.
     shieldRitual: {
       lastCompletedDate: null,
+      rewardGrantedDate: null,
       maxHp: 100,
       currentHp: 100
     },
@@ -80,6 +103,11 @@ const SEED_DATA = {
 
     milestoneTitlesEarned: [],
 
+    prestige: {
+      count: 0,           // how many times the player has prestiged
+      permanentXpBonus: 0 // cumulative XP multiplier from all past prestiges (e.g. 0.15 = +15%)
+    },
+
     bosses: {
       currentBossId: "procrastination",
       currentHp: null,   // null = not yet initialized, engine fills in from boss roster on first load
@@ -102,14 +130,6 @@ const SEED_DATA = {
     // Category metadata lives here, separate from individual rewards, so
     // adding a new category is a one-line data change, same philosophy as
     // the boss/achievement rosters.
-    rewardCategories: [
-      { id: "entertainment", label: "Entertainment", icon: "ti-device-tv" },
-      { id: "food",          label: "Food",          icon: "ti-burger" },
-      { id: "shopping",      label: "Shopping",       icon: "ti-shopping-cart" },
-      { id: "rest",          label: "Rest",           icon: "ti-bed" },
-      { id: "social",        label: "Social",         icon: "ti-users" },
-      { id: "other",         label: "Other",          icon: "ti-dots" }
-    ],
 
     // Used by the daily planning ritual (Willpower goals + fixed activities)
     planning: {
@@ -123,6 +143,20 @@ const SEED_DATA = {
       dayReports: {}          // { "2026-06-20": { targetXp, actualXp, targetAttribute, actualAttributeXp, questsPlanned, questsCompleted } }
     }
   },
+
+  // Category metadata for the rewards shop, separate from individual
+  // rewards, so adding a new category is a one-line data change, same
+  // philosophy as the boss/achievement rosters. Lives at the top level
+  // (content/config), NOT inside defaultState (per-player state) — reward
+  // category definitions apply to every player identically.
+  rewardCategories: [
+    { id: "entertainment", label: "Entertainment", icon: "ti-device-tv" },
+    { id: "food",          label: "Food",          icon: "ti-burger" },
+    { id: "shopping",      label: "Shopping",       icon: "ti-shopping-cart" },
+    { id: "rest",          label: "Rest",           icon: "ti-bed" },
+    { id: "social",        label: "Social",         icon: "ti-users" },
+    { id: "other",         label: "Other",          icon: "ti-dots" }
+  ],
 
   // Quest templates the user can quickly add from, organized by attribute.
   // These are starting suggestions, not a locked list — the user can still
@@ -168,32 +202,38 @@ const SEED_DATA = {
     intelligence: [
       { id: "intel_active_reader", name: "Active Reader", icon: "ti-eye", tier: 1, requiredLevel: 2, description: "You question what you read instead of passively consuming it.", passiveBonus: { attribute: "intelligence", multiplier: 0.05 } },
       { id: "intel_deep_focus",    name: "Deep Focus",     icon: "ti-brain", tier: 2, requiredLevel: 4, description: "You can sustain attention on hard problems far longer than before.", passiveBonus: { attribute: "intelligence", multiplier: 0.08 } },
-      { id: "intel_fast_learner",  name: "Fast Learner",   icon: "ti-bolt", tier: 3, requiredLevel: 6, description: "New concepts click faster because you've built real study habits.", passiveBonus: { attribute: "intelligence", multiplier: 0.12 } }
+      { id: "intel_fast_learner",  name: "Fast Learner",   icon: "ti-bolt", tier: 3, requiredLevel: 6, description: "New concepts click faster because you've built real study habits.", passiveBonus: { attribute: "intelligence", multiplier: 0.12 } },
+      { id: "intel_master", name: "Polymath", icon: "ti-atom", tier: 4, requiredLevel: 10, description: "You move fluently between fields, connecting ideas nobody else thinks to connect. This is what mastery of learning itself looks like.", passiveBonus: { attribute: "intelligence", multiplier: 0.2 } }
     ],
     strength: [
       { id: "str_daily_energy",   name: "Daily Energy",    icon: "ti-battery-charging", tier: 1, requiredLevel: 2, description: "Consistent training gives you steady energy through the day.", passiveBonus: { attribute: "strength", multiplier: 0.05 } },
       { id: "str_iron_will",      name: "Iron Will",       icon: "ti-shield", tier: 2, requiredLevel: 4, description: "You don't skip workouts just because you don't feel like it.", passiveBonus: { attribute: "strength", multiplier: 0.08 } },
-      { id: "str_athlete_identity", name: "Athlete Identity", icon: "ti-trophy", tier: 3, requiredLevel: 6, description: "Training is now part of who you are, not a chore.", passiveBonus: { attribute: "strength", multiplier: 0.12 } }
+      { id: "str_athlete_identity", name: "Athlete Identity", icon: "ti-trophy", tier: 3, requiredLevel: 6, description: "Training is now part of who you are, not a chore.", passiveBonus: { attribute: "strength", multiplier: 0.12 } },
+      { id: "str_master", name: "Unbreakable Body", icon: "ti-barbell", tier: 4, requiredLevel: 10, description: "Physical limits you used to respect are now just numbers you occasionally beat. Your body does what you ask of it, reliably.", passiveBonus: { attribute: "strength", multiplier: 0.2 } }
     ],
     charisma: [
       { id: "cha_comfortable_presence", name: "Comfortable Presence", icon: "ti-user-check", tier: 1, requiredLevel: 2, description: "Small talk and new social settings no longer feel draining.", passiveBonus: { attribute: "charisma", multiplier: 0.05 } },
       { id: "cha_real_listener",  name: "Real Listener",   icon: "ti-ear", tier: 2, requiredLevel: 4, description: "People feel heard around you because you actually listen.", passiveBonus: { attribute: "charisma", multiplier: 0.08 } },
-      { id: "cha_natural_authority", name: "Natural Authority", icon: "ti-crown", tier: 3, requiredLevel: 6, description: "People turn to you in uncertain moments.", passiveBonus: { attribute: "charisma", multiplier: 0.12 } }
+      { id: "cha_natural_authority", name: "Natural Authority", icon: "ti-crown", tier: 3, requiredLevel: 6, description: "People turn to you in uncertain moments.", passiveBonus: { attribute: "charisma", multiplier: 0.12 } },
+      { id: "cha_master", name: "Magnetic Presence", icon: "ti-sparkles", tier: 4, requiredLevel: 10, description: "Rooms shift when you enter them — not because you demand it, but because your presence has become genuinely compelling.", passiveBonus: { attribute: "charisma", multiplier: 0.2 } }
     ],
     discipline: [
       { id: "disc_no_zero_days",  name: "No Zero Days",    icon: "ti-calendar-check", tier: 1, requiredLevel: 2, description: "You do at least something toward your goals every day.", passiveBonus: { attribute: "discipline", multiplier: 0.05 } },
       { id: "disc_iron_discipline", name: "Iron Discipline", icon: "ti-lock", tier: 2, requiredLevel: 4, description: "Your routines hold even when motivation is low.", passiveBonus: { attribute: "discipline", multiplier: 0.08 } },
-      { id: "disc_long_game",     name: "Long Game Player", icon: "ti-hourglass", tier: 3, requiredLevel: 6, description: "You optimize for who you'll be in a year, not instant comfort.", passiveBonus: { attribute: "discipline", multiplier: 0.12 } }
+      { id: "disc_long_game",     name: "Long Game Player", icon: "ti-hourglass", tier: 3, requiredLevel: 6, description: "You optimize for who you'll be in a year, not instant comfort.", passiveBonus: { attribute: "discipline", multiplier: 0.12 } },
+      { id: "disc_master", name: "Unwavering", icon: "ti-diamond", tier: 4, requiredLevel: 10, description: "Your systems no longer require willpower to maintain. Discipline has become identity — you simply are the person who follows through.", passiveBonus: { attribute: "discipline", multiplier: 0.2 } }
     ],
     creativity: [
       { id: "cre_maker_mindset",  name: "Maker Mindset",   icon: "ti-tool", tier: 1, requiredLevel: 2, description: "You default to building solutions instead of waiting for one.", passiveBonus: { attribute: "creativity", multiplier: 0.05 } },
       { id: "cre_ship_it",        name: "Ship It",         icon: "ti-rocket", tier: 2, requiredLevel: 4, description: "You release work before it's perfect and iterate from there.", passiveBonus: { attribute: "creativity", multiplier: 0.08 } },
-      { id: "cre_signature_style", name: "Signature Style", icon: "ti-feather", tier: 3, requiredLevel: 6, description: "Your work has a recognizable voice that's distinctly yours.", passiveBonus: { attribute: "creativity", multiplier: 0.12 } }
+      { id: "cre_signature_style", name: "Signature Style", icon: "ti-feather", tier: 3, requiredLevel: 6, description: "Your work has a recognizable voice that's distinctly yours.", passiveBonus: { attribute: "creativity", multiplier: 0.12 } },
+      { id: "cre_master", name: "Prolific", icon: "ti-star", tier: 4, requiredLevel: 10, description: "Output stopped being the hard part a while ago. You create constantly, and a meaningful share of it is genuinely good.", passiveBonus: { attribute: "creativity", multiplier: 0.2 } }
     ],
     willpower: [
       { id: "wil_do_it_anyway",   name: "Do It Anyway",    icon: "ti-sword", tier: 1, requiredLevel: 2, description: "You act before you feel ready instead of waiting for motivation.", passiveBonus: { attribute: "willpower", multiplier: 0.05 } },
       { id: "wil_comfort_breaker", name: "Comfort Breaker", icon: "ti-flame", tier: 2, requiredLevel: 4, description: "You deliberately seek out discomfort because you know it builds you.", passiveBonus: { attribute: "willpower", multiplier: 0.08 } },
-      { id: "wil_unbreakable",    name: "Unbreakable",     icon: "ti-infinity", tier: 3, requiredLevel: 6, description: "Setbacks don't shake you — you know you can rebuild.", passiveBonus: { attribute: "willpower", multiplier: 0.12 } }
+      { id: "wil_unbreakable",    name: "Unbreakable",     icon: "ti-infinity", tier: 3, requiredLevel: 6, description: "Setbacks don't shake you — you know you can rebuild.", passiveBonus: { attribute: "willpower", multiplier: 0.12 } },
+      { id: "wil_master", name: "Iron Mind", icon: "ti-shield-lock", tier: 4, requiredLevel: 10, description: "There is no version of discomfort left that surprises you. You have tested yourself enough times to trust exactly what you can endure.", passiveBonus: { attribute: "willpower", multiplier: 0.2 } }
     ]
   },
 
@@ -235,7 +275,15 @@ const SEED_DATA = {
 
     // --- Secret achievements (hidden until unlocked) ---
     { id: "secret_night_owl", name: "Night Owl", description: "Break the daily seal after midnight.", category: "secret", icon: "ti-moon", secret: true, type: "event" },
-    { id: "secret_comeback", name: "The Comeback", description: "Rebuild a streak to 7 days after a penalty reset it to 0.", category: "secret", icon: "ti-rotate", secret: true, type: "event" }
+    { id: "secret_comeback", name: "The Comeback", description: "Rebuild a streak to 7 days after a penalty reset it to 0.", category: "secret", icon: "ti-rotate", secret: true, type: "event" },
+
+    // --- Legendary achievements (very high thresholds, long-term play only) ---
+    { id: "legend_xp_100000",  name: "Living Legend",  description: "Earn 100,000 lifetime XP.", category: "legendary", icon: "ti-diamond", type: "counter", stat: "lifetimeXp", threshold: 100000 },
+    { id: "legend_prestige_1", name: "Reborn",          description: "Prestige for the first time.", category: "legendary", icon: "ti-refresh-dot", type: "counter", stat: "prestige.count", threshold: 1 },
+    { id: "legend_prestige_3", name: "Cycle Breaker",   description: "Prestige 3 times.", category: "legendary", icon: "ti-infinity", type: "counter", stat: "prestige.count", threshold: 3 },
+    { id: "legend_streak_100", name: "Immovable",       description: "Maintain a 100-day streak.", category: "legendary", icon: "ti-shield-lock", type: "counter", stat: "streak", threshold: 100 },
+    { id: "legend_quest_2000", name: "The Long Game",   description: "Complete 2,000 quests.", category: "legendary", icon: "ti-hourglass-high", type: "counter", stat: "quests.totalCompletedEver", threshold: 2000 },
+    { id: "legend_campaign_complete", name: "Beyond The Campaign", description: "Defeat every boss in the full campaign, including the endgame.", category: "legendary", icon: "ti-crown", type: "counter", stat: "bosses.defeated.length", threshold: 5 }
   ],
 
   // Boss roster — data-driven as requested. `damageMap` keys are quest title
@@ -288,6 +336,47 @@ const SEED_DATA = {
         { matchType: "titleContains", match: "focus", damage: 75 }
       ],
       rewards: { xp: 700, title: "Present Mind" },
+      nextBossId: "self_doubt"
+    },
+
+    // --- Endgame bosses: unlocked only after the original 3-boss campaign
+    // is cleared. Meaningfully higher HP, and damage rules that reward
+    // consistency across MULTIPLE attributes rather than one dominant
+    // stat — reflecting that late-game challenges aren't beaten by
+    // over-training one skill, but by being genuinely well-rounded.
+    self_doubt: {
+      id: "self_doubt",
+      name: "Self-Doubt",
+      icon: "ti-cloud-storm",
+      lore: "The original three were external distractions. This one is internal — the voice that says your progress doesn't count, that you got lucky, that real growth is happening to someone else. It only shows up once you've actually built something worth doubting.",
+      ability: "Quietly discounts every real win, making consistent effort feel invisible even as it compounds.",
+      description: "The endgame boss — only appears after the original three are defeated.",
+      maxHp: 2200,
+      damageRules: [
+        { matchType: "attribute", match: "willpower", damagePerXp: 0.5 },
+        { matchType: "attribute", match: "discipline", damagePerXp: 0.5 },
+        { matchType: "titleContains", match: "reflect", damage: 60 }
+      ],
+      rewards: { xp: 1200, title: "Self-Assured" },
+      nextBossId: "the_plateau"
+    },
+    the_plateau: {
+      id: "the_plateau",
+      name: "The Plateau",
+      icon: "ti-trending-up-2",
+      lore: "True endgame: the moment progress stops feeling exciting and starts feeling like maintenance. Most people quit here, mistaking a slower curve for no curve at all. This boss doesn't attack — it just waits for you to decide you're done growing.",
+      ability: "Makes consistent, unglamorous effort feel pointless by removing the dopamine of visible, fast progress.",
+      description: "The final boss of the current campaign — beating this is what prestige is built to prepare you for.",
+      maxHp: 3000,
+      damageRules: [
+        { matchType: "attribute", match: "willpower", damagePerXp: 0.4 },
+        { matchType: "attribute", match: "discipline", damagePerXp: 0.4 },
+        { matchType: "attribute", match: "intelligence", damagePerXp: 0.2 },
+        { matchType: "attribute", match: "strength", damagePerXp: 0.2 },
+        { matchType: "attribute", match: "creativity", damagePerXp: 0.2 },
+        { matchType: "attribute", match: "charisma", damagePerXp: 0.2 }
+      ],
+      rewards: { xp: 2000, title: "Unplateaued" },
       nextBossId: null
     }
   }

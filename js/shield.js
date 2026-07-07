@@ -57,6 +57,24 @@ const Shield = (function () {
   // case that grants XP through a side door while skipping the skill tree
   // and boss systems the rest of the loop respects.
   function completeRitual(state) {
+    const today = todayDateString();
+
+    // Guard against granting rewards twice in one day. lastCompletedDate
+    // alone can't be used for this check since applyHit() already sets it
+    // the moment HP reaches 0, before completeRitual ever runs on a
+    // legitimate first completion — a separate marker is needed to know
+    // whether THIS function specifically already ran today.
+    if (state.shieldRitual.rewardGrantedDate === today) {
+      return {
+        willpowerXp: 0, streakBonusXp: 0, totalXp: 0,
+        attributeResult: { leveledUp: false }, newSkills: [],
+        bossDamageDealt: 0, bossDefeated: null, newAchievements: [],
+        newMilestoneTitles: [], playerLeveledUp: false, newLevel: state.level,
+        alreadyGranted: true
+      };
+    }
+    state.shieldRitual.rewardGrantedDate = today;
+
     const streakBonus = Math.min(50, state.streak * 2);
     const totalXp = 25 + streakBonus;
     const previousLevel = state.level;
@@ -80,7 +98,6 @@ const Shield = (function () {
     if (nightOwlDef) newAchievements.push(nightOwlDef);
 
     if (!state.dailyLog) state.dailyLog = {};
-    const today = todayDateString();
     if (!state.dailyLog[today]) state.dailyLog[today] = { xp: 0, questsCompleted: 0, questsMissed: 0 };
     state.dailyLog[today].xp += totalXp;
 

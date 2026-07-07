@@ -23,10 +23,39 @@ const GameState = (function () {
     if (state.planning.tomorrowTargetXp === undefined) state.planning.tomorrowTargetXp = null;
     if (state.planning.tomorrowTargetAttribute === undefined) state.planning.tomorrowTargetAttribute = null;
     if (!state.shieldRitual) state.shieldRitual = deepClone(SEED_DATA.defaultState.shieldRitual);
+    if (state.shieldRitual.rewardGrantedDate === undefined) state.shieldRitual.rewardGrantedDate = null;
     if (!state.bosses.titlesEarned) state.bosses.titlesEarned = [];
     if (!state.bosses.damageHistory) state.bosses.damageHistory = {};
     if (state.rewards && typeof state.rewards.totalXpSpent !== "number") state.rewards.totalXpSpent = 0;
     if (!state.milestoneTitlesEarned) state.milestoneTitlesEarned = [];
+    if (!state.prestige) state.prestige = deepClone(SEED_DATA.defaultState.prestige);
+    if (typeof state.prestige.count !== "number") state.prestige.count = 0;
+    if (typeof state.prestige.permanentXpBonus !== "number") state.prestige.permanentXpBonus = 0;
+
+    // Self-heal a stale currentBossId: if it points to a boss that no
+    // longer exists in the current SEED_DATA.bosses roster (e.g. content
+    // was renamed/removed since this save was created), a null boss
+    // lookup would otherwise silently show a misleading "campaign
+    // complete" screen even though the player hasn't actually finished.
+    // Resetting to the first boss in the campaign is the safer recovery.
+    if (state.bosses.currentBossId && !SEED_DATA.bosses[state.bosses.currentBossId]) {
+      const allBossIds = Object.keys(SEED_DATA.bosses);
+      const pointedTo = new Set(allBossIds.map(id => SEED_DATA.bosses[id].nextBossId).filter(Boolean));
+      const firstBossId = allBossIds.find(id => !pointedTo.has(id)) || allBossIds[0];
+
+      // Walk the chain from the true start, skipping anything already in
+      // state.bosses.defeated, so a player who'd already beaten several
+      // bosses isn't unfairly forced to re-fight them after this heal.
+      let healedId = firstBossId;
+      const defeatedSet = new Set(state.bosses.defeated || []);
+      while (defeatedSet.has(healedId) && SEED_DATA.bosses[healedId].nextBossId) {
+        healedId = SEED_DATA.bosses[healedId].nextBossId;
+      }
+
+      state.bosses.currentBossId = healedId;
+      state.bosses.currentHp = SEED_DATA.bosses[healedId].maxHp;
+    }
+
     return state;
   }
 

@@ -173,12 +173,15 @@ const Quests = (function () {
     };
 
     if (result.completed) {
-      // 0. Apply any passive XP bonus from already-unlocked skills for
-      // this attribute BEFORE granting XP, so the bonus is a real
-      // mechanical effect (more XP actually gained) rather than a number
-      // printed on a card that does nothing.
-      const multiplier = Skills.getPassiveXpMultiplier(state, quest.attribute);
-      const bonusXp = Math.round(quest.xp * multiplier);
+      // 0. Apply any passive XP bonus from already-unlocked skills, PLUS
+      // any permanent prestige bonus, before granting XP. Both stack
+      // additively (e.g. +8% skill bonus + +15% prestige bonus = +23%
+      // total), applied here so they're real mechanical effects rather
+      // than numbers printed on a card that do nothing.
+      const skillMultiplier = Skills.getPassiveXpMultiplier(state, quest.attribute);
+      const prestigeMultiplier = (state.prestige && state.prestige.permanentXpBonus) || 0;
+      const totalMultiplier = skillMultiplier + prestigeMultiplier;
+      const bonusXp = Math.round(quest.xp * totalMultiplier);
       const effectiveXp = quest.xp + bonusXp;
       result.bonusXpFromSkills = bonusXp;
 
