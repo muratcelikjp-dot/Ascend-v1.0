@@ -11,7 +11,7 @@
 //
 // CACHE_VERSION must be bumped on any meaningful file change so old
 // caches get cleaned up and clients pick up new content promptly.
-const CACHE_VERSION = "rpg-app-v1";
+const CACHE_VERSION = "rpg-app-v3";
 
 const PRECACHE_URLS = [
   "./",
@@ -39,6 +39,7 @@ const PRECACHE_URLS = [
   "js/prestige.js",
   "js/gameloop.js",
   "js/stats.js",
+  "js/app-version.js",
   "icons/icon-72.png",
   "icons/icon-96.png",
   "icons/icon-128.png",
