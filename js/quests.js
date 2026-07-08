@@ -164,6 +164,23 @@ const Quests = (function () {
     const quest = state.quests.active.find(q => q.id === questId);
     if (!quest) return null;
 
+    if (quest.done) {
+      return {
+        quest,
+        completed: false,
+        uncompleted: false,
+        locked: true,
+        playerLeveledUp: false,
+        attributeResult: null,
+        newAchievements: [],
+        bossDamageDealt: 0,
+        bossDefeated: null,
+        bonusXpFromSkills: 0,
+        newMilestoneTitles: [],
+        newSkills: []
+      };
+    }
+
     const wasDone = quest.done;
     quest.done = !quest.done;
 
@@ -171,6 +188,7 @@ const Quests = (function () {
       quest,
       completed: !wasDone && quest.done,
       uncompleted: wasDone && !quest.done,
+      locked: false,
       playerLeveledUp: false,
       attributeResult: null,
       newAchievements: [],

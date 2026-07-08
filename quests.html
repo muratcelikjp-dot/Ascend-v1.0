@@ -75,7 +75,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .qc.swiping{transition:none}
 .qc:active{transform:scale(.98)}
 .qc:hover{border-color:var(--bd2);background:var(--ab3)}
-.qc.done{opacity:.4}
+.qc.done{opacity:.4;cursor:default}
+.qc.done:hover{border-color:var(--bd);background:var(--ab2)}
+.qc.done:active{transform:none}
 .qc.done .qt{text-decoration:line-through}
 .qc-accent{position:absolute;left:0;top:0;bottom:0;width:2px}
 .qc-top{display:flex;align-items:flex-start;gap:10px}
@@ -350,10 +352,10 @@ function renderQuests(){
           <div class="qability">${a.ability}</div>
         </div>
       </div>`;
-    c.onclick=()=>toggle(t.id,c);
+    if(!t.done) c.onclick=()=>toggle(t.id,c);
     wrap.appendChild(c);
     list.appendChild(wrap);
-    attachSwipeHandlers(c,t.id);
+    if(!t.done) attachSwipeHandlers(c,t.id);
   });
   const done=tasks.filter(t=>t.done).length,left=tasks.filter(t=>!t.done).length;
   document.getElementById('s-done').textContent=done;
@@ -428,7 +430,7 @@ function toggle(id,card){
   gs=GameState.set(state=>{
     result=Quests.toggleQuest(state,id);
   });
-  if(!result) return;
+  if(!result||result.locked) return;
 
   if(result.completed){
     burst(card,result.quest.xp);
