@@ -1,17 +1,16 @@
-// sw.js — Service Worker for offline PWA support.
+// sw.js - Service Worker for offline PWA support.
 //
-// Strategy: stale-while-revalidate for everything in the app shell.
-// This serves cached content instantly (fast load, works offline), while
-// ALWAYS fetching a fresh copy in the background and updating the cache
-// for next time. This is a deliberate choice given a past debugging
-// session where stale cached JS files caused real confusion — a pure
-// cache-first strategy would risk the exact same problem forever after
-// every future update. stale-while-revalidate means a user is at most
-// ONE reload behind the latest deployed version, never permanently stuck.
+// Strategy:
+// - Precache the app shell under an explicit versioned cache name.
+// - Use network-first for page navigations so deployed HTML is picked up
+//   as soon as the app is online.
+// - Use stale-while-revalidate for same-origin static assets so the app
+//   stays fast/offline-capable while refreshing cached files.
 //
-// CACHE_VERSION must be bumped on any meaningful file change so old
-// caches get cleaned up and clients pick up new content promptly.
-const CACHE_VERSION = "rpg-app-v3";
+// CACHE_VERSION must be bumped on any meaningful app-shell file change.
+const CACHE_PREFIX = "rpg-app-";
+const CACHE_VERSION = "v4";
+const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
 
 const PRECACHE_URLS = [
   "./",
@@ -23,6 +22,7 @@ const PRECACHE_URLS = [
   "rewards.html",
   "achievements.html",
   "plan.html",
+  "css/index.css",
   "manifest.json",
   "data/seed-data.js",
   "js/gamestate.js",
@@ -38,8 +38,9 @@ const PRECACHE_URLS = [
   "js/ranks.js",
   "js/prestige.js",
   "js/gameloop.js",
+  "js/index.js",
+  "js/sw-register.js",
   "js/stats.js",
-  "js/app-version.js",
   "icons/icon-72.png",
   "icons/icon-96.png",
   "icons/icon-128.png",
@@ -54,8 +55,10 @@ const PRECACHE_URLS = [
 
 self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open(CACHE_VERSION)
-      .then(cache => cache.addAll(PRECACHE_URLS))
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(
+        PRECACHE_URLS.map(url => new Request(url, { cache: "reload" }))
+      ))
       .then(() => self.skipWaiting()) // activate the new SW immediately, don't wait for all tabs to close
   );
 });
@@ -64,11 +67,30 @@ self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys().then(keys =>
       Promise.all(
-        keys.filter(key => key !== CACHE_VERSION).map(key => caches.delete(key))
+        keys
+          .filter(key => key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME)
+          .map(key => caches.delete(key))
       )
     ).then(() => self.clients.claim()) // take control of already-open tabs immediately
   );
 });
+
+function fetchAndCache(request, cache) {
+  const freshRequest = new Request(request, { cache: "reload" });
+  return fetch(freshRequest).then(networkResponse => {
+    if (networkResponse && networkResponse.status === 200) {
+      cache.put(request, networkResponse.clone());
+    }
+    return networkResponse;
+  });
+}
+
+function cachedPageFallback(cache, request) {
+  return cache.match(request)
+    .then(cachedResponse => cachedResponse || cache.match("index.html"))
+    .then(cachedResponse => cachedResponse || cache.match("./"))
+    .then(cachedResponse => cachedResponse || Response.error());
+}
 
 self.addEventListener("fetch", event => {
   // Only handle GET requests for same-origin app-shell files. External
@@ -80,22 +102,21 @@ self.addEventListener("fetch", event => {
   if (url.origin !== self.location.origin) return;
 
   event.respondWith(
-    caches.open(CACHE_VERSION).then(cache =>
-      cache.match(event.request).then(cachedResponse => {
-        const networkFetch = fetch(event.request)
-          .then(networkResponse => {
-            if (networkResponse && networkResponse.status === 200) {
-              cache.put(event.request, networkResponse.clone());
-            }
-            return networkResponse;
-          })
-          .catch(() => cachedResponse); // offline: fall back to cache if network fails
+    caches.open(CACHE_NAME).then(cache => {
+      if (event.request.mode === "navigate") {
+        return fetchAndCache(event.request, cache)
+          .catch(() => cachedPageFallback(cache, event.request));
+      }
+
+      return cache.match(event.request).then(cachedResponse => {
+        const networkFetch = fetchAndCache(event.request, cache)
+          .catch(() => cachedResponse || Response.error()); // offline: fall back to cache if network fails
 
         // Serve cached version immediately if present (fast + offline-capable),
         // while the network fetch above updates the cache in the background
         // for the NEXT load. If nothing is cached yet, wait for the network.
         return cachedResponse || networkFetch;
-      })
-    )
+      });
+    })
   );
 });
