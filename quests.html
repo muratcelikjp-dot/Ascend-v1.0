@@ -166,7 +166,7 @@ window.addEventListener('error', function(e){
       <div><div class="bn-name">MURAT</div><div class="bn-class" id="h-class">Coder Apprentice</div></div>
       <div class="bn-right">
         <div class="pill-lvl" id="h-lvl">LVL 04</div>
-        <div class="pill-str"><i class="ti ti-flame" style="font-size:11px"></i><span>6-day streak</span></div>
+        <div class="pill-str"><i class="ti ti-flame" style="font-size:11px"></i><span id="h-streak">0-day streak</span></div>
       </div>
     </div>
     <div class="xp-wrap">
@@ -316,6 +316,7 @@ function renderHeader(){
   document.getElementById('xp-txt').textContent=progress.xpIntoLevel+' / '+progress.xpNeededForLevel;
   document.getElementById('h-lvl').textContent='LVL '+String(gs.level).padStart(2,'0');
   document.getElementById('h-class').textContent=Ranks.getRankForLevel(gs.level).toUpperCase();
+  document.getElementById('h-streak').textContent=gs.streak+'-day streak';
   document.getElementById('s-xp').textContent=gs.lifetimeXp;
 }
 function renderFilters(){
