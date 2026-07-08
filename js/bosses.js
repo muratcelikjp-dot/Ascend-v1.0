@@ -70,7 +70,7 @@ const Bosses = (function () {
   // second date-bucketing scheme.
   function logDamage(state, bossId, damage) {
     if (!state.bosses.damageHistory) state.bosses.damageHistory = {};
-    const today = new Date().toISOString().slice(0, 10);
+    const today = DateUtils.getLocalDateKey();
     if (!state.bosses.damageHistory[today]) state.bosses.damageHistory[today] = 0;
     state.bosses.damageHistory[today] += damage;
   }

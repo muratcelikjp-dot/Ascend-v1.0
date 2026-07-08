@@ -8,7 +8,7 @@
 const Shield = (function () {
 
   function todayDateString() {
-    return new Date().toISOString().slice(0, 10);
+    return DateUtils.getLocalDateKey();
   }
 
   // Call on page load. If today's ritual was already completed, the

@@ -9,7 +9,9 @@
 const Stats = (function () {
 
   function dateNDaysAgo(n) {
-    return new Date(Date.now() - n * 86400000).toISOString().slice(0, 10);
+    const date = new Date();
+    date.setDate(date.getDate() - n);
+    return DateUtils.getLocalDateKey(date);
   }
 
   // Generalized version of the old getLast7Days — returns the last N

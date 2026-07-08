@@ -37,8 +37,10 @@ const Streak = (function () {
   // Returns a result object describing what happened, for the UI to show
   // a "progress lost" summary if a penalty fired.
   function evaluateDailyStreak(state) {
-    const today = Quests.todayDateString();
-    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+    const today = DateUtils.getLocalDateKey();
+    const yesterdayDate = new Date();
+    yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+    const yesterday = DateUtils.getLocalDateKey(yesterdayDate);
     const yesterdayMissed = state.planning.missedDayLog[yesterday];
 
     if (yesterdayMissed === undefined) {

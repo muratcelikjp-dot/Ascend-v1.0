@@ -132,6 +132,7 @@ window.addEventListener('error', function(e){
 <script src="js/attributes.js"></script>
 <script src="js/skills.js"></script>
 <script src="js/achievements.js"></script>
+<script src="js/date-utils.js"></script>
 <script src="js/bosses.js"></script>
 <script src="js/streak.js"></script>
 <script src="js/quests.js"></script>
@@ -277,7 +278,7 @@ function renderAttrs(){
 
 function renderHeatmap(){
   const days=Stats.getLast7Days(gs);
-  const todayStr=new Date().toISOString().slice(0,10);
+  const todayStr=DateUtils.getLocalDateKey();
   document.getElementById('hm-grid').innerHTML=days.map(d=>{
     const dt=new Date(d.date+'T00:00:00');
     const label=dt.toLocaleDateString('en',{weekday:'short'})[0];

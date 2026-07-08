@@ -11,7 +11,7 @@
 const Quests = (function () {
 
   function todayDateString() {
-    return new Date().toISOString().slice(0, 10); // "2026-06-22"
+    return DateUtils.getLocalDateKey(); // "2026-06-22"
   }
 
   // Call once per page load. If the stored lastResetDate isn't today,
