@@ -11,7 +11,7 @@
 //
 // CACHE_VERSION must be bumped on any meaningful file change so old
 // caches get cleaned up and clients pick up new content promptly.
-const CACHE_VERSION = "rpg-app-v1";
+const CACHE_VERSION = "rpg-app-v2";
 
 const PRECACHE_URLS = [
   "./",
@@ -23,6 +23,7 @@ const PRECACHE_URLS = [
   "rewards.html",
   "achievements.html",
   "plan.html",
+  "css/index.css",
   "manifest.json",
   "data/seed-data.js",
   "js/gamestate.js",
