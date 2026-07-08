@@ -3,6 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#00E5FF">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RPG Self">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <title>RPG — Quests</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <style>
@@ -56,7 +64,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .fb{padding:4px 11px;border-radius:2px;border:1px solid var(--bd);background:transparent;font-size:10px;color:var(--txd);cursor:pointer;white-space:nowrap;text-transform:uppercase;letter-spacing:.07em;transition:all .15s;flex-shrink:0}
 .fb.on{background:rgba(0,180,216,.12);border-color:var(--oc);color:var(--neon)}
 .qlist{padding:0 16px;display:flex;flex-direction:column;gap:7px}
-.qc{background:var(--ab2);border:1px solid var(--bd);border-radius:4px;padding:13px 13px 13px 15px;cursor:pointer;transition:border-color .15s,background .15s;position:relative;overflow:hidden}
+.qc-wrap{position:relative;border-radius:4px;overflow:hidden}
+.qc-swipe-bg{position:absolute;inset:0;display:flex;align-items:center;border-radius:4px}
+.qc-swipe-bg.complete-bg{background:rgba(29,158,117,.25);justify-content:flex-start;padding-left:20px}
+.qc-swipe-bg.delete-bg{background:rgba(226,75,74,.25);justify-content:flex-end;padding-right:20px}
+.qc-swipe-bg i{font-size:20px}
+.qc-swipe-bg.complete-bg i{color:#5DCAA5}
+.qc-swipe-bg.delete-bg i{color:#F09595}
+.qc{background:var(--ab2);border:1px solid var(--bd);border-radius:4px;padding:13px 13px 13px 15px;cursor:pointer;transition:border-color .15s,background .15s,transform .25s ease,opacity .25s ease;position:relative;overflow:hidden;touch-action:pan-y}
+.qc.swiping{transition:none}
+.qc:active{transform:scale(.98)}
 .qc:hover{border-color:var(--bd2);background:var(--ab3)}
 .qc.done{opacity:.4}
 .qc.done .qt{text-decoration:line-through}
@@ -98,7 +115,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .add-btn:hover{background:var(--ab3)}
 .add-btn i{font-size:14px}
 .nav{display:flex;justify-content:space-around;padding:10px 0 20px;background:var(--ab2);border-top:1px solid var(--bd);position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:390px;z-index:10}
-.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 6px;text-decoration:none}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 6px;text-decoration:none;transition:transform .12s}
+.ni:active{transform:scale(.88)}
 .ni i{font-size:21px;color:var(--txd)}
 .ni.on i{color:var(--neon)}
 .ni span{font-size:9px;color:var(--txd);text-transform:uppercase;letter-spacing:.07em}
@@ -127,6 +145,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </style>
 </head>
 <body>
+<div id="global-error-banner" style="display:none;position:fixed;top:0;left:0;right:0;background:#5a1010;color:#ffdede;padding:12px 14px;font-family:monospace;font-size:11px;z-index:99999;max-height:40vh;overflow-y:auto;white-space:pre-wrap;border-bottom:2px solid #ff4444"></div>
+<script>
+window.addEventListener('error', function(e){
+  var banner=document.getElementById('global-error-banner');
+  if(banner){
+    banner.style.display='block';
+    banner.textContent += '[JS ERROR] '+e.message+'\n  at '+e.filename+':'+e.lineno+':'+e.colno+'\n\n';
+  }
+});
+</script>
+
 <div class="app">
   <div class="banner">
     <div class="scan"></div>
@@ -298,6 +327,11 @@ function renderQuests(){
   const list=document.getElementById('qlist');list.innerHTML='';
   vis.forEach(t=>{
     const a=aById(ATTR_ID_REVERSE[t.attribute]||'intel');
+    const wrap=document.createElement('div');
+    wrap.className='qc-wrap';
+    wrap.innerHTML=`
+      <div class="qc-swipe-bg complete-bg"><i class="ti ti-check"></i></div>
+      <div class="qc-swipe-bg delete-bg"><i class="ti ti-trash"></i></div>`;
     const c=document.createElement('div');
     c.className='qc'+(t.done?' done':'');
     c.innerHTML=`<div class="qc-accent" style="background:${a.col}"></div>
@@ -312,7 +346,10 @@ function renderQuests(){
           <div class="qability">${a.ability}</div>
         </div>
       </div>`;
-    c.onclick=()=>toggle(t.id,c);list.appendChild(c);
+    c.onclick=()=>toggle(t.id,c);
+    wrap.appendChild(c);
+    list.appendChild(wrap);
+    attachSwipeHandlers(c,t.id);
   });
   const done=tasks.filter(t=>t.done).length,left=tasks.filter(t=>!t.done).length;
   document.getElementById('s-done').textContent=done;
@@ -320,6 +357,68 @@ function renderQuests(){
   document.getElementById('prog').textContent=done+' / '+tasks.length+' done';
   document.getElementById('all-done').style.display=(left===0&&tasks.length>0)?'block':'none';
 }
+function vibrate(pattern){
+  if(navigator.vibrate){
+    try{ navigator.vibrate(pattern); }catch(e){ /* unsupported, fail silently */ }
+  }
+}
+
+const SWIPE_THRESHOLD=70;
+function attachSwipeHandlers(card,questId){
+  let startX=0,startY=0,currentX=0,dragging=false,decided=false,isHorizontal=false;
+
+  card.addEventListener('touchstart',e=>{
+    startX=e.touches[0].clientX;
+    startY=e.touches[0].clientY;
+    currentX=0;dragging=true;decided=false;isHorizontal=false;
+    card.classList.add('swiping');
+  },{passive:true});
+
+  card.addEventListener('touchmove',e=>{
+    if(!dragging) return;
+    const dx=e.touches[0].clientX-startX;
+    const dy=e.touches[0].clientY-startY;
+    if(!decided){
+      decided=true;
+      isHorizontal=Math.abs(dx)>Math.abs(dy);
+    }
+    if(!isHorizontal) return;
+    currentX=dx;
+    card.style.transform='translateX('+dx+'px)';
+    const wrap=card.parentElement;
+    const completeBg=wrap.querySelector('.complete-bg');
+    const deleteBg=wrap.querySelector('.delete-bg');
+    completeBg.style.opacity=dx>20?Math.min(1,dx/SWIPE_THRESHOLD):0;
+    deleteBg.style.opacity=dx<-20?Math.min(1,-dx/SWIPE_THRESHOLD):0;
+  },{passive:true});
+
+  card.addEventListener('touchend',()=>{
+    if(!dragging) return;
+    dragging=false;
+    card.classList.remove('swiping');
+
+    if(isHorizontal&&currentX>SWIPE_THRESHOLD){
+      vibrate(35);
+      card.style.transform='translateX(120%)';
+      card.style.opacity='0';
+      setTimeout(()=>toggle(questId,card),180);
+    }else if(isHorizontal&&currentX<-SWIPE_THRESHOLD){
+      vibrate([0,30,40,30]);
+      card.style.transform='translateX(-120%)';
+      card.style.opacity='0';
+      setTimeout(()=>{
+        gs=GameState.set(state=>{ Quests.removeQuest(state,questId); });
+        renderQuests();
+      },180);
+    }else{
+      card.style.transform='translateX(0)';
+      const wrap=card.parentElement;
+      wrap.querySelector('.complete-bg').style.opacity=0;
+      wrap.querySelector('.delete-bg').style.opacity=0;
+    }
+  });
+}
+
 function toggle(id,card){
   let result;
   gs=GameState.set(state=>{
@@ -366,6 +465,7 @@ function showNextAchievementPopup(){
   document.getElementById('ach-popup-name').textContent=def.name;
   document.getElementById('ach-popup-desc').textContent=def.description;
   document.getElementById('ach-popup').classList.add('show');
+  vibrate([0,30,50,30,50,60]);
 }
 
 function closeAchievementPopup(){
@@ -412,5 +512,6 @@ function addQ(){
 refreshFromGameState();
 renderHeader();renderFilters();renderQuests();
 </script>
+<script src="js/sw-register.js"></script>
 </body>
 </html>
