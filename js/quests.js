@@ -22,6 +22,9 @@ const Quests = (function () {
     const today = todayDateString();
     if (state.quests.lastResetDate === today) return false; // already reset today
 
+    const previousResetDate = state.quests.lastResetDate;
+    const streakEvaluationDates = [];
+
     // Before wiping, record yesterday's completion outcome for the
     // streak/penalty system to evaluate (streak.js reads this).
     //
@@ -33,15 +36,21 @@ const Quests = (function () {
     // enforce. Only a day where quests existed AND at least one was
     // completed counts as a non-miss.
     const yesterdayCompletedCount = state.quests.active.filter(q => q.done).length;
-    if (state.quests.lastResetDate) {
-      state.planning.missedDayLog[state.quests.lastResetDate] = yesterdayCompletedCount === 0;
+    if (previousResetDate) {
+      state.planning.missedDayLog[previousResetDate] = yesterdayCompletedCount === 0;
+      streakEvaluationDates.push(previousResetDate);
+
+      DateUtils.getLocalDateKeysBetween(previousResetDate, today).forEach(dateKey => {
+        state.planning.missedDayLog[dateKey] = true;
+        streakEvaluationDates.push(dateKey);
+      });
 
       // Build the end-of-day report for the day that's ending, comparing
       // whatever target was set during planning against what was actually
       // achieved. Stored under yesterday's date so the report screen can
       // look it up after the fact, even after today's quests overwrite
       // state.quests.active.
-      const yesterdayDate = state.quests.lastResetDate;
+      const yesterdayDate = previousResetDate;
       const yesterdayLog = (state.dailyLog && state.dailyLog[yesterdayDate]) || { xp: 0, questsCompleted: 0 };
       const targetAttr = state.planning._activeTargetAttribute || null;
 
@@ -128,7 +137,7 @@ const Quests = (function () {
     state.planning.tomorrowTargetXp = null;
     state.planning.tomorrowTargetAttribute = null;
 
-    return true;
+    return { didReset: true, streakEvaluationDates };
   }
 
   function addQuest(state, { title, attribute, difficulty, xp }) {

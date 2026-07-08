@@ -1,14 +1,8 @@
 // js/streak.js
 //
 // Owns streak incrementing and the discipline-decay penalty. Call
-// evaluateDailyStreak(state) once per day (naturally happens inside
-// Quests.ensureDailyReset's caller — see integration in each page) AFTER
-// the previous day has been logged into planning.missedDayLog.
-//
-// Penalty rule (per the earlier agreed design, carried forward into this
-// build since the new prompt doesn't override it): missing 2 consecutive
-// days resets the streak, deducts a flat XP penalty, and drops the most
-// relevant attribute levels (Willpower and Discipline) by one level each.
+// evaluateDailyStreak(state) after Quests.ensureDailyReset has logged the
+// date records that need evaluation.
 
 const Streak = (function () {
 
@@ -16,76 +10,87 @@ const Streak = (function () {
   const PENALTY_CONSECUTIVE_DAYS = 2;
   const PENALTY_ATTRIBUTES = ["willpower", "discipline"];
 
-  // Looks at the most recent entries in missedDayLog to count how many
-  // consecutive days (ending yesterday) were fully missed.
-  function countConsecutiveMisses(state) {
-    const dates = Object.keys(state.planning.missedDayLog).sort().reverse();
+  // Counts calendar-contiguous missed days ending at endDateKey. If no
+  // end date is supplied, it uses the most recent logged date.
+  function countConsecutiveMisses(state, endDateKey) {
+    const log = state.planning.missedDayLog;
+    let dateKey = endDateKey || Object.keys(log).sort().reverse()[0];
     let consecutive = 0;
-    for (const date of dates) {
-      if (state.planning.missedDayLog[date] === true) {
-        consecutive++;
-      } else {
-        break;
-      }
+
+    while (dateKey && log[dateKey] === true) {
+      consecutive++;
+      const previousDate = DateUtils.addDaysLocal(dateKey, -1);
+      dateKey = previousDate ? DateUtils.getLocalDateKey(previousDate) : null;
     }
+
     return consecutive;
   }
 
-  // Call once per day, after Quests.ensureDailyReset has logged yesterday's
-  // outcome. Increments streak on a successful day, or applies the penalty
-  // and resets streak if the consecutive-miss threshold is reached.
-  // Returns a result object describing what happened, for the UI to show
-  // a "progress lost" summary if a penalty fired.
-  function evaluateDailyStreak(state) {
-    const today = DateUtils.getLocalDateKey();
-    const yesterdayDate = new Date();
-    yesterdayDate.setDate(yesterdayDate.getDate() - 1);
-    const yesterday = DateUtils.getLocalDateKey(yesterdayDate);
-    const yesterdayMissed = state.planning.missedDayLog[yesterday];
+  function yesterdayDateKey() {
+    const yesterdayDate = DateUtils.addDaysLocal(new Date(), -1);
+    return DateUtils.getLocalDateKey(yesterdayDate);
+  }
 
-    if (yesterdayMissed === undefined) {
-      // No record for yesterday (e.g. very first day of use) — nothing to evaluate yet.
-      return { penaltyApplied: false, streakChanged: false };
-    }
+  // Evaluates one or more newly logged local calendar dates in order.
+  // This preserves the existing rules while allowing a single app open
+  // after several days away to catch up each missed day exactly once.
+  function evaluateDailyStreak(state, dateKeys) {
+    const datesToEvaluate = Array.isArray(dateKeys) && dateKeys.length ? dateKeys : [yesterdayDateKey()];
+    const summary = {
+      penaltyApplied: false,
+      streakChanged: false,
+      processedDates: [],
+      penaltiesApplied: 0,
+      xpLost: 0,
+      attributeDrops: []
+    };
 
-    const consecutiveMisses = countConsecutiveMisses(state);
+    datesToEvaluate.forEach(dateKey => {
+      const dayMissed = state.planning.missedDayLog[dateKey];
 
-    if (consecutiveMisses >= PENALTY_CONSECUTIVE_DAYS) {
-      const oldStreak = state.streak;
-      state.streak = 0;
-      state.achievements._hadPenaltyEver = true;
+      if (dayMissed === undefined) {
+        return;
+      }
 
-      state.xp = Math.max(0, state.xp - PENALTY_XP);
-      state.level = Leveling.levelFromTotalXp(state.xp);
+      summary.processedDates.push(dateKey);
 
-      const attributeDrops = PENALTY_ATTRIBUTES.map(attrId => {
-        const before = state.attributes[attrId].level;
-        // To guarantee an actual level drop (not just in-level XP loss),
-        // remove enough XP to fall below the current level's threshold,
-        // with a minimum penalty floor so this still bites even at level 1.
-        const currentLevelFloor = Leveling.xpRequiredForLevel(before);
-        const amountToRemove = Math.max(state.attributes[attrId].xp - currentLevelFloor + 1, 50);
-        Attributes.removeXp(state, attrId, amountToRemove);
-        const after = state.attributes[attrId].level;
-        return { attribute: attrId, before, after };
-      });
+      const consecutiveMisses = countConsecutiveMisses(state, dateKey);
 
-      return {
-        penaltyApplied: true,
-        streakChanged: true,
-        oldStreak,
-        newStreak: 0,
-        xpLost: PENALTY_XP,
-        attributeDrops
-      };
-    }
+      if (consecutiveMisses >= PENALTY_CONSECUTIVE_DAYS) {
+        if (summary.oldStreak === undefined) summary.oldStreak = state.streak;
+        state.streak = 0;
+        state.achievements._hadPenaltyEver = true;
 
-    if (!yesterdayMissed) {
-      state.streak += 1;
-      return { penaltyApplied: false, streakChanged: true, newStreak: state.streak };
-    }
+        state.xp = Math.max(0, state.xp - PENALTY_XP);
+        state.level = Leveling.levelFromTotalXp(state.xp);
 
-    return { penaltyApplied: false, streakChanged: false };
+        const attributeDrops = PENALTY_ATTRIBUTES.map(attrId => {
+          const before = state.attributes[attrId].level;
+          const currentLevelFloor = Leveling.xpRequiredForLevel(before);
+          const amountToRemove = Math.max(state.attributes[attrId].xp - currentLevelFloor + 1, 50);
+          Attributes.removeXp(state, attrId, amountToRemove);
+          const after = state.attributes[attrId].level;
+          return { attribute: attrId, before, after, date: dateKey };
+        });
+
+        summary.penaltyApplied = true;
+        summary.streakChanged = true;
+        summary.penaltiesApplied += 1;
+        summary.xpLost += PENALTY_XP;
+        summary.newStreak = 0;
+        summary.attributeDrops = summary.attributeDrops.concat(attributeDrops);
+        return;
+      }
+
+      if (!dayMissed) {
+        if (summary.oldStreak === undefined) summary.oldStreak = state.streak;
+        state.streak += 1;
+        summary.streakChanged = true;
+        summary.newStreak = state.streak;
+      }
+    });
+
+    return summary;
   }
 
   function getStreakStatus(state) {

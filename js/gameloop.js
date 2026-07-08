@@ -43,10 +43,11 @@ const GameLoop = (function () {
       // list AND logs yesterday's completion outcome into missedDayLog —
       // that log is what evaluateDailyStreak reads next, so the order here
       // matters and must not be reversed.
-      report.questsReset = Quests.ensureDailyReset(state);
+      const resetResult = Quests.ensureDailyReset(state);
+      report.questsReset = !!(resetResult && resetResult.didReset);
 
       if (report.questsReset) {
-        report.streakResult = Streak.evaluateDailyStreak(state);
+        report.streakResult = Streak.evaluateDailyStreak(state, resetResult.streakEvaluationDates);
 
         // Check the Comeback secret achievement right after the streak
         // updates, since that's the only moment state.streak actually
