@@ -1,5 +1,5 @@
 (function () {
-  const APP_VERSION = "v1.0.9-test";
+  const APP_VERSION = "v1.1.0-abyss-foundation";
   const BADGE_ID = "app-version-badge";
 
   function positionBadge(badge) {
