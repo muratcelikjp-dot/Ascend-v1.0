@@ -1,5 +1,6 @@
 const GameState = (function () {
   const STORAGE_KEY = "rpg_state";
+  const CORRUPT_BACKUP_PREFIX = STORAGE_KEY + "_corrupt_backup_";
   let subscribers = [];
 
   function deepClone(obj) {
@@ -61,12 +62,30 @@ const GameState = (function () {
 
   function readRaw() {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
+    if (raw === null) return null;
     try {
       return JSON.parse(raw);
     } catch (e) {
       console.error("GameState: corrupted save detected, resetting.", e);
+      preserveCorruptRaw(raw);
       return null;
+    }
+  }
+
+  function preserveCorruptRaw(raw) {
+    try {
+      const timestamp = Date.now();
+      let key = CORRUPT_BACKUP_PREFIX + timestamp;
+      let suffix = 1;
+
+      while (localStorage.getItem(key) !== null) {
+        key = CORRUPT_BACKUP_PREFIX + timestamp + "_" + suffix;
+        suffix += 1;
+      }
+
+      localStorage.setItem(key, raw);
+    } catch (e) {
+      console.error("GameState: failed to preserve corrupted save backup.", e);
     }
   }
 
