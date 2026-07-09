@@ -178,8 +178,8 @@ window.addEventListener('error', function(e){
   </div>
   <div class="seal-bar">
     <div class="seal-ico"><i class="ti ti-shield-check"></i></div>
-    <div class="seal-txt">Seal broken — willpower +25 · streak +10</div>
-    <div class="seal-xp">+35 XP</div>
+    <div class="seal-txt" id="seal-reward-text">Seal broken</div>
+    <div class="seal-xp" id="seal-reward-xp"></div>
   </div>
   <div class="stats-row">
     <div class="s-cell"><div class="s-num" id="s-done">0</div><div class="s-lbl">Done</div></div>
@@ -321,6 +321,12 @@ function renderHeader(){
   document.getElementById('h-class').textContent=Ranks.getRankForLevel(gs.level).toUpperCase();
   document.getElementById('h-streak').textContent=gs.streak+'-day streak';
   document.getElementById('s-xp').textContent=gs.lifetimeXp;
+  renderSealReward();
+}
+function renderSealReward(){
+  const reward=Shield.getRewardPreview(gs);
+  document.getElementById('seal-reward-text').textContent='Seal broken - willpower +'+reward.willpowerXp+' - streak +'+reward.streakBonusXp;
+  document.getElementById('seal-reward-xp').textContent='+'+reward.totalXp+' XP';
 }
 function renderFilters(){
   const items=[{id:'all',label:'All'},...ATTRS.map(a=>({id:a.id,label:a.label}))];

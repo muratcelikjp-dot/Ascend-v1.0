@@ -50,6 +50,16 @@ const Shield = (function () {
     return Math.round((state.shieldRitual.currentHp / state.shieldRitual.maxHp) * 100);
   }
 
+  function getRewardPreview(state) {
+    const willpowerXp = 25;
+    const streakBonusXp = Math.min(50, state.streak * 2);
+    return {
+      willpowerXp,
+      streakBonusXp,
+      totalXp: willpowerXp + streakBonusXp
+    };
+  }
+
   // Called once, exactly when the shield breaks. This intentionally mirrors
   // Quests.toggleQuest's fan-out (XP -> attribute XP -> skill unlock ->
   // boss damage -> achievements) because breaking the seal IS a real act
@@ -75,21 +85,20 @@ const Shield = (function () {
     }
     state.shieldRitual.rewardGrantedDate = today;
 
-    const streakBonus = Math.min(50, state.streak * 2);
-    const totalXp = 25 + streakBonus;
+    const reward = getRewardPreview(state);
     const previousLevel = state.level;
 
-    state.xp += totalXp;
-    state.lifetimeXp += totalXp;
+    state.xp += reward.totalXp;
+    state.lifetimeXp += reward.totalXp;
     state.level = Leveling.levelFromTotalXp(state.xp);
     const playerLeveledUp = state.level > previousLevel;
 
-    const attributeResult = Attributes.applyXp(state, "willpower", 25);
+    const attributeResult = Attributes.applyXp(state, "willpower", reward.willpowerXp);
     const newSkills = Skills.checkAndUnlock(state, "willpower");
 
     // Treat the ritual as a synthetic "quest" for boss-damage purposes,
     // since boss damage rules match on attribute + title substrings.
-    const syntheticQuest = { title: "Break the daily seal", attribute: "willpower", xp: 25 };
+    const syntheticQuest = { title: "Break the daily seal", attribute: "willpower", xp: reward.willpowerXp };
     const bossOutcome = Bosses.applyQuestDamage(state, syntheticQuest);
 
     const newAchievements = Achievements.checkAll(state);
@@ -99,12 +108,12 @@ const Shield = (function () {
 
     if (!state.dailyLog) state.dailyLog = {};
     if (!state.dailyLog[today]) state.dailyLog[today] = { xp: 0, questsCompleted: 0, questsMissed: 0 };
-    state.dailyLog[today].xp += totalXp;
+    state.dailyLog[today].xp += reward.totalXp;
 
     return {
-      willpowerXp: 25,
-      streakBonusXp: streakBonus,
-      totalXp,
+      willpowerXp: reward.willpowerXp,
+      streakBonusXp: reward.streakBonusXp,
+      totalXp: reward.totalXp,
       attributeResult,
       newSkills,
       bossDamageDealt: bossOutcome.damageDealt,
@@ -116,7 +125,7 @@ const Shield = (function () {
     };
   }
 
-  return { isTodayAlreadyDone, ensureFreshForToday, applyHit, completeRitual, getHpPercent, todayDateString };
+  return { isTodayAlreadyDone, ensureFreshForToday, applyHit, completeRitual, getHpPercent, getRewardPreview, todayDateString };
 })();
 
 if (typeof window !== "undefined") window.Shield = Shield;
