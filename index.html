@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-title" content="RPG Self">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-<title>RPG Self-Improvement</title>
+<title>Ascend Command Center</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <link rel="stylesheet" href="css/index.css">
 </head>
@@ -29,42 +29,134 @@ window.addEventListener('error', function(e){
 });
 </script>
 
-<div class="screen" id="screen-wrap">
+<div class="screen abyss-home" id="screen-wrap">
   <div class="orb1"></div><div class="orb2"></div><div class="scan"></div>
   <div class="flash" id="flash"></div>
 
-  <div id="main-content">
-    <div class="hp-header">
-      <div class="hp-label-row"><span class="hp-title">Daily seal</span><span class="hp-value" id="hp-value">100 / 100</span></div>
-      <div class="hp-track"><div class="hp-fill healthy" id="hp-fill" style="width:100%"></div></div>
-    </div>
-
-    <div class="greeting" id="greeting">Good morning, Murat</div>
-    <div class="day-title" id="day-title">Monday</div>
-    <div class="day-sub" id="day-sub">Jun 22 · Day 6 of streak</div>
-
-    <div class="shield-wrap" id="shield-wrap" onclick="hitShield(event)">
-      <div class="ring ring1"></div><div class="ring ring2"></div><div class="ring ring3"></div>
-      <div class="impact-ring" id="impact-ring"></div>
-      <div class="shield-body" id="shield-body">
-        <svg width="200" height="200" viewBox="0 0 200 200" role="img">
-          <title>Daily shield</title>
-          <desc>Tap repeatedly to deal damage and break the daily seal</desc>
-          <path id="shield-outer" d="M100 14 L174 44 L174 104 Q174 158 100 186 Q26 158 26 104 L26 44 Z" fill="#04192E" stroke="rgba(0,180,216,0.55)" stroke-width="1.5"/>
-          <path d="M100 30 L161 56 L161 104 Q161 149 100 169 Q39 149 39 104 L39 56 Z" fill="none" stroke="rgba(0,180,216,0.22)" stroke-width="1"/>
-          <path id="shield-inner" d="M100 46 L148 67 L148 103 Q148 140 100 157 Q52 140 52 103 L52 67 Z" fill="#020D18"/>
-          <text x="100" y="118" text-anchor="middle" font-size="48" fill="rgba(0,229,255,0.85)" font-family="serif">⚔</text>
-          <path d="M100 14 L174 44 L174 104 Q174 158 100 186 Q26 158 26 104 L26 44 Z" fill="none" stroke="rgba(0,229,255,0.15)" stroke-width="0.5"/>
-          <g id="crack-layer"></g>
-        </svg>
+  <div id="main-content" class="command-center">
+    <header class="command-header">
+      <div>
+        <div class="greeting" id="greeting">Good morning, Murat</div>
+        <div class="day-title" id="day-title">Monday</div>
       </div>
-    </div>
+      <div class="day-sub" id="day-sub">Jun 22 / Day 6 of streak</div>
+    </header>
 
-    <div class="hint blinking" id="hint">Tap to attack the seal</div>
+    <section class="orbit-field" aria-label="Abyss Command Center">
+      <div class="orbit-lines" aria-hidden="true">
+        <span class="orbit-line orbit-line-a"></span>
+        <span class="orbit-line orbit-line-b"></span>
+        <span class="orbit-line orbit-line-c"></span>
+      </div>
+
+      <a class="orbit-node orbit-node-missions" href="quests.html">
+        <i class="ti ti-list-check"></i>
+        <span class="orbit-node-kicker">Missions</span>
+        <strong>Quests</strong>
+      </a>
+      <button class="orbit-node orbit-node-build orbit-node-disabled" type="button" aria-disabled="true">
+        <i class="ti ti-git-branch"></i>
+        <span class="orbit-node-kicker">Build</span>
+        <strong>Skills</strong>
+      </button>
+      <a class="orbit-node orbit-node-hero" href="hero.html">
+        <i class="ti ti-user-shield"></i>
+        <span class="orbit-node-kicker">Hero</span>
+        <strong>Character</strong>
+      </a>
+      <a class="orbit-node orbit-node-battle" href="boss.html">
+        <i class="ti ti-skull"></i>
+        <span class="orbit-node-kicker">Battle</span>
+        <strong>Boss</strong>
+      </a>
+      <a class="orbit-node orbit-node-loot" href="rewards.html">
+        <i class="ti ti-gift"></i>
+        <span class="orbit-node-kicker">Loot</span>
+        <strong>Rewards</strong>
+      </a>
+      <a class="orbit-node orbit-node-archive" href="stats.html">
+        <i class="ti ti-chart-bar"></i>
+        <span class="orbit-node-kicker">Archive</span>
+        <strong>Stats</strong>
+      </a>
+
+      <section class="shield-core-card" aria-label="Shield Core">
+        <div class="core-status-row">
+          <span class="core-label">Shield Core</span>
+          <span class="hud-pill" id="core-seal-status">Seal ready</span>
+        </div>
+
+        <div class="core-stat-grid">
+          <div>
+            <span>Level</span>
+            <strong id="core-level">LVL 01</strong>
+          </div>
+          <div>
+            <span>Streak</span>
+            <strong id="core-streak">0 days</strong>
+          </div>
+        </div>
+
+        <div class="core-xp-block">
+          <div class="core-xp-label"><span>XP progress</span><span id="core-xp-text">0 / 100</span></div>
+          <div class="abyss-progress core-xp-track"><div class="abyss-progress__fill" id="core-xp-fill" style="width:0%"></div></div>
+        </div>
+
+        <div class="hp-header">
+          <div class="hp-label-row"><span class="hp-title">Daily seal</span><span class="hp-value" id="hp-value">100 / 100</span></div>
+          <div class="hp-track"><div class="hp-fill healthy" id="hp-fill" style="width:100%"></div></div>
+        </div>
+
+        <div class="shield-wrap" id="shield-wrap" onclick="hitShield(event)" role="button" aria-label="Daily Shield Core" tabindex="0">
+          <div class="ring ring1"></div><div class="ring ring2"></div><div class="ring ring3"></div>
+          <div class="impact-ring" id="impact-ring"></div>
+          <div class="shield-body" id="shield-body">
+            <svg width="200" height="200" viewBox="0 0 200 200" role="img">
+              <title>Daily shield</title>
+              <desc>Tap repeatedly to deal damage and break the daily seal</desc>
+              <path id="shield-outer" d="M100 14 L174 44 L174 104 Q174 158 100 186 Q26 158 26 104 L26 44 Z" fill="#071326" stroke="rgba(53,244,230,0.72)" stroke-width="1.5"/>
+              <path d="M100 30 L161 56 L161 104 Q161 149 100 169 Q39 149 39 104 L39 56 Z" fill="none" stroke="rgba(141,239,255,0.28)" stroke-width="1"/>
+              <path id="shield-inner" d="M100 46 L148 67 L148 103 Q148 140 100 157 Q52 140 52 103 L52 67 Z" fill="#020713"/>
+              <circle cx="100" cy="103" r="18" fill="rgba(53,244,230,0.08)" stroke="rgba(53,244,230,0.72)" stroke-width="1"/>
+              <path d="M100 82 L112 103 L100 124 L88 103 Z" fill="rgba(141,239,255,0.72)"/>
+              <path d="M100 14 L174 44 L174 104 Q174 158 100 186 Q26 158 26 104 L26 44 Z" fill="none" stroke="rgba(141,239,255,0.18)" stroke-width="0.5"/>
+              <g id="crack-layer"></g>
+            </svg>
+          </div>
+        </div>
+
+        <div class="hint blinking" id="hint">Tap the core to break the daily seal</div>
+
+        <div class="core-main-quest">
+          <span>Today's main quest</span>
+          <strong id="core-main-quest">Loading mission...</strong>
+        </div>
+        <div class="daily-state-placeholder">Daily State / later</div>
+      </section>
+    </section>
+
+    <section class="command-summaries" aria-label="Command summaries">
+      <article class="summary-panel summary-growth">
+        <div class="summary-panel-top">
+          <span>Growth Direction</span>
+          <i class="ti ti-sparkles"></i>
+        </div>
+        <strong id="growth-summary-title">Build progress loading</strong>
+        <p id="growth-summary-sub">Attributes and skills stay on existing rules.</p>
+      </article>
+      <article class="summary-panel summary-battle">
+        <div class="summary-panel-top">
+          <span>Battle Direction</span>
+          <i class="ti ti-swords"></i>
+        </div>
+        <strong id="battle-summary-title">Boss threat loading</strong>
+        <p id="battle-summary-sub">Weakness and loot preview use current data.</p>
+      </article>
+    </section>
   </div>
 
   <div class="broken-screen" id="broken-screen">
-    <div class="b-icon" id="b-icon">🛡️</div>
+    <div class="b-icon" id="b-icon"><i class="ti ti-shield-check"></i></div>
     <div class="b-title" id="b-title">Seal broken</div>
     <div class="b-sub" id="b-sub">Your day has begun, warrior.<br>The quests await.</div>
     <div class="level-up-badge" id="level-up-badge"></div>
@@ -73,14 +165,14 @@ window.addEventListener('error', function(e){
       <div style="width:1px;height:36px;background:rgba(0,180,216,.2)"></div>
       <div style="text-align:center"><div class="xp-val" id="b-streak-xp">+10 XP</div><div class="xp-lbl">Streak bonus</div></div>
     </div>
-    <button class="enter-btn" id="b-btn" onclick="enterQuestBoard()">Enter quest board →</button>
+    <button class="enter-btn" id="b-btn" onclick="enterQuestBoard()">Enter quest board</button>
   </div>
 
   <div class="already-done-screen" id="already-done-screen">
     <div class="already-done-icon"><i class="ti ti-shield-check"></i></div>
     <div class="already-done-title">Seal already broken today</div>
     <div class="already-done-sub">Come back tomorrow for a new seal to break.<br>Your quests are ready now.</div>
-    <button class="enter-btn show" onclick="window.location.href='quests.html'">Enter quest board →</button>
+    <button class="enter-btn show" onclick="window.location.href='quests.html'">Enter quest board</button>
   </div>
 </div>
 
