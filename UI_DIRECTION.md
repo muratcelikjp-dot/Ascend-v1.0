@@ -219,7 +219,42 @@ Rules:
 - Respect low-power mode where possible.
 - Prefer one immersive hero/background layer over many competing decorative layers.
 
-## 12. Page-by-Page Direction
+## 12. First Launch: Motivation OFF / Discipline ON
+
+On the first launch, Ascend should show a short onboarding ritual where the user turns off **Motivation** and turns on **Discipline**.
+
+This is not a normal settings toggle. It is a symbolic identity switch that communicates the product philosophy before the user enters the app.
+
+Purpose:
+
+- Communicate that Ascend is not a motivation app.
+- Show that Ascend is about building discipline, systems, and the ability to show up even on bad days.
+- Preserve Discipline as a product philosophy, even though Discipline is no longer a main attribute in the redesigned attribute model.
+- Mechanically, Discipline maps conceptually to Willpower.
+
+Visual direction:
+
+- Use a dark abyss background with calm depth and minimal particles.
+- Show a Motivation toggle in a grey/off state.
+- Show a Discipline toggle in an aqua-blue/on state.
+- When Discipline turns on, use a soft glow and one restrained pulse.
+- Keep the screen quiet, ritual-like, and mature.
+- Do not make it feel like a generic settings page.
+
+Suggested copy:
+
+- "Motivation fades. Discipline remains."
+- "Ascend is built for the days you show up anyway."
+
+CTA:
+
+- "Begin Ascension"
+
+Implementation note:
+
+This should later be implemented as a lightweight first-launch onboarding screen. In the MVP, it should only save onboarding completion state. It should not change XP, streak, quests, skills, boss logic, rewards, achievements, or daily reset behavior.
+
+## 13. Page-by-Page Direction
 
 ### Home
 
@@ -294,7 +329,7 @@ Stats should feel like an analytics HUD.
 - Use color consistently by attribute.
 - Avoid chart clutter on mobile.
 
-## 13. Navigation Direction
+## 14. Navigation Direction
 
 Navigation should feel like moving between RPG HUD modules.
 
@@ -312,7 +347,7 @@ Desktop or wider screens:
 - Bottom navigation can remain, or shift to a compact side/HUD rail later if needed.
 - The visual language should stay consistent across sizes.
 
-## 14. What Not To Do
+## 15. What Not To Do
 
 - Do not make the redesign childish, cartoonish, or toy-like.
 - Do not use generic cyberpunk styling as the main identity.
