@@ -1,5 +1,5 @@
 (function () {
-  const APP_VERSION = "v1.1.7-abyss-atmosphere";
+  const APP_VERSION = "v1.1.9-quests-nav-polish";
   const BADGE_ID = "app-version-badge";
 
   function positionBadge(badge) {
