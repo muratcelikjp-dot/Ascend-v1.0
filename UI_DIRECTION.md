@@ -254,17 +254,98 @@ Implementation note:
 
 This should later be implemented as a lightweight first-launch onboarding screen. In the MVP, it should only save onboarding completion state. It should not change XP, streak, quests, skills, boss logic, rewards, achievements, or daily reset behavior.
 
-## 13. Page-by-Page Direction
+## 13. Home Concept: Abyss Command Center
+
+The Home screen should feel like an RPG command center built around a central **Shield Core**, not like a normal app dashboard.
+
+The user should land in a focused command space where daily discipline, character growth, battle pressure, and next actions orbit around the core. The Home screen is the emotional center of Ascend after the first-launch Discipline ritual.
+
+### Center / Core Zone
+
+The center of the screen should hold the primary daily identity and action state:
+
+- Central Shield Core.
+- Level and XP.
+- Streak.
+- Today's main quest.
+- Seal status.
+- Daily State placeholder for a later feature.
+
+The Shield Core should remain the visual focus by default. It should feel calm, powerful, and tappable without becoming a large decorative object that hides useful information.
+
+### Growth Direction
+
+Growth-related areas should feel like one direction or cluster around the core:
+
+- Skill Tree.
+- Attributes.
+- Skill points.
+- Character build progress.
+
+This zone answers: "How am I becoming stronger?"
+
+### Battle Direction
+
+Battle and reward areas should feel like another direction or cluster around the core:
+
+- Current Boss.
+- Boss HP / threat.
+- Boss weakness preview.
+- Rewards / next unlock / loot preview.
+
+This zone answers: "What am I fighting, and what can I earn next?"
+
+The Home screen should keep these directions visually understandable without turning into a dense control panel. It should feel like a command center, not a spreadsheet.
+
+## 14. Orbital Navigation
+
+Orbital Navigation is the Home screen's navigation model. A central Shield Core acts as the visual focus, with large tappable orbital nodes around it representing main app areas.
+
+Suggested orbital nodes:
+
+- Core / Home.
+- Missions / Quests.
+- Build / Skills.
+- Hero / Character.
+- Battle / Boss.
+- Loot / Rewards.
+- Archive / Stats.
+
+Mobile-first rules:
+
+- Nodes must be large enough to tap comfortably on iPhone.
+- Avoid tiny circular buttons.
+- The layout can be a partial orbit, semi-circle, or responsive orbital grid.
+- The Core should remain the default focus.
+- If the full orbit is too crowded, prioritize 5 main nodes and move secondary pages into Archive or More.
+- Labels must stay readable.
+- Use lightweight CSS animations only.
+- Respect `prefers-reduced-motion`.
+
+Visual style:
+
+- Central blue/aqua Shield Core.
+- Glassmorphism orbital nodes.
+- Subtle blue connection lines.
+- Active node glow.
+- Tap pulse.
+- Slow ambient motion.
+- No heavy canvas/WebGL.
+
+Orbital Navigation should not conflict with the First Launch Discipline ritual. The first-launch ritual introduces the philosophy; the Abyss Command Center becomes the default Home experience after onboarding is complete.
+
+## 15. Page-by-Page Direction
 
 ### Home
 
-Home should feel like the command deck.
+Home should use the **Abyss Command Center** structure.
 
-- Show current level, XP, streak, daily focus, and quick quest progress.
-- Use one strong central progress module.
-- Surface the next meaningful action without clutter.
-- Include subtle ambient abyss background.
-- Keep daily check-in actions reachable with one thumb.
+- Use the central Shield Core as the main visual and interaction focus.
+- Surface level, XP, streak, today's main quest, seal status, and the Daily State placeholder in the Core Zone.
+- Show Growth Direction and Battle Direction as surrounding command areas, not separate dashboard blocks.
+- Use Orbital Navigation for main page movement when the layout can remain readable and tappable.
+- Keep the next meaningful action reachable with one thumb.
+- Avoid making Home feel like a generic productivity dashboard.
 
 ### Quests
 
@@ -329,13 +410,14 @@ Stats should feel like an analytics HUD.
 - Use color consistently by attribute.
 - Avoid chart clutter on mobile.
 
-## 14. Navigation Direction
+## 16. Navigation Direction
 
 Navigation should feel like moving between RPG HUD modules.
 
 Mobile-first direction:
 
-- Bottom navigation remains the primary structure.
+- Home should explore Orbital Navigation as the primary visual navigation model.
+- Bottom navigation can remain as a fallback, transitional pattern, or non-Home structure if the orbit becomes crowded.
 - Icons should be recognizable and consistent.
 - Active tab should glow with aqua or blue.
 - Avoid excessive labels or oversized nav items.
@@ -344,10 +426,10 @@ Mobile-first direction:
 
 Desktop or wider screens:
 
-- Bottom navigation can remain, or shift to a compact side/HUD rail later if needed.
+- Orbital Navigation can expand into a wider command layout, or secondary navigation can shift to a compact side/HUD rail later if needed.
 - The visual language should stay consistent across sizes.
 
-## 15. What Not To Do
+## 17. What Not To Do
 
 - Do not make the redesign childish, cartoonish, or toy-like.
 - Do not use generic cyberpunk styling as the main identity.
@@ -358,5 +440,8 @@ Desktop or wider screens:
 - Do not make decorative particles more important than app content.
 - Do not use cards inside cards.
 - Do not reduce readability for atmosphere.
+- Do not make Home feel like a normal dashboard or generic bottom-tab app shell.
+- Do not use tiny orbital buttons that are hard to tap on iPhone.
+- Do not use heavy canvas/WebGL effects for the Home orbit.
 - Do not change data behavior as part of visual redesign planning.
 - Do not add redesign implementation into this document phase.
