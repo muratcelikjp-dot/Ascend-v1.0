@@ -21,6 +21,15 @@ function fireImpactRing(){
   ring.classList.remove('fire');void ring.offsetWidth;ring.classList.add('fire');
 }
 
+function fireConstellationRipple(){
+  const gate=document.getElementById('screen-wrap');
+  const stage=document.getElementById('constellation-stage');
+  if(!gate||!stage) return;
+  gate.classList.remove('wave-fired');
+  void stage.offsetWidth;
+  gate.classList.add('wave-fired');
+}
+
 function spawnDamagePopup(damage,tapX,tapY){
   const wrap=document.getElementById('shield-wrap');
   const p=document.createElement('div');
@@ -91,6 +100,11 @@ function shakeShieldOnly(power){
 
 function spawnShards(count){
   const wrap=document.getElementById('screen-wrap');
+  const shield=document.getElementById('shield-wrap');
+  const wrapRect=wrap.getBoundingClientRect();
+  const shieldRect=shield.getBoundingClientRect();
+  const originX=shieldRect.left-wrapRect.left+shieldRect.width/2;
+  const originY=shieldRect.top-wrapRect.top+shieldRect.height/2;
   const cols=['rgba(0,229,255,0.85)','rgba(0,180,216,0.65)','rgba(0,100,140,0.5)','rgba(210,240,250,0.55)'];
   for(let i=0;i<count;i++){
     const s=document.createElement('div');s.className='shard';
@@ -107,7 +121,7 @@ function spawnShards(count){
       s.style.background=cols[Math.floor(Math.random()*cols.length)];
       s.style.borderRadius='1px';
     }
-    s.style.left='50%';s.style.top='44%';s.style.opacity='1';
+    s.style.left=originX+'px';s.style.top=originY+'px';s.style.opacity='1';
     s.style.transform='translate(-50%,-50%) rotate(0deg)';
     s.style.transition='transform '+(0.5+Math.random()*0.6).toFixed(2)+'s cubic-bezier(.15,.6,.4,1),opacity .45s '+(0.25+Math.random()*0.2).toFixed(2)+'s';
     wrap.appendChild(s);
@@ -124,11 +138,16 @@ function spawnShards(count){
 
 function spawnSparks(count){
   const wrap=document.getElementById('screen-wrap');
+  const shield=document.getElementById('shield-wrap');
+  const wrapRect=wrap.getBoundingClientRect();
+  const shieldRect=shield.getBoundingClientRect();
+  const originX=shieldRect.left-wrapRect.left+shieldRect.width/2;
+  const originY=shieldRect.top-wrapRect.top+shieldRect.height/2;
   for(let i=0;i<count;i++){
     const sp=document.createElement('div');sp.className='spark';
     const size=2+Math.random()*3;
     sp.style.width=size+'px';sp.style.height=size+'px';sp.style.background='#fff';
-    sp.style.left='50%';sp.style.top='44%';sp.style.opacity='1';
+    sp.style.left=originX+'px';sp.style.top=originY+'px';sp.style.opacity='1';
     sp.style.transform='translate(-50%,-50%)';
     sp.style.transition='transform .4s ease-out,opacity .4s ease-out';
     wrap.appendChild(sp);

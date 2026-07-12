@@ -1,5 +1,64 @@
 # Ascend UI Direction
 
+## 0. Shared App Identity
+
+Ascend is one app. Pages must never feel like separate themes, separate products, or unrelated experiments.
+
+Every screen should feel like a different module inside the same RPG self-improvement system:
+
+- Home is the command center.
+- Quests is the mission board.
+- Hero is the character sheet.
+- Boss is the battle screen.
+- Rewards is the armory / vault.
+- Stats is the analytics HUD.
+
+The shared direction is **Cyberpunk RPG Dashboard, restrained through Abyss UI**. This means the app can use neon, HUD panels, scan lines, attribute colors, progress bars, and game-like feedback, but it must stay mature, readable, calm, and usable every day.
+
+### Shared Visual Rules
+
+- Use one shared color system across all pages.
+- Use one card style: dark glass/HUD panels with subtle borders.
+- Use one badge/pill style for level, streak, XP, rank, status, and filters.
+- Use one progress bar language for XP, attributes, boss HP, and completion.
+- Use one icon style: Tabler icons where available.
+- Use compact mobile-first spacing.
+- Keep border radius consistent, generally small and controlled.
+- Keep page density readable; avoid turning screens into crowded dashboards.
+- Do not make each page its own theme.
+
+### Attribute Colors And Icons
+
+Attributes should use consistent colors and icons wherever they appear: quest cards, filters, hero stats, skill nodes, charts, and future summaries.
+
+- Intelligence: cyan / `ti-book`
+- Strength: green / `ti-run` or `ti-barbell`
+- Charisma: pink / `ti-messages`
+- Discipline: amber / `ti-clock`
+- Creativity: orange / `ti-palette`
+- Willpower: red / `ti-flame`
+
+If an attribute appears in a compact place, prefer icon + color first, then short text only when there is enough room.
+
+### Component Rules
+
+- Cards: use dark glass surfaces, thin borders, compact padding, and attribute accent lines where helpful.
+- Buttons: use clear icon + label when the action is important; use icon-only only when the meaning is familiar.
+- Badges: keep them small, readable, and consistent. Avoid large clusters.
+- Progress bars: use dark tracks, glowing fills, and clear nearby numbers.
+- Quest cards: should feel like RPG mission log entries, not generic todo cards.
+- Completed items: should settle into a calm cleared/locked state.
+- Filters: should reduce visual load, not add noise.
+
+### Future UI Change Rules
+
+- Improve one screen or component group at a time.
+- Preserve app behavior unless the task explicitly asks for behavior changes.
+- Keep mobile PWA layout and safe-area behavior in mind.
+- Avoid heavy animation or decorative effects that hurt repeated daily use.
+- Prefer progressive visual improvement over a full redesign.
+- Before changing multiple pages, define the shared component pattern first.
+
 ## 1. Visual Concept Name
 
 **Abyss UI**

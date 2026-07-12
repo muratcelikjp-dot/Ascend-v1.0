@@ -1,20 +1,10 @@
 GameLoop.bootstrapDay();
 let gs=GameState.get();
 
-// If the ritual is already done today (e.g. user reloaded the page after
-// breaking the seal), show a clear "already done" screen instead of
-// leaving the shield visible and tappable - previously the shield stayed
-// fully clickable even when already completed, which let a same-day
-// re-tap instantly "break" it again (HP was already 0) and silently
-// double-grant XP/skills/achievements/boss-damage a second time.
-if(Shield.isTodayAlreadyDone(gs)){
-  showAlreadyDoneScreen();
-}
-
-renderGreetingAndDate(gs);
-
 let hitCount=0;
 let broken=false;
+
+initializeHomeGate(gs);
 
 function hitShield(evt){
   if(broken) return;
@@ -24,8 +14,7 @@ function hitShield(evt){
   let hitResult;
   gs=GameState.set(state=>{ hitResult=Shield.applyHit(state,hitCount); });
 
-  updateHpBar();
-  spawnDamagePopup(hitResult.damage,evt?evt.clientX:null,evt?evt.clientY:null);
+  updateHpBar(gs);
   shakeShieldOnly(6+hitCount*2);
   shakeScreen(Math.min(hitCount,6));
   fireImpactRing();
@@ -42,18 +31,16 @@ function hitShield(evt){
 
   if(hitResult.broken){
     broken=true;
-    document.getElementById('hint').classList.remove('blinking');
-    document.getElementById('hint').style.opacity='0';
+    let ritualResult;
+    gs=GameState.set(state=>{ ritualResult=Shield.completeRitual(state); });
+
+    showBrokenScreenShell();
     flashScreen();
     shakeScreen(9);
     vibrate([0,50,40,50,40,120]);
     setTimeout(()=>{ spawnShards(30); spawnSparks(22); },80);
-    setTimeout(()=>{
-      showBrokenScreenShell();
-
-      let ritualResult;
-      gs=GameState.set(state=>{ ritualResult=Shield.completeRitual(state); });
-      showBrokenResultScreen(ritualResult);
-    },420);
+    setTimeout(()=>showBrokenResultScreen(ritualResult),260);
   }
 }
+
+if(typeof window!=="undefined") window.hitShield=hitShield;

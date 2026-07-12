@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#00E5FF">
 <meta name="mobile-web-app-capable" content="yes">
@@ -18,7 +18,7 @@
 :root{--ab:#020D18;--ab2:#04192E;--ab3:#071F38;--neon:#00E5FF;--oc:#00B4D8;--ocd:#005F87;--bd:rgba(0,180,216,0.18);--bd2:rgba(0,180,216,0.36);--tx:#C8EAF5;--txd:#4A7A90;--txm:#7BAFC8;--am:#EF9F27;--gr:#1D9E75;--re:#E24B4A}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--ab);display:flex;justify-content:center}
 .app{max-width:390px;width:100%;background:var(--ab);min-height:100vh;padding-bottom:72px}
-.banner{background:var(--ab2);border-bottom:1px solid var(--bd);padding:14px 16px;position:relative;overflow:hidden}
+.banner{background:var(--ab2);border-bottom:1px solid var(--bd);padding:12px 16px;position:relative;overflow:hidden}
 .scan{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--neon),transparent);animation:sc 3s linear infinite;opacity:.22;pointer-events:none}
 @keyframes sc{0%{top:0}100%{top:110%}}
 .bn-row{display:flex;align-items:center;gap:12px}
@@ -38,8 +38,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .seal-txt{font-size:11px;color:#5DCAA5;text-transform:uppercase;letter-spacing:.06em}
 .seal-xp{margin-left:auto;font-size:11px;color:#5DCAA5;font-weight:500}
 .stats-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--bd);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)}
-.s-cell{background:var(--ab2);padding:10px 8px;text-align:center}
-.s-num{font-size:18px;font-weight:500;color:var(--tx)}
+.s-cell{background:var(--ab2);padding:8px;text-align:center}
+.s-num{font-size:16px;font-weight:500;color:var(--tx)}
 .s-lbl{font-size:9px;color:var(--txd);margin-top:2px;text-transform:uppercase;letter-spacing:.07em}
 .lvlup{background:rgba(0,229,255,.05);border-bottom:1px solid rgba(0,229,255,.18);padding:8px 16px;display:flex;align-items:center;gap:10px;max-height:0;overflow:hidden;opacity:0;transition:max-height .4s,opacity .4s}
 
@@ -56,13 +56,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .lvlup.show{max-height:44px;opacity:1}
 .lu-txt{font-size:11px;font-weight:500;color:var(--neon);text-transform:uppercase;letter-spacing:.07em}
 .lu-sub{font-size:10px;color:var(--txd);margin-top:1px}
-.sec-bar{display:flex;align-items:center;justify-content:space-between;padding:11px 16px 7px}
-.sec-title{font-size:10px;color:var(--txd);text-transform:uppercase;letter-spacing:.1em}
+.sec-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 8px}
+.sec-title{font-size:10px;color:var(--txm);text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:6px}
+.sec-title i{font-size:13px;color:var(--neon)}
 .sec-badge{font-size:10px;color:var(--neon);background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.18);padding:2px 8px;border-radius:2px;letter-spacing:.05em}
-.filters{display:flex;gap:5px;padding:0 16px 9px;overflow-x:auto}
+.filters{display:flex;gap:6px;padding:0 16px 10px;overflow-x:auto}
 .filters::-webkit-scrollbar{display:none}
-.fb{padding:4px 11px;border-radius:2px;border:1px solid var(--bd);background:transparent;font-size:10px;color:var(--txd);cursor:pointer;white-space:nowrap;text-transform:uppercase;letter-spacing:.07em;transition:all .15s;flex-shrink:0}
-.fb.on{background:rgba(0,180,216,.12);border-color:var(--oc);color:var(--neon)}
+.fb{min-height:28px;padding:4px 9px;border-radius:2px;border:1px solid var(--bd);background:transparent;font-size:10px;color:var(--txd);cursor:pointer;white-space:nowrap;text-transform:uppercase;letter-spacing:.07em;transition:all .15s;flex-shrink:0;display:flex;align-items:center;gap:5px}
+.fb i{font-size:12px;color:var(--filter-color,var(--txd));opacity:.72}
+.fb.on{background:var(--filter-bg,rgba(0,180,216,.12));border-color:var(--filter-border,var(--oc));color:var(--filter-color,var(--neon))}
+.fb.on i{opacity:1}
 .qlist{padding:0 16px;display:flex;flex-direction:column;gap:7px}
 .qc-wrap{position:relative;border-radius:4px;overflow:hidden}
 .qc-swipe-bg{position:absolute;inset:0;display:flex;align-items:center;border-radius:4px}
@@ -71,27 +74,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .qc-swipe-bg i{font-size:20px}
 .qc-swipe-bg.complete-bg i{color:#5DCAA5}
 .qc-swipe-bg.delete-bg i{color:#F09595}
-.qc{background:var(--ab2);border:1px solid var(--bd);border-radius:4px;padding:13px 13px 13px 15px;cursor:pointer;transition:border-color .15s,background .15s,transform .25s ease,opacity .25s ease;position:relative;overflow:hidden;touch-action:pan-y}
+.qc{background:var(--ab2);border:1px solid var(--bd);border-radius:4px;padding:12px 12px 12px 14px;cursor:pointer;transition:border-color .15s,background .15s,transform .25s ease,opacity .25s ease;position:relative;overflow:hidden;touch-action:pan-y;box-shadow:inset 0 1px rgba(200,234,245,.025)}
 .qc.swiping{transition:none}
 .qc:active{transform:scale(.98)}
 .qc:hover{border-color:var(--bd2);background:var(--ab3)}
-.qc.done{opacity:.4;cursor:default}
+.qc.done{opacity:.52;cursor:default}
 .qc.done:hover{border-color:var(--bd);background:var(--ab2)}
 .qc.done:active{transform:none}
 .qc.done .qt{text-decoration:line-through}
-.qc-accent{position:absolute;left:0;top:0;bottom:0;width:2px}
+.qc-accent{position:absolute;left:0;top:0;bottom:0;width:3px}
 .qc-top{display:flex;align-items:flex-start;gap:10px}
 .qchk{width:19px;height:19px;border-radius:2px;border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .2s;color:transparent;font-size:11px}
 .qc.done .qchk{background:var(--oc);border-color:var(--oc);color:var(--ab)}
 .qbody{flex:1;min-width:0}
-.qt{font-size:13px;color:var(--tx);line-height:1.4}
+.qt{font-size:13px;font-weight:500;color:var(--tx);line-height:1.4}
 .qmeta{display:flex;align-items:center;gap:5px;margin-top:6px;flex-wrap:wrap}
-.qattr{font-size:10px;padding:2px 7px;border-radius:2px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;display:flex;align-items:center;gap:3px}
-.qattr i{font-size:11px}
-.qdiff{font-size:10px;color:var(--txd);text-transform:uppercase;letter-spacing:.05em}
+.qattr{font-size:10px;padding:3px 7px;border-radius:2px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;display:flex;align-items:center;gap:4px}
+.qattr i{font-size:13px}
+.qdiff{font-size:9px;color:var(--txd);text-transform:uppercase;letter-spacing:.05em;padding:2px 5px;border:1px solid var(--bd);border-radius:2px}
 .qxp{font-size:11px;font-weight:500;color:var(--neon);background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.16);padding:2px 7px;border-radius:2px;margin-left:auto;letter-spacing:.04em}
 .qc.done .qxp{color:var(--txd);background:transparent;border-color:var(--bd)}
-.qability{font-size:10px;color:var(--txd);margin-top:6px;padding-left:29px;font-style:italic;line-height:1.45}
+.qability{font-size:10px;color:var(--txd);margin-top:5px;font-style:italic;line-height:1.4}
 .xp-pop{position:relative;z-index:5;font-size:11px;font-weight:500;color:var(--neon);pointer-events:none;opacity:0;transition:opacity .3s,transform .6s ease-out;text-transform:uppercase;letter-spacing:.06em}
 .all-done{margin:14px 16px 0;background:var(--ab2);border:1px solid rgba(29,158,117,.22);border-radius:4px;padding:22px;text-align:center;display:none}
 .all-done i{font-size:26px;color:var(--gr);margin-bottom:8px;display:block}
@@ -144,6 +147,42 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .m-cancel{flex:1;padding:10px;border:1px solid var(--bd);border-radius:2px;background:transparent;font-size:10px;cursor:pointer;color:var(--txd);text-transform:uppercase;letter-spacing:.07em}
 .m-ok{flex:2;padding:10px;border:none;background:var(--oc);border-radius:2px;color:var(--ab);font-size:10px;font-weight:500;cursor:pointer;text-transform:uppercase;letter-spacing:.07em;transition:background .15s}
 .m-ok:hover{background:var(--neon)}
+
+/* Abyss Mission Control */
+:root{color-scheme:dark;--abyss-black:#020713;--abyss-deep:#071326;--abyss-ocean:#091B2F;--abyss-rift:#0B2744;--abyss-blue:#2F9DFF;--abyss-aqua:#35F4E6;--abyss-cyan:#8DEFFF;--abyss-purple:#8B5CF6;--abyss-gold:#F7C948;--abyss-green:#41E6A4;--abyss-coral:#FF5C7A;--abyss-text:#EAF8FF;--abyss-soft:#A7C7D9;--abyss-muted:#6F8EA3;--abyss-border:rgba(141,239,255,.18);--abyss-active:rgba(53,244,230,.5);--ab:var(--abyss-black);--ab2:var(--abyss-deep);--ab3:var(--abyss-ocean);--neon:var(--abyss-aqua);--oc:var(--abyss-blue);--bd:var(--abyss-border);--bd2:rgba(141,239,255,.34);--tx:var(--abyss-text);--txd:var(--abyss-muted);--txm:var(--abyss-soft);--am:var(--abyss-gold);--gr:var(--abyss-green);--re:var(--abyss-coral)}
+html{background:var(--abyss-black);overscroll-behavior:none}
+body{min-height:100vh;color:var(--abyss-text);background:linear-gradient(180deg,var(--abyss-black),var(--abyss-deep) 58%,var(--abyss-black)),linear-gradient(140deg,rgba(47,157,255,.12),transparent 42%,rgba(139,92,246,.1))}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(115deg,rgba(141,239,255,.035) 0 1px,transparent 1px 82px),linear-gradient(160deg,rgba(53,244,230,.07),transparent 34%,rgba(139,92,246,.07) 72%,transparent);opacity:.8}
+.quest-board-shell{position:relative;isolation:isolate;min-height:100vh;padding:calc(18px + env(safe-area-inset-top,0px)) 16px calc(104px + env(safe-area-inset-bottom,0px));overflow:hidden;background:linear-gradient(180deg,rgba(2,7,19,.96),rgba(7,19,38,.92) 48%,rgba(2,7,19,.98)),linear-gradient(140deg,rgba(47,157,255,.08),transparent 42%,rgba(139,92,246,.08))}
+.quest-board-shell::before{content:"";position:absolute;inset:0;z-index:-2;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(53,244,230,.05),transparent),repeating-linear-gradient(0deg,transparent 0 21px,rgba(141,239,255,.025) 22px 23px)}
+.quest-board-shell::after{content:"";position:absolute;z-index:-1;width:270px;height:270px;top:88px;right:-150px;border:1px solid rgba(53,244,230,.08);border-radius:50%;box-shadow:0 0 70px rgba(47,157,255,.12),inset 0 0 70px rgba(139,92,246,.06);pointer-events:none}
+.quest-board-shell>.banner,.quest-board-shell>.seal-bar,.quest-board-shell>.stats-row,.quest-board-shell>.sec-bar{display:none}
+.mission-header{position:relative;margin-bottom:12px}
+.mission-header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:linear-gradient(90deg,var(--abyss-aqua),rgba(47,157,255,.28),transparent)}
+.mission-header-top{display:flex;align-items:center;gap:11px;padding-bottom:14px}
+.mission-mark{width:44px;height:44px;flex:0 0 44px;display:flex;align-items:center;justify-content:center;color:var(--abyss-aqua);text-decoration:none;border:1px solid var(--abyss-active);border-radius:8px;background:linear-gradient(180deg,rgba(13,38,64,.86),rgba(10,28,48,.58));box-shadow:0 0 26px rgba(53,244,230,.13),inset 0 1px rgba(255,255,255,.06)}
+.mission-mark i{font-size:22px}
+.mission-heading{min-width:0}.mission-kicker{font-size:9px;color:var(--abyss-aqua);text-transform:uppercase;letter-spacing:.15em}.mission-heading h1{font-size:22px;line-height:1.1;margin-top:3px;font-weight:650;letter-spacing:0;color:var(--abyss-text)}.mission-heading p{font-size:10px;color:var(--abyss-muted);margin-top:3px;letter-spacing:.04em}
+.mission-status{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:5px}.status-pill{min-height:23px;display:flex;align-items:center;gap:5px;padding:3px 8px;border:1px solid var(--abyss-border);border-radius:999px;background:rgba(10,28,48,.62);font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}.status-pill.level{color:var(--abyss-cyan);border-color:rgba(53,244,230,.34)}.status-pill.streak{color:var(--abyss-gold);border-color:rgba(247,201,72,.3)}
+.player-rank-line{display:flex;justify-content:space-between;align-items:center;padding:8px 2px 10px;gap:10px}.player-rank-label{font-size:9px;color:var(--abyss-muted);text-transform:uppercase;letter-spacing:.12em}.player-rank-value{font-size:10px;color:var(--abyss-soft);text-transform:uppercase;letter-spacing:.08em;text-align:right}
+.mission-header .xp-wrap{margin:0 0 12px}.mission-header .xp-lbl{color:var(--abyss-muted);margin-bottom:6px}.mission-header .xp-lbl span:last-child{color:var(--abyss-cyan)}.mission-header .xp-track{height:7px;border:1px solid rgba(141,239,255,.16);border-radius:999px;background:rgba(2,7,19,.72);overflow:hidden;box-shadow:inset 0 0 10px rgba(0,0,0,.34)}.mission-header .xp-fill{border-radius:inherit;background:linear-gradient(90deg,var(--abyss-blue),var(--abyss-aqua));box-shadow:0 0 16px rgba(53,244,230,.34)}
+.daily-hud{position:relative;overflow:hidden;border:1px solid var(--abyss-border);border-radius:8px;padding:13px;margin-bottom:15px;background:linear-gradient(180deg,rgba(13,38,64,.76),rgba(10,28,48,.52));box-shadow:0 18px 45px rgba(0,0,0,.24),0 0 30px rgba(47,157,255,.12);-webkit-backdrop-filter:blur(10px) saturate(130%);backdrop-filter:blur(10px) saturate(130%)}
+.daily-hud::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.07),transparent 24%)}.hud-top{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px}.hud-title{display:flex;align-items:center;gap:7px;color:var(--abyss-soft);font-size:9px;text-transform:uppercase;letter-spacing:.12em}.hud-title i{font-size:14px;color:var(--abyss-aqua)}
+.daily-hud .sec-badge{border-radius:999px;min-height:23px;display:flex;align-items:center;padding:3px 9px;background:rgba(53,244,230,.08);border-color:rgba(53,244,230,.28)}.daily-hud .stats-row{position:relative;margin-top:12px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;background:transparent;border:0}.daily-hud .s-cell{padding:5px 8px;background:transparent;border-right:1px solid var(--abyss-border)}.daily-hud .s-cell:last-child{border-right:0}.daily-hud .s-num{font-size:19px;color:var(--abyss-text)}.daily-hud .s-lbl{color:var(--abyss-muted)}
+.mission-progress{position:relative;margin-top:11px;height:6px;border:1px solid rgba(141,239,255,.15);border-radius:999px;background:rgba(2,7,19,.72);overflow:hidden}.mission-progress-fill{height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,var(--abyss-blue),var(--abyss-aqua));box-shadow:0 0 14px rgba(53,244,230,.3);transition:width .45s ease}
+.daily-hud .seal-bar{position:relative;margin-top:11px;padding:9px 0 0;background:transparent;border:0;border-top:1px solid var(--abyss-border);gap:8px}.daily-hud .seal-ico{width:28px;height:28px;border-radius:6px;background:rgba(65,230,164,.08);border-color:rgba(65,230,164,.28)}.daily-hud .seal-ico i{color:var(--abyss-green)}.daily-hud .seal-txt{font-size:9px;color:var(--abyss-green);line-height:1.35}.daily-hud .seal-xp{font-size:10px;color:var(--abyss-green);white-space:nowrap}
+.lvlup{margin:0 0 12px;border:1px solid transparent;border-radius:6px;padding-left:12px;padding-right:12px}.lvlup.show{max-height:52px;border-color:rgba(53,244,230,.2)}
+.mission-section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:0 1px 10px}.mission-section-kicker{display:flex;align-items:center;gap:7px;font-size:9px;color:var(--abyss-aqua);text-transform:uppercase;letter-spacing:.14em}.mission-section-kicker i{font-size:15px}.mission-section-title{margin-top:4px;font-size:17px;font-weight:600;color:var(--abyss-text);letter-spacing:0}.mission-section-count{font-size:9px;color:var(--abyss-muted);text-transform:uppercase;letter-spacing:.08em;padding-bottom:2px}
+.filters{margin:0 -16px 12px;padding:0 16px;gap:6px;overflow-x:auto;scrollbar-width:none}.fb{height:36px;min-height:36px;min-width:36px;padding:0 10px;justify-content:center;border-radius:6px;background:rgba(10,28,48,.52);border-color:var(--abyss-border);box-shadow:inset 0 1px rgba(255,255,255,.025)}.fb i{font-size:16px}.fb span{display:none}.fb.on{padding-left:11px;padding-right:12px;box-shadow:0 0 18px rgba(53,244,230,.14)}.fb.on span{display:inline}
+.qlist{padding:0;gap:9px}.qc-wrap{border-radius:8px}.qc-swipe-bg{border-radius:8px}.qc{border-radius:8px;padding:14px;background:linear-gradient(180deg,rgba(13,38,64,.72),rgba(7,19,38,.68));border-color:var(--abyss-border);box-shadow:0 13px 32px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.04)}.qc::after{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(141,239,255,.2),transparent)}.qc:hover{background:linear-gradient(180deg,rgba(15,44,74,.78),rgba(8,24,43,.72));border-color:rgba(141,239,255,.32)}.qc-accent{width:3px;top:9px;bottom:9px;border-radius:0 4px 4px 0}
+.qc.featured{padding-top:38px;border-color:rgba(53,244,230,.36);box-shadow:0 17px 42px rgba(0,0,0,.28),0 0 26px rgba(53,244,230,.1),inset 0 1px rgba(255,255,255,.05)}.priority-label{display:none;position:absolute;left:14px;top:12px;align-items:center;gap:6px;color:var(--abyss-aqua);font-size:8px;font-weight:600;text-transform:uppercase;letter-spacing:.14em}.priority-label i{font-size:12px}.qc.featured .priority-label{display:flex}
+.qc-top{align-items:center;gap:11px}.qmission-icon{width:38px;height:38px;flex:0 0 38px;border:1px solid;border-radius:7px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 18px rgba(47,157,255,.08)}.qmission-icon i{font-size:19px}.qbody{min-width:0}.qt{font-size:13px;font-weight:600;line-height:1.35}.qmeta{margin-top:7px;gap:6px}.qattr{padding:2px 6px;background:transparent!important;border-radius:999px;font-size:8px}.qattr i{display:none}.qdiff{border-radius:999px;padding:2px 6px;font-size:8px}.qxp{border-radius:999px;padding:3px 7px;font-size:9px;color:var(--abyss-cyan);background:rgba(47,157,255,.08);border-color:rgba(141,239,255,.18)}.qchk{order:3;width:24px;height:24px;flex:0 0 24px;border-radius:50%;margin:0;border-color:rgba(141,239,255,.35)}.qc.done{opacity:.58;background:rgba(7,19,38,.52);box-shadow:none}.qc.done .qchk{background:rgba(65,230,164,.9);border-color:var(--abyss-green)}.qability{display:none;margin:8px 0 0;color:var(--abyss-muted);font-size:9px;font-style:normal}.qc.featured .qability{display:block}
+.quest-empty{border:1px dashed rgba(141,239,255,.2);border-radius:8px;padding:28px 20px;text-align:center;background:rgba(7,19,38,.34)}.quest-empty i{display:block;font-size:27px;color:var(--abyss-aqua);margin-bottom:9px}.quest-empty strong{display:block;font-size:12px;color:var(--abyss-soft);text-transform:uppercase;letter-spacing:.08em}.quest-empty span{display:block;margin-top:5px;font-size:10px;color:var(--abyss-muted);line-height:1.45}.all-done{margin:11px 0 0;border-radius:8px;background:rgba(65,230,164,.05);border-color:rgba(65,230,164,.22)}
+.quest-actions{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:8px;margin-top:12px}.quest-actions .add-btn{margin:0;width:100%;min-height:44px;border-radius:6px;font-weight:600}.add-btn.primary-action{color:var(--abyss-black);border:1px solid rgba(141,239,255,.62);background:linear-gradient(90deg,var(--abyss-blue),var(--abyss-aqua));box-shadow:0 0 22px rgba(53,244,230,.16)}.add-btn.primary-action:hover{background:linear-gradient(90deg,var(--abyss-aqua),var(--abyss-cyan))}.add-btn.secondary-action{border-style:solid;background:rgba(10,28,48,.48);color:var(--abyss-soft)}
+.report-banner{margin:0 0 12px;border-radius:8px;background:linear-gradient(180deg,rgba(34,31,49,.74),rgba(10,28,48,.58));border-color:rgba(247,201,72,.26)}
+.nav{width:min(390px,100%);padding:9px 8px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(7,19,38,.88);border-color:var(--abyss-border);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 -16px 36px rgba(0,0,0,.28)}.ni{min-width:56px;padding:5px 4px;border-radius:6px}.ni i{font-size:20px;color:var(--abyss-muted)}.ni.on{background:rgba(53,244,230,.06)}.ni.on i,.ni.on span{color:var(--abyss-aqua)}.ni span{font-size:8px;color:var(--abyss-muted)}
+.modal{background:linear-gradient(180deg,rgba(13,38,64,.98),var(--abyss-deep));border-color:var(--abyss-active);border-radius:10px 10px 0 0}.modal-overlay{background:rgba(2,7,19,.82);-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px)}.m-input{border-radius:6px;background:rgba(2,7,19,.62)}.do,.co,.m-cancel,.m-ok{border-radius:6px}.m-ok{background:linear-gradient(90deg,var(--abyss-blue),var(--abyss-aqua))}
+@media(max-width:360px){.quest-board-shell{padding-left:13px;padding-right:13px}.mission-heading h1{font-size:20px}.mission-heading p{display:none}.status-pill{padding-left:7px;padding-right:7px}.quest-actions{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -160,7 +199,46 @@ window.addEventListener('error', function(e){
 });
 </script>
 
-<div class="app">
+<div class="app quest-board-shell">
+  <header class="mission-header">
+    <div class="mission-header-top">
+      <a class="mission-mark" href="index.html" aria-label="Return to command center"><i class="ti ti-radar-2"></i></a>
+      <div class="mission-heading">
+        <div class="mission-kicker">Mission control</div>
+        <h1>Quest Board</h1>
+        <p>Deploy effort. Build your character.</p>
+      </div>
+      <div class="mission-status">
+        <div class="status-pill level" id="mission-h-lvl">LVL 04</div>
+        <div class="status-pill streak"><i class="ti ti-flame"></i><span id="mission-h-streak">0-day streak</span></div>
+      </div>
+    </div>
+    <div class="player-rank-line">
+      <span class="player-rank-label">Current class</span>
+      <strong class="player-rank-value" id="mission-h-class">Coder Apprentice</strong>
+    </div>
+    <div class="xp-wrap">
+      <div class="xp-lbl"><span>Experience</span><span id="mission-xp-txt">375 / 500</span></div>
+      <div class="xp-track"><div class="xp-fill" id="mission-xp-fill" style="width:75%"></div></div>
+    </div>
+  </header>
+  <section class="daily-hud">
+    <div class="hud-top">
+      <div class="hud-title"><i class="ti ti-activity-heartbeat"></i><span>Daily operation</span></div>
+      <span class="sec-badge" id="mission-prog">0 / 5 done</span>
+    </div>
+    <div class="stats-row">
+      <div class="s-cell"><div class="s-num" id="mission-s-done">0</div><div class="s-lbl">Cleared</div></div>
+      <div class="s-cell"><div class="s-num" id="mission-s-xp">375</div><div class="s-lbl">Total XP</div></div>
+      <div class="s-cell"><div class="s-num" id="mission-s-left">5</div><div class="s-lbl">Remaining</div></div>
+    </div>
+    <div class="mission-progress"><div class="mission-progress-fill" id="mission-progress-fill"></div></div>
+    <div class="seal-bar">
+      <div class="seal-ico"><i class="ti ti-shield-check"></i></div>
+      <div class="seal-txt" id="mission-seal-reward-text">Seal broken</div>
+      <div class="seal-xp" id="mission-seal-reward-xp"></div>
+    </div>
+  </section>
   <div class="banner">
     <div class="scan"></div>
     <div class="bn-row">
@@ -190,7 +268,14 @@ window.addEventListener('error', function(e){
     <i class="ti ti-trophy" style="font-size:15px;color:#00E5FF"></i>
     <div><div class="lu-txt" id="lu-txt">Level 5 reached</div><div class="lu-sub">New perks available in skill tree</div></div>
   </div>
-  <div class="sec-bar"><span class="sec-title">Today's quests</span><span class="sec-badge" id="prog">0 / 5 done</span></div>
+  <div class="sec-bar"><span class="sec-title"><i class="ti ti-target-arrow"></i>Today's quests</span><span class="sec-badge" id="prog">0 / 5 done</span></div>
+  <div class="mission-section-head">
+    <div>
+      <div class="mission-section-kicker"><i class="ti ti-target-arrow"></i>Today's directives</div>
+      <div class="mission-section-title">Mission Queue</div>
+    </div>
+    <div class="mission-section-count">Tap to clear</div>
+  </div>
   <div class="filters" id="filters"></div>
   <div class="qlist" id="qlist"></div>
   <div class="all-done" id="all-done">
@@ -199,8 +284,10 @@ window.addEventListener('error', function(e){
     <div class="ad-sub">Rest, warrior. A new seal awaits tomorrow.</div>
   </div>
   <div id="day-report-banner"></div>
-  <button class="add-btn" onclick="openModal()"><i class="ti ti-plus"></i> New quest</button>
-  <button class="add-btn" onclick="window.location.href='plan.html'" style="margin-top:7px"><i class="ti ti-calendar-event"></i> Plan tomorrow</button>
+  <div class="quest-actions">
+    <button class="add-btn primary-action" onclick="openModal()"><i class="ti ti-plus"></i> New quest</button>
+    <button class="add-btn secondary-action" onclick="window.location.href='plan.html'"><i class="ti ti-calendar-event"></i> Plan tomorrow</button>
+  </div>
 </div>
 
 <nav class="nav">
@@ -321,22 +408,34 @@ function renderHeader(){
   document.getElementById('h-class').textContent=Ranks.getRankForLevel(gs.level).toUpperCase();
   document.getElementById('h-streak').textContent=gs.streak+'-day streak';
   document.getElementById('s-xp').textContent=gs.lifetimeXp;
+  document.getElementById('mission-xp-fill').style.width=pct+'%';
+  document.getElementById('mission-xp-txt').textContent=progress.xpIntoLevel+' / '+progress.xpNeededForLevel;
+  document.getElementById('mission-h-lvl').textContent='LVL '+String(gs.level).padStart(2,'0');
+  document.getElementById('mission-h-class').textContent=Ranks.getRankForLevel(gs.level).toUpperCase();
+  document.getElementById('mission-h-streak').textContent=gs.streak+'-day streak';
+  document.getElementById('mission-s-xp').textContent=gs.lifetimeXp;
   renderSealReward();
 }
 function renderSealReward(){
   const reward=Shield.getRewardPreview(gs);
   document.getElementById('seal-reward-text').textContent='Seal broken - willpower +'+reward.willpowerXp+' - streak +'+reward.streakBonusXp;
   document.getElementById('seal-reward-xp').textContent='+'+reward.totalXp+' XP';
+  document.getElementById('mission-seal-reward-text').textContent='Seal reward - willpower +'+reward.willpowerXp+' - streak +'+reward.streakBonusXp;
+  document.getElementById('mission-seal-reward-xp').textContent='+'+reward.totalXp+' XP';
 }
 function renderFilters(){
-  const items=[{id:'all',label:'All'},...ATTRS.map(a=>({id:a.id,label:a.label}))];
-  document.getElementById('filters').innerHTML=items.map(f=>`<button class="fb${st.filter===f.id?' on':''}" onclick="setF('${f.id}')">${f.label}</button>`).join('');
+  const items=[{id:'all',label:'All',icon:'ti-layout-grid',col:'#00E5FF',bg:'rgba(0,229,255,.1)',bd:'rgba(0,229,255,.3)'},...ATTRS];
+  document.getElementById('filters').innerHTML=items.map(f=>`<button class="fb${st.filter===f.id?' on':''}" style="--filter-color:${f.col};--filter-bg:${f.bg};--filter-border:${f.bd}" onclick="setF('${f.id}')" aria-label="${f.label}" title="${f.label}"><i class="ti ${f.icon}"></i><span>${f.label}</span></button>`).join('');
 }
 function setF(id){st.filter=id;renderFilters();renderQuests()}
 function renderQuests(){
   const tasks=gs.quests.active;
   const vis=st.filter==='all'?tasks:tasks.filter(t=>ATTR_ID_REVERSE[t.attribute]===st.filter);
   const list=document.getElementById('qlist');list.innerHTML='';
+  const priorityQuest=tasks.find(t=>!t.done);
+  if(vis.length===0){
+    list.innerHTML=`<div class="quest-empty"><i class="ti ti-radar-off"></i><strong>${tasks.length?'No matching missions':'No missions deployed'}</strong><span>${tasks.length?'Switch attribute channels to find another directive.':'Create a quest when you are ready to move your character forward.'}</span></div>`;
+  }
   vis.forEach(t=>{
     const a=aById(ATTR_ID_REVERSE[t.attribute]||'intel');
     const wrap=document.createElement('div');
@@ -345,10 +444,11 @@ function renderQuests(){
       <div class="qc-swipe-bg complete-bg"><i class="ti ti-check"></i></div>
       <div class="qc-swipe-bg delete-bg"><i class="ti ti-trash"></i></div>`;
     const c=document.createElement('div');
-    c.className='qc'+(t.done?' done':'');
-    c.innerHTML=`<div class="qc-accent" style="background:${a.col}"></div>
+    c.className='qc'+(t.done?' done':'')+(priorityQuest&&t.id===priorityQuest.id?' featured':'');
+    c.innerHTML=`<div class="qc-accent" style="background:${a.col};box-shadow:0 0 8px ${a.col}"></div>
+      <div class="priority-label"><i class="ti ti-bolt"></i>Priority mission</div>
       <div class="qc-top">
-        <div class="qchk">${t.done?'<i class="ti ti-check"></i>':''}</div>
+        <div class="qmission-icon" style="color:${a.col};background:${a.bg};border-color:${a.bd}"><i class="ti ${a.icon}"></i></div>
         <div class="qbody">
           <div class="qt">${t.title}</div>
           <div class="qmeta">
@@ -357,6 +457,7 @@ function renderQuests(){
           </div>
           <div class="qability">${a.ability}</div>
         </div>
+        <div class="qchk">${t.done?'<i class="ti ti-check"></i>':''}</div>
       </div>`;
     if(!t.done) c.onclick=()=>toggle(t.id,c);
     wrap.appendChild(c);
@@ -367,6 +468,10 @@ function renderQuests(){
   document.getElementById('s-done').textContent=done;
   document.getElementById('s-left').textContent=left;
   document.getElementById('prog').textContent=done+' / '+tasks.length+' done';
+  document.getElementById('mission-s-done').textContent=done;
+  document.getElementById('mission-s-left').textContent=left;
+  document.getElementById('mission-prog').textContent=done+' / '+tasks.length+' done';
+  document.getElementById('mission-progress-fill').style.width=(tasks.length?Math.round((done/tasks.length)*100):0)+'%';
   document.getElementById('all-done').style.display=(left===0&&tasks.length>0)?'block':'none';
 }
 function vibrate(pattern){
