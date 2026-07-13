@@ -1,7 +1,13 @@
 const GameState = (function () {
   const STORAGE_KEY = "rpg_state";
   const CORRUPT_BACKUP_PREFIX = STORAGE_KEY + "_corrupt_backup_";
+  const ATTRIBUTE_SCHEMA_VERSION = 2;
   let subscribers = [];
+
+  const LEGACY_ATTRIBUTE_MAP = {
+    discipline: { target: "willpower", tag: "discipline" },
+    creativity: { target: "intelligence", tag: "creativity" }
+  };
 
   function deepClone(obj) {
     return JSON.parse(JSON.stringify(obj));
@@ -14,21 +20,91 @@ const GameState = (function () {
     return fresh;
   }
 
-  function migrateIfNeeded(state) {
-    if (!state.version || state.version < SEED_DATA.defaultState.version) {
-      state.version = SEED_DATA.defaultState.version;
+  function remapAttributeId(attributeId) {
+    const mapping = LEGACY_ATTRIBUTE_MAP[attributeId];
+    return mapping ? mapping.target : attributeId;
+  }
+
+  function migrateQuest(quest) {
+    if (!quest || typeof quest !== "object") return;
+    const mapping = LEGACY_ATTRIBUTE_MAP[quest.attribute];
+    const tags = Array.isArray(quest.tags) ? quest.tags.slice() : [];
+
+    if (mapping) {
+      quest.attribute = mapping.target;
+      tags.push(mapping.tag);
     }
+
+    quest.tags = [...new Set(tags)];
+  }
+
+  function mergeLegacyAttribute(state, sourceId, targetId) {
+    const source = state.attributes[sourceId];
+    if (!source) return;
+
+    if (!state.attributes[targetId]) {
+      state.attributes[targetId] = deepClone(SEED_DATA.defaultState.attributes[targetId]);
+    }
+
+    const target = state.attributes[targetId];
+    target.xp = (Number(target.xp) || 0) + (Number(source.xp) || 0);
+    target.lifetimeXp = (Number(target.lifetimeXp) || 0) + (Number(source.lifetimeXp) || 0);
+    target.level = Leveling.progressWithinLevel(target.xp).level;
+    delete state.attributes[sourceId];
+  }
+
+  function migrateFourAttributeModel(state) {
+    if (!state.attributes) state.attributes = deepClone(SEED_DATA.defaultState.attributes);
+
+    mergeLegacyAttribute(state, "discipline", "willpower");
+    mergeLegacyAttribute(state, "creativity", "intelligence");
+
+    if (state.quests && Array.isArray(state.quests.active)) {
+      state.quests.active.forEach(migrateQuest);
+    }
+
+    if (state.planning) {
+      state.planning.tomorrowTargetAttribute = remapAttributeId(state.planning.tomorrowTargetAttribute);
+      state.planning._activeTargetAttribute = remapAttributeId(state.planning._activeTargetAttribute);
+
+      Object.values(state.planning.dayReports || {}).forEach(report => {
+        if (report) report.targetAttribute = remapAttributeId(report.targetAttribute);
+      });
+    }
+
+    Object.values(state.dailyLog || {}).forEach(log => {
+      if (!log || !log.attributeXp) return;
+      const attributeXp = log.attributeXp;
+      attributeXp.willpower = (attributeXp.willpower || 0) + (attributeXp.discipline || 0);
+      attributeXp.intelligence = (attributeXp.intelligence || 0) + (attributeXp.creativity || 0);
+      delete attributeXp.discipline;
+      delete attributeXp.creativity;
+    });
+
+    if (!state.skills) state.skills = { unlocked: [], legacyUnlocked: [] };
+    if (!Array.isArray(state.skills.unlocked)) state.skills.unlocked = [];
+    if (!Array.isArray(state.skills.legacyUnlocked)) state.skills.legacyUnlocked = [];
+    const legacySkillIds = state.skills.unlocked.filter(id => id.startsWith("disc_") || id.startsWith("cre_"));
+    state.skills.legacyUnlocked = [...new Set([...state.skills.legacyUnlocked, ...legacySkillIds])];
+    state.skills.unlocked = state.skills.unlocked.filter(id => !legacySkillIds.includes(id));
+  }
+
+  function migrateIfNeeded(state) {
+    const currentVersion = Number(state.version) || 0;
+    if (currentVersion < ATTRIBUTE_SCHEMA_VERSION) migrateFourAttributeModel(state);
+    state.version = SEED_DATA.defaultState.version;
     if (!state.dailyLog) state.dailyLog = {};
     if (!state.planning) state.planning = deepClone(SEED_DATA.defaultState.planning);
     if (!state.planning.dayReports) state.planning.dayReports = {};
     if (state.planning.tomorrowTargetXp === undefined) state.planning.tomorrowTargetXp = null;
     if (state.planning.tomorrowTargetAttribute === undefined) state.planning.tomorrowTargetAttribute = null;
     if (!state.shieldRitual) state.shieldRitual = deepClone(SEED_DATA.defaultState.shieldRitual);
-    if (state.shieldRitual.rewardGrantedDate === undefined) state.shieldRitual.rewardGrantedDate = null;
     if (!state.bosses.titlesEarned) state.bosses.titlesEarned = [];
     if (!state.bosses.damageHistory) state.bosses.damageHistory = {};
     if (state.rewards && typeof state.rewards.totalXpSpent !== "number") state.rewards.totalXpSpent = 0;
     if (!state.milestoneTitlesEarned) state.milestoneTitlesEarned = [];
+    if (!state.skills) state.skills = deepClone(SEED_DATA.defaultState.skills);
+    if (!Array.isArray(state.skills.legacyUnlocked)) state.skills.legacyUnlocked = [];
     if (!state.prestige) state.prestige = deepClone(SEED_DATA.defaultState.prestige);
     if (typeof state.prestige.count !== "number") state.prestige.count = 0;
     if (typeof state.prestige.permanentXpBonus !== "number") state.prestige.permanentXpBonus = 0;
@@ -106,7 +182,10 @@ const GameState = (function () {
       writeRaw(state);
       return state;
     }
-    return migrateIfNeeded(state);
+    const previousVersion = Number(state.version) || 0;
+    state = migrateIfNeeded(state);
+    if (previousVersion < SEED_DATA.defaultState.version) writeRaw(state);
+    return state;
   }
 
   // partialUpdate may be a plain object (shallow-merged into the root) or

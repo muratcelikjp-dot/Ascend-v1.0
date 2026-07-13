@@ -1,0 +1,7 @@
+.attribute-glyph{display:inline-block;width:1em;height:1em;object-fit:contain;vertical-align:middle;pointer-events:none;user-select:none}
+.fb .attribute-glyph,.focus-btn .attribute-glyph{width:18px;height:18px}
+.qmission-icon .attribute-glyph{width:19px;height:19px}
+.qattr .attribute-glyph{width:13px;height:13px}
+.co .attribute-glyph,.a-tab .attribute-glyph{width:15px;height:15px}
+.fixed-icon .attribute-glyph,.goal-priority .attribute-glyph{width:17px;height:17px}
+.ab-icon .attribute-glyph,.rule-icon .attribute-glyph{width:18px;height:18px}

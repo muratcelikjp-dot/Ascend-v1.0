@@ -82,12 +82,13 @@ const Quests = (function () {
     const plannedGoals = (state.planning.tomorrowGoals || []).map(g => ({
       id: "goal_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7),
       title: g.text,
-      attribute: "willpower",
-      difficulty: "normal",
-      xp: g.xp || 50,
+      attribute: g.attribute || "willpower",
+      tags: [],
+      difficulty: g.difficulty || "normal",
+      xp: g.xp || ({ easy: 50, normal: 100, hard: 200 }[g.difficulty] || 100),
       done: false,
       dateAssigned: today,
-      isWillpowerGoal: true,
+      isWillpowerGoal: (g.attribute || "willpower") === "willpower",
       priority: g.priority || "normal",
       scheduledTime: g.scheduledTime || null
     }));
@@ -96,6 +97,7 @@ const Quests = (function () {
       id: "fixed_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7),
       title: tmpl.title,
       attribute: tmpl.attribute,
+      tags: Array.isArray(tmpl.tags) ? [...tmpl.tags] : [],
       difficulty: tmpl.difficulty,
       xp: tmpl.xp,
       done: false,
@@ -140,10 +142,11 @@ const Quests = (function () {
     return { didReset: true, streakEvaluationDates };
   }
 
-  function addQuest(state, { title, attribute, difficulty, xp }) {
+  function addQuest(state, { title, attribute, difficulty, xp, tags = [] }) {
     const quest = {
       id: "q_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7),
       title, attribute, difficulty, xp,
+      tags: Array.isArray(tags) ? [...new Set(tags)] : [],
       done: false,
       dateAssigned: todayDateString(),
       isWillpowerGoal: attribute === "willpower"

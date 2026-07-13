@@ -196,9 +196,8 @@ This keeps the system understandable while still giving meaningful choice.
 ## 12. What Not To Implement Yet
 
 - Do not change runtime app behavior during planning.
-- Do not change localStorage structure yet.
-- Do not remove Discipline or Creativity fields yet.
-- Do not migrate existing saves yet.
+- Do not expose Discipline or Creativity as separate attribute tabs or XP bars.
+- Keep their migrated quest tags invisible until a concrete skill or boss mechanic uses them.
 - Do not add a huge skill list.
 - Do not add random skill generation.
 - Do not add respec before the basic unlock flow exists.

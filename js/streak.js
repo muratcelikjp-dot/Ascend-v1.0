@@ -8,7 +8,7 @@ const Streak = (function () {
 
   const PENALTY_XP = 120;
   const PENALTY_CONSECUTIVE_DAYS = 2;
-  const PENALTY_ATTRIBUTES = ["willpower", "discipline"];
+  const PENALTY_ATTRIBUTES = ["willpower"];
 
   // Counts calendar-contiguous missed days ending at endDateKey. If no
   // end date is supplied, it uses the most recent logged date.

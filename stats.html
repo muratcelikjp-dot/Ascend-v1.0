@@ -13,6 +13,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <title>RPG — Stats</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<link rel="stylesheet" href="css/attribute-icons.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--ab:#020D18;--ab2:#04192E;--ab3:#071F38;--neon:#00E5FF;--oc:#00B4D8;--ocd:#005F87;--bd:rgba(0,180,216,0.18);--bd2:rgba(0,180,216,0.36);--tx:#C8EAF5;--txd:#4A7A90;--txm:#7BAFC8;--am:#EF9F27;--gr:#1D9E75}
@@ -141,13 +142,12 @@ window.addEventListener('error', function(e){
 <script src="js/shield.js"></script>
 <script src="js/ranks.js"></script>
 <script src="js/gameloop.js"></script>
+<script src="js/attribute-icons.js"></script>
 <script>
 const ATTR_META=[
   {id:'intelligence',label:'Intelligence',icon:'ti-book',col:'#00E5FF',bg:'rgba(0,229,255,.08)'},
   {id:'strength',    label:'Strength',    icon:'ti-run',col:'#1D9E75',bg:'rgba(29,158,117,.08)'},
   {id:'charisma',    label:'Charisma',    icon:'ti-messages',col:'#D4537E',bg:'rgba(212,83,126,.08)'},
-  {id:'discipline',  label:'Discipline',  icon:'ti-clock',col:'#EF9F27',bg:'rgba(239,159,39,.08)'},
-  {id:'creativity',  label:'Creativity',  icon:'ti-palette',col:'#D85A30',bg:'rgba(216,90,48,.08)'},
   {id:'willpower',   label:'Willpower',   icon:'ti-flame',col:'#E24B4A',bg:'rgba(226,75,74,.08)'},
 ];
 
@@ -158,7 +158,7 @@ let dailyChartInstance=null;
 let growthChartInstance=null;
 let bossChartInstance=null;
 
-const ATTR_COLORS={intelligence:'#00E5FF',strength:'#1D9E75',charisma:'#D4537E',discipline:'#EF9F27',creativity:'#D85A30',willpower:'#E24B4A'};
+const ATTR_COLORS={intelligence:'#00E5FF',strength:'#1D9E75',charisma:'#D4537E',willpower:'#E24B4A'};
 
 function renderMetrics(){
   document.getElementById('pill-lvl').textContent='LVL '+String(gs.level).padStart(2,'0');
@@ -269,7 +269,7 @@ function renderAttrs(){
     const meta=ATTR_META.find(m=>m.id===a.id);
     const pct=Math.round((a.xp/maxXp)*100);
     return `<div class="ab-row">
-      <div class="ab-icon" style="background:${meta.bg}"><i class="ti ${meta.icon}" style="color:${meta.col}"></i></div>
+        <div class="ab-icon" style="background:${meta.bg}">${AttributeIcons.markup(a.id,meta.icon)}</div>
       <div class="ab-info"><div class="ab-name">${meta.label}</div><div class="ab-bar-bg"><div class="ab-bar-fill" style="width:${pct}%;background:${meta.col}"></div></div></div>
       <div class="ab-xp" style="color:${meta.col}">${a.xp} XP</div>
     </div>`;

@@ -57,7 +57,7 @@ const SEED_DATA = {
 
   // Default state for a brand new player with no save file yet.
   defaultState: {
-    version: 1,
+    version: 2,
     level: 1,
     xp: 0,
     lifetimeXp: 0,
@@ -68,8 +68,6 @@ const SEED_DATA = {
       intelligence: { xp: 0, lifetimeXp: 0, level: 1 },
       strength:     { xp: 0, lifetimeXp: 0, level: 1 },
       charisma:     { xp: 0, lifetimeXp: 0, level: 1 },
-      discipline:   { xp: 0, lifetimeXp: 0, level: 1 },
-      creativity:   { xp: 0, lifetimeXp: 0, level: 1 },
       willpower:    { xp: 0, lifetimeXp: 0, level: 1 }
     },
 
@@ -79,7 +77,6 @@ const SEED_DATA = {
     // comparing this date against today.
     shieldRitual: {
       lastCompletedDate: null,
-      rewardGrantedDate: null,
       maxHp: 100,
       currentHp: 100
     },
@@ -92,7 +89,8 @@ const SEED_DATA = {
     },
 
     skills: {
-      unlocked: []
+      unlocked: [],
+      legacyUnlocked: []
     },
 
     achievements: {
@@ -131,9 +129,9 @@ const SEED_DATA = {
     // adding a new category is a one-line data change, same philosophy as
     // the boss/achievement rosters.
 
-    // Used by the daily planning ritual (Willpower goals + fixed activities)
+    // Used by the daily planning ritual (one Main Quest, Side Quests, and routines)
     planning: {
-      tomorrowGoals: [],       // self-set Willpower goals for the next day: {text, xp, priority, scheduledTime}
+      tomorrowGoals: [],       // custom next-day quests: {text, attribute, difficulty, xp, priority, scheduledTime}
       tomorrowFixed: [],       // fixed activity plans for the next day: {templateId, priority, scheduledTime}
       tomorrowTargetXp: null,  // optional self-set XP goal for tomorrow
       tomorrowTargetAttribute: null, // optional self-set "focus attribute" for tomorrow
@@ -167,9 +165,9 @@ const SEED_DATA = {
     { id: "tmpl_run",          title: "Go for a 30-minute run",          attribute: "strength",     difficulty: "easy",   xp: 50  },
     { id: "tmpl_gym",          title: "Full gym workout",                 attribute: "strength",     difficulty: "hard",   xp: 200 },
     { id: "tmpl_social",       title: "Have a real conversation with someone new", attribute: "charisma", difficulty: "normal", xp: 100 },
-    { id: "tmpl_meditate",     title: "10 minutes of meditation",         attribute: "discipline",   difficulty: "easy",   xp: 50  },
-    { id: "tmpl_plan",         title: "Plan tomorrow before bed",          attribute: "discipline",   difficulty: "easy",   xp: 50  },
-    { id: "tmpl_project",      title: "Build/ship a small project feature", attribute: "creativity", difficulty: "hard",   xp: 200 },
+    { id: "tmpl_meditate",     title: "10 minutes of meditation",         attribute: "willpower",    tags: ["discipline"], difficulty: "easy", xp: 50  },
+    { id: "tmpl_plan",         title: "Plan tomorrow before bed",          attribute: "willpower",    tags: ["discipline"], difficulty: "easy", xp: 50  },
+    { id: "tmpl_project",      title: "Build/ship a small project feature", attribute: "intelligence", tags: ["creativity"], difficulty: "hard", xp: 200 },
     { id: "tmpl_resist",       title: "Resist a known bad habit today",    attribute: "willpower",    difficulty: "normal", xp: 100 }
   ],
 
@@ -216,18 +214,6 @@ const SEED_DATA = {
       { id: "cha_real_listener",  name: "Real Listener",   icon: "ti-ear", tier: 2, requiredLevel: 4, description: "People feel heard around you because you actually listen.", passiveBonus: { attribute: "charisma", multiplier: 0.08 } },
       { id: "cha_natural_authority", name: "Natural Authority", icon: "ti-crown", tier: 3, requiredLevel: 6, description: "People turn to you in uncertain moments.", passiveBonus: { attribute: "charisma", multiplier: 0.12 } },
       { id: "cha_master", name: "Magnetic Presence", icon: "ti-sparkles", tier: 4, requiredLevel: 10, description: "Rooms shift when you enter them — not because you demand it, but because your presence has become genuinely compelling.", passiveBonus: { attribute: "charisma", multiplier: 0.2 } }
-    ],
-    discipline: [
-      { id: "disc_no_zero_days",  name: "No Zero Days",    icon: "ti-calendar-check", tier: 1, requiredLevel: 2, description: "You do at least something toward your goals every day.", passiveBonus: { attribute: "discipline", multiplier: 0.05 } },
-      { id: "disc_iron_discipline", name: "Iron Discipline", icon: "ti-lock", tier: 2, requiredLevel: 4, description: "Your routines hold even when motivation is low.", passiveBonus: { attribute: "discipline", multiplier: 0.08 } },
-      { id: "disc_long_game",     name: "Long Game Player", icon: "ti-hourglass", tier: 3, requiredLevel: 6, description: "You optimize for who you'll be in a year, not instant comfort.", passiveBonus: { attribute: "discipline", multiplier: 0.12 } },
-      { id: "disc_master", name: "Unwavering", icon: "ti-diamond", tier: 4, requiredLevel: 10, description: "Your systems no longer require willpower to maintain. Discipline has become identity — you simply are the person who follows through.", passiveBonus: { attribute: "discipline", multiplier: 0.2 } }
-    ],
-    creativity: [
-      { id: "cre_maker_mindset",  name: "Maker Mindset",   icon: "ti-tool", tier: 1, requiredLevel: 2, description: "You default to building solutions instead of waiting for one.", passiveBonus: { attribute: "creativity", multiplier: 0.05 } },
-      { id: "cre_ship_it",        name: "Ship It",         icon: "ti-rocket", tier: 2, requiredLevel: 4, description: "You release work before it's perfect and iterate from there.", passiveBonus: { attribute: "creativity", multiplier: 0.08 } },
-      { id: "cre_signature_style", name: "Signature Style", icon: "ti-feather", tier: 3, requiredLevel: 6, description: "Your work has a recognizable voice that's distinctly yours.", passiveBonus: { attribute: "creativity", multiplier: 0.12 } },
-      { id: "cre_master", name: "Prolific", icon: "ti-star", tier: 4, requiredLevel: 10, description: "Output stopped being the hard part a while ago. You create constantly, and a meaningful share of it is genuinely good.", passiveBonus: { attribute: "creativity", multiplier: 0.2 } }
     ],
     willpower: [
       { id: "wil_do_it_anyway",   name: "Do It Anyway",    icon: "ti-sword", tier: 1, requiredLevel: 2, description: "You act before you feel ready instead of waiting for motivation.", passiveBonus: { attribute: "willpower", multiplier: 0.05 } },
@@ -300,7 +286,7 @@ const SEED_DATA = {
       maxHp: 1000,
       damageRules: [
         { matchType: "attribute", match: "willpower", damagePerXp: 1 },
-        { matchType: "attribute", match: "discipline", damagePerXp: 0.5 },
+        { matchType: "tag", match: "discipline", damagePerXp: 0.5 },
         { matchType: "titleContains", match: "study", damage: 50 }
       ],
       rewards: { xp: 500, title: "Procrastination Slayer" },
@@ -354,7 +340,7 @@ const SEED_DATA = {
       maxHp: 2200,
       damageRules: [
         { matchType: "attribute", match: "willpower", damagePerXp: 0.5 },
-        { matchType: "attribute", match: "discipline", damagePerXp: 0.5 },
+        { matchType: "tag", match: "discipline", damagePerXp: 0.5 },
         { matchType: "titleContains", match: "reflect", damage: 60 }
       ],
       rewards: { xp: 1200, title: "Self-Assured" },
@@ -370,10 +356,10 @@ const SEED_DATA = {
       maxHp: 3000,
       damageRules: [
         { matchType: "attribute", match: "willpower", damagePerXp: 0.4 },
-        { matchType: "attribute", match: "discipline", damagePerXp: 0.4 },
+        { matchType: "tag", match: "discipline", damagePerXp: 0.4 },
         { matchType: "attribute", match: "intelligence", damagePerXp: 0.2 },
         { matchType: "attribute", match: "strength", damagePerXp: 0.2 },
-        { matchType: "attribute", match: "creativity", damagePerXp: 0.2 },
+        { matchType: "tag", match: "creativity", damagePerXp: 0.2 },
         { matchType: "attribute", match: "charisma", damagePerXp: 0.2 }
       ],
       rewards: { xp: 2000, title: "Unplateaued" },

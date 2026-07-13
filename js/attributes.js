@@ -7,7 +7,7 @@
 
 const Attributes = (function () {
 
-  const VALID_ATTRIBUTES = ["intelligence", "strength", "charisma", "discipline", "creativity", "willpower"];
+  const VALID_ATTRIBUTES = ["intelligence", "strength", "charisma", "willpower"];
 
   // Applies XP to one attribute, recalculates its level, and returns
   // whether the attribute leveled up (so callers can trigger UI feedback

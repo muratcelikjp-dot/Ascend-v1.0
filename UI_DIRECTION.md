@@ -31,12 +31,12 @@ The shared direction is **Cyberpunk RPG Dashboard, restrained through Abyss UI**
 
 Attributes should use consistent colors and icons wherever they appear: quest cards, filters, hero stats, skill nodes, charts, and future summaries.
 
-- Intelligence: cyan / `ti-book`
-- Strength: green / `ti-run` or `ti-barbell`
+- Intelligence: cyan / shared modern brain symbol (`icons/attribute-intelligence.svg`)
+- Strength: green / shared fragmented biceps symbol (`icons/attribute-strength.svg`)
 - Charisma: pink / `ti-messages`
-- Discipline: amber / `ti-clock`
-- Creativity: orange / `ti-palette`
 - Willpower: red / `ti-flame`
+
+Discipline and Creativity are not main attributes. They remain invisible quest tags for future skill effects, boss weaknesses, and story summaries: Discipline maps to Willpower, while Creativity maps to Intelligence.
 
 If an attribute appears in a compact place, prefer icon + color first, then short text only when there is enough room.
 
@@ -415,6 +415,9 @@ Quests should feel like a mission board.
 - Daily and repeatable quests should be easy to scan.
 - Avoid making quest cards too tall.
 - Important actions should be sticky or reachable near the bottom on mobile.
+- Plan Tomorrow opens as a modal inside the Quest Board, not as a separate app screen.
+- Tomorrow planning supports one Main Quest, up to three Side Quests, and optional Routine Quests.
+- Custom planned quests choose their own attribute and difficulty; XP follows the shared difficulty rules.
 
 ### Hero / Character
 

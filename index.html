@@ -172,6 +172,83 @@ window.addEventListener('error', function(e){
   </main>
 </div>
 
+<div class="profile-onboarding" id="profile-onboarding" role="dialog" aria-modal="true" aria-labelledby="onboarding-title" aria-hidden="true">
+  <svg class="onboarding-network" viewBox="0 0 430 760" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <g class="onboarding-network-main">
+      <path pathLength="1" d="M-20 112C76 126 94 196 169 208S265 168 450 104"/>
+      <path pathLength="1" d="M-18 586C87 556 109 480 177 466s125 55 271 89"/>
+      <path pathLength="1" d="M49-20c14 112 75 137 91 234s-35 145-18 255 92 132 83 311"/>
+      <path pathLength="1" d="M381-20c-13 103-73 139-88 231s37 148 20 254-91 135-81 315"/>
+    </g>
+    <g class="onboarding-network-branches">
+      <path pathLength="1" d="M82 144 42 199M115 179l-9 65M315 174l31 63M347 141l46 52M107 526l-46 47M143 487l-10 72M288 489l11 72M322 526l48 45"/>
+      <path pathLength="1" d="M140 214c33 12 47 36 51 64M290 211c-34 16-45 39-50 67M177 466c19-28 22-54 18-82M313 465c-34-19-54-45-70-79"/>
+    </g>
+    <g class="onboarding-network-nodes">
+      <circle cx="82" cy="144" r="2"/><circle cx="115" cy="179" r="2"/><circle cx="315" cy="174" r="2"/><circle cx="347" cy="141" r="2"/>
+      <circle cx="107" cy="526" r="2"/><circle cx="143" cy="487" r="2"/><circle cx="288" cy="489" r="2"/><circle cx="322" cy="526" r="2"/>
+    </g>
+  </svg>
+
+  <form class="onboarding-stage" id="profile-onboarding-form">
+    <div class="onboarding-protocol">
+      <span class="protocol-index">ASCEND // 00</span>
+      <span class="protocol-state"><i></i> LOCAL LINK</span>
+    </div>
+
+    <div class="identity-core" aria-hidden="true">
+      <span class="identity-orbit orbit-a"></span>
+      <span class="identity-orbit orbit-b"></span>
+      <span class="identity-reticle reticle-a"></span>
+      <span class="identity-reticle reticle-b"></span>
+      <span class="identity-scan"></span>
+      <svg class="identity-helmet" viewBox="0 0 40 40" focusable="false">
+        <path class="helmet-shell" d="M20 2l11 6 3 10-3 12-7 7-2-10h-4l-2 10-7-7-3-12L9 8z"/>
+        <path class="helmet-face" d="M10 14l6-5h8l6 5-3 9-7 4-7-4z"/>
+        <path class="helmet-visor" d="M11 15l7-3h4l7 3-4 6H15z"/>
+        <path d="M20 12v15M13 23l5 4M27 23l-5 4M14 28l4 7M26 28l-4 7"/>
+        <path d="M5 13v10M2 16v5M35 13v10M38 16v5"/>
+      </svg>
+    </div>
+
+    <div class="identity-readout">
+      <div class="onboarding-kicker" id="onboarding-status" aria-live="polite">Initializing identity core</div>
+      <h1 class="onboarding-title" id="onboarding-title">Awaken your hero</h1>
+      <div class="onboarding-callsign" id="onboarding-callsign">PLAYER // UNLINKED</div>
+    </div>
+
+    <div class="onboarding-form-fields">
+      <label class="onboarding-field">
+        <span>Call sign</span>
+        <div class="onboarding-input-shell">
+          <i class="ti ti-user-hexagon"></i>
+          <input id="onboarding-name" type="text" maxlength="32" autocomplete="name" placeholder="Enter your name" required>
+          <b>01</b>
+        </div>
+      </label>
+      <label class="onboarding-field">
+        <span>Birth signature</span>
+        <div class="onboarding-input-shell">
+          <i class="ti ti-calendar-event"></i>
+          <input id="onboarding-birth" type="date" min="1900-01-01" required>
+          <b>02</b>
+        </div>
+      </label>
+
+      <div class="onboarding-data-row">
+        <span id="onboarding-age">AGE // --</span>
+        <span><i class="ti ti-device-mobile-lock"></i> DEVICE VAULT</span>
+      </div>
+      <div class="onboarding-error" id="onboarding-error" role="alert"></div>
+      <button class="onboarding-save" id="onboarding-save" type="submit">
+        <span>Initialize identity</span><i class="ti ti-arrow-up-right"></i>
+      </button>
+    </div>
+
+    <div class="onboarding-footer"><span></span>PROFILE DATA REMAINS ON THIS DEVICE<span></span></div>
+  </form>
+</div>
+
 <script src="data/seed-data.js"></script>
 <script src="js/gamestate.js"></script>
 <script src="js/leveling.js"></script>
@@ -179,6 +256,7 @@ window.addEventListener('error', function(e){
 <script src="js/skills.js"></script>
 <script src="js/achievements.js"></script>
 <script src="js/date-utils.js"></script>
+<script src="js/profile.js"></script>
 <script src="js/bosses.js"></script>
 <script src="js/streak.js"></script>
 <script src="js/quests.js"></script>
@@ -189,6 +267,7 @@ window.addEventListener('error', function(e){
 <script src="js/index-effects.js"></script>
 <script src="js/index-ui.js"></script>
 <script src="js/index.js"></script>
+<script src="js/profile-onboarding.js"></script>
 <script src="js/sw-register.js"></script>
 <script src="js/app-version.js"></script>
 </body>

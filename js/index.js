@@ -31,15 +31,13 @@ function hitShield(evt){
 
   if(hitResult.broken){
     broken=true;
-    let ritualResult;
-    gs=GameState.set(state=>{ ritualResult=Shield.completeRitual(state); });
 
     showBrokenScreenShell();
     flashScreen();
     shakeScreen(9);
     vibrate([0,50,40,50,40,120]);
     setTimeout(()=>{ spawnShards(30); spawnSparks(22); },80);
-    setTimeout(()=>showBrokenResultScreen(ritualResult),260);
+    setTimeout(()=>showBrokenResultScreen(),260);
   }
 }
 

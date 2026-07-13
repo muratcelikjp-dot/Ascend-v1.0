@@ -19,6 +19,8 @@ const Bosses = (function () {
     bossDef.damageRules.forEach(rule => {
       if (rule.matchType === "attribute" && rule.match === quest.attribute) {
         total += (rule.damagePerXp || 0) * quest.xp;
+      } else if (rule.matchType === "tag" && Array.isArray(quest.tags) && quest.tags.includes(rule.match)) {
+        total += (rule.damagePerXp || 0) * quest.xp;
       } else if (rule.matchType === "titleContains" && quest.title.toLowerCase().includes(rule.match.toLowerCase())) {
         total += rule.damage || 0;
       }

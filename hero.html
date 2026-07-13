@@ -13,6 +13,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <title>RPG — Hero</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<link rel="stylesheet" href="css/attribute-icons.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -173,6 +174,250 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .ni.on i{color:var(--neon)}
 .ni span{font-size:9px;color:var(--txd);text-transform:uppercase;letter-spacing:.07em}
 .ni.on span{color:var(--neon)}
+
+/* Abyss character dossier */
+body{
+  min-height:100vh;
+  color:var(--tx);
+  background:
+    linear-gradient(rgba(0,229,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,229,255,.025) 1px,transparent 1px),
+    #010913;
+  background-size:32px 32px;
+}
+.hero-shell{
+  max-width:430px;
+  min-height:100svh;
+  padding:0 0 calc(30px + env(safe-area-inset-bottom,0px));
+  background:
+    radial-gradient(circle at 50% 8%,rgba(0,180,216,.12),transparent 34%),
+    linear-gradient(180deg,#031322 0,#020d18 46%,#010a13 100%);
+  border-left:1px solid rgba(0,180,216,.08);
+  border-right:1px solid rgba(0,180,216,.08);
+  overflow-x:hidden;
+}
+.hero-topbar{
+  min-height:72px;
+  padding:calc(14px + env(safe-area-inset-top,0px)) 16px 10px;
+  display:grid;
+  grid-template-columns:40px 1fr auto;
+  align-items:center;
+  gap:10px;
+}
+.back-command{
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  color:var(--neon);
+  text-decoration:none;
+  border:1px solid rgba(0,229,255,.34);
+  border-radius:6px;
+  background:rgba(4,25,46,.72);
+  box-shadow:inset 0 0 18px rgba(0,229,255,.04);
+}
+.back-command:active{transform:scale(.94)}
+.back-command i{font-size:20px}
+.screen-kicker{font-size:9px;color:var(--txd);text-transform:uppercase;letter-spacing:.16em}
+.screen-title{font-size:18px;line-height:1.1;color:#e8f9ff;font-weight:650;text-transform:uppercase;letter-spacing:.08em}
+.system-state{display:flex;align-items:center;gap:6px;font-size:8px;color:var(--gr);text-transform:uppercase;letter-spacing:.12em}
+.system-state::before{content:"";width:5px;height:5px;border-radius:50%;background:#50e3b2;box-shadow:0 0 8px rgba(80,227,178,.72)}
+
+.identity-panel{
+  margin:0 14px;
+  padding:18px 16px 14px;
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(0,229,255,.24);
+  border-radius:8px;
+  background:linear-gradient(145deg,rgba(6,31,54,.92),rgba(2,13,24,.96));
+  box-shadow:0 14px 36px rgba(0,0,0,.24),inset 0 0 32px rgba(0,229,255,.025);
+}
+.identity-panel::before,.identity-panel::after{content:"";position:absolute;width:34px;height:10px;border-color:var(--neon);opacity:.6;pointer-events:none}
+.identity-panel::before{left:7px;top:7px;border-left:1px solid;border-top:1px solid}
+.identity-panel::after{right:7px;bottom:7px;border-right:1px solid;border-bottom:1px solid}
+.identity-panel .scan{opacity:.12;animation-duration:5s}
+.identity-grid{display:grid;grid-template-columns:88px minmax(0,1fr) auto;gap:13px;align-items:center;position:relative}
+.avatar-ring-wrap{width:84px;height:84px}
+.avatar-ring-svg{width:84px;height:84px}
+.avatar-ring-bg{stroke:rgba(0,180,216,.18);stroke-width:3}
+.avatar-ring-fill{stroke-width:3;filter:drop-shadow(0 0 4px rgba(0,229,255,.48))}
+.avatar{
+  top:10px;
+  left:10px;
+  width:64px;
+  height:64px;
+  border-radius:7px;
+  border-color:rgba(0,229,255,.5);
+  background:linear-gradient(145deg,rgba(7,37,63,.98),rgba(2,13,24,.98));
+  box-shadow:inset 0 0 22px rgba(0,229,255,.07),0 0 18px rgba(0,229,255,.08);
+}
+.hero-helmet{width:43px;height:43px;fill:none;stroke:#5deaff;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px rgba(0,229,255,.5))}
+.hero-helmet .helmet-shell{fill:rgba(0,180,216,.12);stroke:#80efff}
+.hero-helmet .helmet-face{fill:rgba(0,229,255,.06)}
+.hero-helmet .helmet-visor{fill:rgba(0,229,255,.22);stroke:#b4f7ff}
+.bn-name{font-size:20px;font-weight:650;color:#ecfbff;letter-spacing:.1em}
+.identity-copy{min-width:0}
+.bn-name-row{display:flex;align-items:center;gap:7px;min-width:0}
+.bn-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.profile-edit{
+  width:25px;
+  height:25px;
+  display:grid;
+  place-items:center;
+  flex:0 0 auto;
+  border:1px solid rgba(0,229,255,.22);
+  border-radius:4px;
+  background:rgba(0,229,255,.045);
+  color:var(--txm);
+  cursor:pointer;
+}
+.profile-edit:active{transform:scale(.92)}
+.profile-edit i{font-size:13px}
+.profile-meta{display:flex;align-items:center;gap:7px;margin-top:5px;min-width:0}
+.profile-meta .bn-class{margin-top:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.profile-age{padding:2px 5px;flex:0 0 auto;border:1px solid rgba(239,159,39,.28);border-radius:3px;background:rgba(239,159,39,.07);color:var(--am);font-size:8px;letter-spacing:.08em}
+.bn-class{font-size:9px;color:var(--neon);margin-top:5px;letter-spacing:.12em}
+.bn-title-earned{min-height:14px;font-size:10px;color:var(--am);margin-top:5px;font-style:normal}
+.bn-right{gap:6px}
+.pill-lvl,.pill-streak{min-width:76px;padding:4px 7px;text-align:center;border-radius:3px}
+.pill-lvl{font-size:10px;background:rgba(0,229,255,.06);border-color:rgba(0,229,255,.38)}
+.pill-streak{font-size:9px}
+.xp-wrap{margin-top:16px}
+.xp-lbl{font-size:9px;letter-spacing:.1em}
+.xp-track{height:5px;border:1px solid rgba(0,180,216,.14);background:#03101d;overflow:hidden}
+.xp-fill{box-shadow:0 0 10px rgba(0,229,255,.5)}
+
+.section-heading{display:flex;align-items:center;gap:9px;margin:22px 16px 9px;color:var(--txm)}
+.section-heading::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,rgba(0,180,216,.3),transparent)}
+.section-heading i{font-size:15px;color:var(--neon)}
+.section-heading span{font-size:10px;text-transform:uppercase;letter-spacing:.13em;white-space:nowrap}
+.activity-row{padding:0 14px;gap:7px}
+.activity-card{min-height:58px;padding:9px 10px;background:rgba(4,25,46,.62);border-color:rgba(0,180,216,.16)}
+.activity-icon{width:30px;height:30px;border-radius:4px}
+.activity-lbl{font-size:8px;letter-spacing:.1em}
+.activity-val{font-size:10px}
+.boss-summary-card{margin:7px 14px 0;background:rgba(4,25,46,.62);border-radius:5px}
+.summary-row{margin:9px 14px 0;gap:6px;background:transparent;border:0}
+.sum-cell{padding:10px 5px;background:rgba(4,25,46,.56);border:1px solid rgba(0,180,216,.14);border-radius:4px}
+.sum-num{font-size:17px;color:#dff8ff}
+.sum-lbl{font-size:7.5px;line-height:1.35;letter-spacing:.08em}
+.prestige-card{margin:9px 14px 0;background:rgba(4,25,46,.6);border-radius:5px}
+
+.attribute-module{margin-top:14px;border-top:1px solid rgba(0,180,216,.16)}
+.attribute-module .section-heading{margin-top:16px}
+.attr-tabs{margin:0 14px;padding:5px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;background:rgba(2,13,24,.74);border:1px solid rgba(0,180,216,.18);border-radius:7px;overflow:visible}
+.a-tab{min-width:0;height:58px;padding:7px 3px;display:flex;flex-direction:column;justify-content:center;gap:5px;border:1px solid transparent;border-radius:4px;font-size:7.5px;letter-spacing:.04em;text-align:center;overflow:hidden}
+.a-tab .attribute-glyph{width:25px;height:25px;filter:drop-shadow(0 0 4px currentColor)}
+.a-tab i{width:22px;height:22px;font-size:21px}
+.a-tab:nth-child(1){color:#54dff6}
+.a-tab:nth-child(2){color:#4bd7a9}
+.a-tab:nth-child(3){color:#ef78ab}
+.a-tab:nth-child(4){color:#f47d7c}
+.a-tab.active{border:1px solid currentColor;border-bottom-color:currentColor;background:rgba(0,229,255,.06);box-shadow:inset 0 0 16px rgba(0,229,255,.035)}
+.attr-bar-row{margin:9px 14px 0;padding:12px 13px;background:rgba(4,25,46,.58);border:1px solid rgba(0,180,216,.16);border-radius:5px}
+.ab-name{font-size:11px}
+.ab-lv{font-size:9px}
+.ab-bar{height:5px;border:1px solid rgba(0,180,216,.12);overflow:hidden}
+.ab-fill{box-shadow:0 0 9px currentColor}
+.skill-tree-wrap{padding:8px 14px 8px}
+.skill-connector{height:11px;background:linear-gradient(var(--bd2),rgba(0,180,216,.12))}
+.skill-connector.active{box-shadow:0 0 7px rgba(0,229,255,.35)}
+.skill-card{min-height:62px;padding:11px 12px;background:rgba(4,25,46,.6);border-radius:5px}
+.skill-card.unlocked{background:linear-gradient(90deg,rgba(0,229,255,.045),rgba(4,25,46,.66))}
+.skill-icon{width:38px;height:38px;border-radius:5px}
+.skill-name{font-size:12px}
+.skill-req{font-size:8.5px}
+.detail-sheet{max-width:430px;width:100%;padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))}
+.confirm-overlay,.ach-popup-overlay{max-width:430px}
+
+.recent-growth{margin-top:19px;border-top:1px solid rgba(0,180,216,.12)}
+.recent-growth .section-heading{margin-top:15px}
+.legacy-drawer{margin:16px 14px 0;border-top:1px solid rgba(0,180,216,.16);border-bottom:1px solid rgba(0,180,216,.12)}
+.legacy-drawer>summary{height:48px;display:flex;align-items:center;gap:9px;list-style:none;color:var(--txm);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.legacy-drawer>summary::-webkit-details-marker{display:none}
+.legacy-drawer>summary .legacy-main-icon{font-size:15px;color:var(--pu)}
+.legacy-drawer>summary span{font-size:9px;text-transform:uppercase;letter-spacing:.13em}
+.legacy-drawer>summary .legacy-count{margin-left:auto;color:var(--txd);font-size:8px;letter-spacing:.07em}
+.legacy-chevron{font-size:14px;color:var(--txd);transition:transform .2s ease}
+.legacy-drawer[open] .legacy-chevron{transform:rotate(180deg)}
+.legacy-body{padding:0 0 12px}
+.legacy-body .boss-summary-card{margin:0}
+.legacy-body .summary-row{margin:7px 0 0}
+.legacy-body .prestige-card{margin:7px 0 0}
+
+.profile-overlay{
+  position:fixed;
+  inset:0;
+  z-index:95;
+  padding:24px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(1,9,19,.88);
+  -webkit-backdrop-filter:blur(7px);
+  backdrop-filter:blur(7px);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .2s ease;
+}
+.profile-overlay.open{opacity:1;pointer-events:auto}
+.profile-card{
+  width:min(100%,370px);
+  padding:20px;
+  border:1px solid rgba(0,229,255,.38);
+  border-radius:8px;
+  background:linear-gradient(145deg,#061f36,#020d18);
+  box-shadow:0 22px 60px rgba(0,0,0,.48),inset 0 0 30px rgba(0,229,255,.025);
+  transform:translateY(12px) scale(.98);
+  transition:transform .22s ease;
+}
+.profile-overlay.open .profile-card{transform:translateY(0) scale(1)}
+.profile-card-head{display:flex;align-items:center;gap:11px;margin-bottom:17px}
+.profile-card-icon{width:38px;height:38px;display:grid;place-items:center;flex:0 0 auto;border:1px solid rgba(0,229,255,.4);border-radius:6px;background:rgba(0,229,255,.06);color:var(--neon)}
+.profile-card-icon i{font-size:19px}
+.profile-card-title{font-size:14px;color:#e8f9ff;text-transform:uppercase;letter-spacing:.08em}
+.profile-card-sub{margin-top:2px;font-size:9px;color:var(--txd);letter-spacing:.04em}
+.profile-field{display:block;margin-top:12px}
+.profile-field span{display:block;margin-bottom:5px;font-size:9px;color:var(--txm);text-transform:uppercase;letter-spacing:.1em}
+.profile-input{
+  width:100%;
+  height:43px;
+  padding:0 12px;
+  border:1px solid rgba(0,180,216,.28);
+  border-radius:5px;
+  outline:none;
+  min-width:0;
+  background:#020f1d;
+  color:#dff8ff;
+  color-scheme:dark;
+  font:13px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+.profile-input:focus{border-color:var(--neon);box-shadow:0 0 0 2px rgba(0,229,255,.08)}
+.profile-error{min-height:16px;margin-top:8px;color:#ff8894;font-size:9px}
+.profile-actions{display:grid;grid-template-columns:1fr 1.35fr;gap:8px;margin-top:7px}
+.profile-actions button{height:40px;border-radius:5px;text-transform:uppercase;letter-spacing:.08em;font-size:9px;cursor:pointer}
+.profile-cancel{border:1px solid rgba(0,180,216,.22);background:transparent;color:var(--txm)}
+.profile-save{border:1px solid var(--neon);background:rgba(0,229,255,.12);color:var(--neon);font-weight:650}
+
+@media(max-width:350px){
+  .hero-topbar{grid-template-columns:36px 1fr auto;padding-left:10px;padding-right:10px}
+  .back-command{width:34px;height:34px}
+  .identity-panel{margin-left:10px;margin-right:10px;padding-left:11px;padding-right:11px}
+  .identity-grid{grid-template-columns:72px minmax(0,1fr);gap:10px}
+  .avatar-ring-wrap,.avatar-ring-svg{width:72px;height:72px}
+  .avatar{top:8px;left:8px;width:56px;height:56px}
+  .hero-helmet{width:37px;height:37px}
+  .bn-right{grid-column:1/-1;flex-direction:row;margin:3px 0 0 82px;justify-content:flex-start}
+  .pill-lvl,.pill-streak{min-width:0}
+  .activity-row{grid-template-columns:1fr}
+  .legacy-count{display:none}
+  .a-tab{height:54px;font-size:6.8px}
+  .a-tab .attribute-glyph{width:22px;height:22px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
 </style>
 </head>
 <body>
@@ -189,21 +434,44 @@ window.addEventListener('error', function(e){
 });
 </script>
 
-<div class="app">
+<div class="app hero-shell">
 
-<div class="banner">
+<header class="hero-topbar">
+  <a class="back-command" href="index.html" aria-label="Back to home"><i class="ti ti-arrow-left"></i></a>
+  <div>
+    <div class="screen-kicker">Character file</div>
+    <h1 class="screen-title">Hero</h1>
+  </div>
+  <div class="system-state">Active</div>
+</header>
+
+<section class="identity-panel">
   <div class="scan"></div>
-  <div class="bn-top">
+  <div class="identity-grid">
     <div class="avatar-ring-wrap">
-      <svg class="avatar-ring-svg" viewBox="0 0 72 72" width="72" height="72">
+      <svg class="avatar-ring-svg" viewBox="0 0 72 72" width="72" height="72" aria-hidden="true">
         <circle class="avatar-ring-bg" cx="36" cy="36" r="32"></circle>
         <circle class="avatar-ring-fill" id="avatar-ring-fill" cx="36" cy="36" r="32" stroke-dasharray="201" stroke-dashoffset="201"></circle>
       </svg>
-      <div class="avatar">⚔️</div>
+      <div class="avatar" aria-hidden="true">
+        <svg class="hero-helmet" viewBox="0 0 40 40" focusable="false">
+          <path class="helmet-shell" d="M20 2l11 6 3 10-3 12-7 7-2-10h-4l-2 10-7-7-3-12L9 8z"/>
+          <path class="helmet-face" d="M10 14l6-5h8l6 5-3 9-7 4-7-4z"/>
+          <path class="helmet-visor" d="M11 15l7-3h4l7 3-4 6H15z"/>
+          <path d="M20 12v15M13 23l5 4M27 23l-5 4M14 28l4 7M26 28l-4 7"/>
+          <path d="M5 13v10M2 16v5M35 13v10M38 16v5"/>
+        </svg>
+      </div>
     </div>
-    <div>
-      <div class="bn-name">MURAT</div>
-      <div class="bn-class" id="h-class">Coder Apprentice</div>
+    <div class="identity-copy">
+      <div class="bn-name-row">
+        <div class="bn-name" id="h-name">PLAYER</div>
+        <button class="profile-edit" type="button" onclick="openProfileEditor()" aria-label="Edit profile" title="Edit profile"><i class="ti ti-pencil"></i></button>
+      </div>
+      <div class="profile-meta">
+        <div class="bn-class" id="h-class">Coder Apprentice</div>
+        <div class="profile-age" id="h-age">AGE --</div>
+      </div>
       <div class="bn-title-earned" id="h-title-earned"></div>
     </div>
     <div class="bn-right">
@@ -215,37 +483,44 @@ window.addEventListener('error', function(e){
     <div class="xp-lbl"><span>Experience</span><span id="xp-txt">0 / 100</span></div>
     <div class="xp-track"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
   </div>
+</section>
+
+<section class="attribute-module">
+  <div class="section-heading"><i class="ti ti-circuit-switch-open"></i><span>Attribute matrix</span></div>
+  <div class="attr-tabs" id="attr-tabs"></div>
+
+  <div class="attr-bar-row">
+    <div class="ab-top"><div class="ab-name" id="ab-name">Intelligence</div><div class="ab-lv" id="ab-lv">Level 1</div></div>
+    <div class="ab-bar"><div class="ab-fill" id="ab-fill" style="width:0%"></div></div>
+  </div>
+
+  <div class="skill-tree-wrap" id="skill-tree-wrap"></div>
+</section>
+
+<section class="recent-growth">
+  <div class="section-heading"><i class="ti ti-sparkles"></i><span>Recent growth</span></div>
+  <div class="activity-row" id="activity-row"></div>
+</section>
+
+<details class="legacy-drawer">
+  <summary>
+    <i class="ti ti-infinity legacy-main-icon"></i>
+    <span>Legacy records</span>
+    <span class="legacy-count">Bosses · Achievements · Prestige</span>
+    <i class="ti ti-chevron-down legacy-chevron"></i>
+  </summary>
+  <div class="legacy-body">
+    <div class="boss-summary-card" id="boss-summary-card" onclick="window.location.href='boss.html'"></div>
+    <div class="summary-row">
+      <div class="sum-cell" onclick="window.location.href='achievements.html'"><div class="sum-num" id="s-achievements">0</div><div class="sum-lbl">Achievements</div></div>
+      <div class="sum-cell"><div class="sum-num" id="s-bosses">0</div><div class="sum-lbl">Bosses defeated</div></div>
+      <div class="sum-cell"><div class="sum-num" id="s-skills">0</div><div class="sum-lbl">Skills unlocked</div></div>
+    </div>
+    <div id="prestige-card"></div>
+  </div>
+</details>
+
 </div>
-
-<div class="activity-row" id="activity-row"></div>
-<div class="boss-summary-card" id="boss-summary-card" onclick="window.location.href='boss.html'"></div>
-
-<div class="summary-row">
-  <div class="sum-cell" onclick="window.location.href='achievements.html'"><div class="sum-num" id="s-achievements">0</div><div class="sum-lbl">Achievements</div></div>
-  <div class="sum-cell"><div class="sum-num" id="s-bosses">0</div><div class="sum-lbl">Bosses defeated</div></div>
-  <div class="sum-cell"><div class="sum-num" id="s-skills">0</div><div class="sum-lbl">Skills unlocked</div></div>
-</div>
-
-<div id="prestige-card"></div>
-
-<div class="attr-tabs" id="attr-tabs"></div>
-
-<div class="attr-bar-row">
-  <div class="ab-top"><div class="ab-name" id="ab-name">Intelligence</div><div class="ab-lv" id="ab-lv">Level 1</div></div>
-  <div class="ab-bar"><div class="ab-fill" id="ab-fill" style="width:0%"></div></div>
-</div>
-
-<div class="skill-tree-wrap" id="skill-tree-wrap"></div>
-
-</div>
-
-<nav class="nav">
-  <a class="ni" href="quests.html"><i class="ti ti-list-check"></i><span>Quests</span></a>
-  <a class="ni" href="stats.html"><i class="ti ti-chart-bar"></i><span>Stats</span></a>
-  <a class="ni" href="boss.html"><i class="ti ti-skull"></i><span>Boss</span></a>
-  <a class="ni" href="rewards.html"><i class="ti ti-gift"></i><span>Rewards</span></a>
-  <a class="ni on" href="hero.html"><i class="ti ti-user"></i><span>Hero</span></a>
-</nav>
 
 <div class="detail-overlay" id="detail-overlay" onclick="bgCloseDetail(event)">
   <div class="detail-sheet" id="detail-sheet"></div>
@@ -272,6 +547,31 @@ window.addEventListener('error', function(e){
   </div>
 </div>
 
+<div class="profile-overlay" id="profile-overlay" onclick="backgroundCloseProfile(event)">
+  <form class="profile-card" id="profile-form" onsubmit="saveProfile(event)">
+    <div class="profile-card-head">
+      <div class="profile-card-icon"><i class="ti ti-user-scan"></i></div>
+      <div>
+        <div class="profile-card-title">Player identity</div>
+        <div class="profile-card-sub">Stored locally on this device</div>
+      </div>
+    </div>
+    <label class="profile-field">
+      <span>Name</span>
+      <input class="profile-input" id="profile-name" type="text" maxlength="32" autocomplete="name" placeholder="Your name" required>
+    </label>
+    <label class="profile-field">
+      <span>Birth date</span>
+      <input class="profile-input" id="profile-birth" type="date" min="1900-01-01" required>
+    </label>
+    <div class="profile-error" id="profile-error" role="alert"></div>
+    <div class="profile-actions">
+      <button class="profile-cancel" type="button" onclick="closeProfileEditor()">Later</button>
+      <button class="profile-save" type="submit">Save profile</button>
+    </div>
+  </form>
+</div>
+
 <script src="data/seed-data.js"></script>
 <script src="js/gamestate.js"></script>
 <script src="js/leveling.js"></script>
@@ -279,6 +579,7 @@ window.addEventListener('error', function(e){
 <script src="js/skills.js"></script>
 <script src="js/achievements.js"></script>
 <script src="js/date-utils.js"></script>
+<script src="js/profile.js"></script>
 <script src="js/bosses.js"></script>
 <script src="js/streak.js"></script>
 <script src="js/quests.js"></script>
@@ -287,19 +588,58 @@ window.addEventListener('error', function(e){
 <script src="js/ranks.js"></script>
 <script src="js/prestige.js"></script>
 <script src="js/gameloop.js"></script>
+<script src="js/attribute-icons.js"></script>
 <script>
 const ATTR_META=[
   {id:'intelligence',label:'Intelligence',icon:'ti-book',col:'#00E5FF'},
   {id:'strength',    label:'Strength',    icon:'ti-run',col:'#1D9E75'},
   {id:'charisma',    label:'Charisma',    icon:'ti-messages',col:'#D4537E'},
-  {id:'discipline',  label:'Discipline',  icon:'ti-clock',col:'#EF9F27'},
-  {id:'creativity',  label:'Creativity',  icon:'ti-palette',col:'#D85A30'},
   {id:'willpower',   label:'Willpower',   icon:'ti-flame',col:'#E24B4A'},
 ];
 
 GameLoop.bootstrapDay();
 let gs=GameState.get();
 let activeAttr='intelligence';
+
+function renderProfile(){
+  const profile=UserProfile.get();
+  const age=profile?UserProfile.calculateAge(profile.birthDate):null;
+  document.getElementById('h-name').textContent=profile?profile.name.toUpperCase():'PLAYER';
+  document.getElementById('h-age').textContent=age===null?'AGE --':'AGE '+age;
+  return profile;
+}
+
+function openProfileEditor(){
+  const profile=UserProfile.get();
+  document.getElementById('profile-name').value=profile?profile.name:'';
+  document.getElementById('profile-birth').value=profile?profile.birthDate:'';
+  document.getElementById('profile-birth').max=UserProfile.getTodayKey();
+  document.getElementById('profile-error').textContent='';
+  document.getElementById('profile-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('profile-name').focus(),220);
+}
+
+function closeProfileEditor(){
+  document.getElementById('profile-overlay').classList.remove('open');
+}
+
+function backgroundCloseProfile(event){
+  if(event.target===document.getElementById('profile-overlay')) closeProfileEditor();
+}
+
+function saveProfile(event){
+  event.preventDefault();
+  const result=UserProfile.save(
+    document.getElementById('profile-name').value,
+    document.getElementById('profile-birth').value
+  );
+  if(!result.ok){
+    document.getElementById('profile-error').textContent=result.error;
+    return;
+  }
+  renderProfile();
+  closeProfileEditor();
+}
 
 function renderHeader(){
   const progress=Leveling.progressWithinLevel(gs.xp);
@@ -465,7 +805,7 @@ function closeAchievementPopup(){
 
 function renderTabs(){
   document.getElementById('attr-tabs').innerHTML=ATTR_META.map(a=>
-    `<div class="a-tab${a.id===activeAttr?' active':''}" onclick="switchAttr('${a.id}')"><i class="ti ${a.icon}"></i>${a.label}</div>`
+    `<div class="a-tab${a.id===activeAttr?' active':''}" onclick="switchAttr('${a.id}')">${AttributeIcons.markup(a.id,a.icon)}${a.label}</div>`
   ).join('');
 }
 
@@ -564,7 +904,12 @@ const lastSeenUnlocked={};
 GameState.subscribe(()=>refreshAll());
 
 refreshAll();
+renderProfile();
+window.addEventListener('storage',event=>{
+  if(event.key===UserProfile.storageKey) renderProfile();
+});
 </script>
+<script src="js/app-version.js"></script>
 <script src="js/sw-register.js"></script>
 </body>
 </html>

@@ -13,6 +13,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <title>RPG — Boss</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<link rel="stylesheet" href="css/attribute-icons.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -177,20 +178,30 @@ window.addEventListener('error', function(e){
 <script src="js/shield.js"></script>
 <script src="js/ranks.js"></script>
 <script src="js/gameloop.js"></script>
+<script src="js/attribute-icons.js"></script>
 <script>
 GameLoop.bootstrapDay();
 let gs=GameState.get();
 
-const ATTR_LABELS={intelligence:'Intelligence',strength:'Strength',charisma:'Charisma',discipline:'Discipline',creativity:'Creativity',willpower:'Willpower'};
-const ATTR_ICONS={intelligence:'ti-book',strength:'ti-run',charisma:'ti-messages',discipline:'ti-clock',creativity:'ti-palette',willpower:'ti-flame'};
+const ATTR_LABELS={intelligence:'Intelligence',strength:'Strength',charisma:'Charisma',willpower:'Willpower'};
+const ATTR_ICONS={intelligence:'ti-book',strength:'ti-run',charisma:'ti-messages',willpower:'ti-flame'};
+const TAG_LABELS={discipline:'Discipline',creativity:'Creativity'};
+const TAG_ICONS={discipline:'ti-clock',creativity:'ti-palette'};
 
 function renderDamageRules(bossDef){
   return bossDef.damageRules.map(rule=>{
     if(rule.matchType==='attribute'){
       return `<div class="rule-card">
-        <div class="rule-icon"><i class="ti ${ATTR_ICONS[rule.match]||'ti-bolt'}"></i></div>
+        <div class="rule-icon">${AttributeIcons.markup(rule.match,ATTR_ICONS[rule.match]||'ti-bolt')}</div>
         <div class="rule-text">${ATTR_LABELS[rule.match]||rule.match} quests deal damage</div>
         <div class="rule-dmg">${rule.damagePerXp}× XP</div>
+      </div>`;
+    }
+    if(rule.matchType==='tag'){
+      return `<div class="rule-card">
+        <div class="rule-icon"><i class="ti ${TAG_ICONS[rule.match]||'ti-tag'}"></i></div>
+        <div class="rule-text">${TAG_LABELS[rule.match]||rule.match} quests deal damage</div>
+        <div class="rule-dmg">${rule.damagePerXp}ﾃ・XP</div>
       </div>`;
     }
     return `<div class="rule-card">

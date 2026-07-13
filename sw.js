@@ -9,7 +9,7 @@
 //
 // CACHE_VERSION must be bumped on any meaningful app-shell file change.
 const CACHE_PREFIX = "rpg-app-";
-const CACHE_VERSION = "v31";
+const CACHE_VERSION = "v50";
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
 
 const PRECACHE_URLS = [
@@ -23,6 +23,8 @@ const PRECACHE_URLS = [
   "achievements.html",
   "plan.html",
   "css/index.css",
+  "css/attribute-icons.css",
+  "css/plan-modal.css",
   "manifest.json",
   "data/seed-data.js",
   "js/gamestate.js",
@@ -31,6 +33,8 @@ const PRECACHE_URLS = [
   "js/skills.js",
   "js/achievements.js",
   "js/date-utils.js",
+  "js/profile.js",
+  "js/profile-onboarding.js",
   "js/bosses.js",
   "js/streak.js",
   "js/quests.js",
@@ -42,6 +46,8 @@ const PRECACHE_URLS = [
   "js/index-effects.js",
   "js/index-ui.js",
   "js/index.js",
+  "js/attribute-icons.js",
+  "js/plan-modal.js",
   "js/sw-register.js",
   "js/app-version.js",
   "js/stats.js",
@@ -54,7 +60,9 @@ const PRECACHE_URLS = [
   "icons/icon-384.png",
   "icons/icon-512.png",
   "icons/icon-maskable-192.png",
-  "icons/icon-maskable-512.png"
+  "icons/icon-maskable-512.png",
+  "icons/attribute-intelligence.svg",
+  "icons/attribute-strength.svg"
 ];
 
 self.addEventListener("install", event => {
