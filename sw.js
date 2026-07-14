@@ -9,7 +9,7 @@
 //
 // CACHE_VERSION must be bumped on any meaningful app-shell file change.
 const CACHE_PREFIX = "rpg-app-";
-const CACHE_VERSION = "v50";
+const CACHE_VERSION = "v85";
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
 
 const PRECACHE_URLS = [
@@ -25,6 +25,10 @@ const PRECACHE_URLS = [
   "css/index.css",
   "css/attribute-icons.css",
   "css/plan-modal.css",
+  "css/panel-navigation.css",
+  "assets/bosses/procrastination-v2-base.png",
+  "assets/bosses/procrastination-v2-left.png",
+  "assets/bosses/procrastination-v2-right.png",
   "manifest.json",
   "data/seed-data.js",
   "js/gamestate.js",
@@ -48,6 +52,7 @@ const PRECACHE_URLS = [
   "js/index.js",
   "js/attribute-icons.js",
   "js/plan-modal.js",
+  "js/panel-navigation.js",
   "js/sw-register.js",
   "js/app-version.js",
   "js/stats.js",
@@ -118,6 +123,14 @@ self.addEventListener("fetch", event => {
       if (event.request.mode === "navigate") {
         return fetchAndCache(event.request, cache)
           .catch(() => cachedPageFallback(cache, event.request));
+      }
+
+      // JavaScript must stay in lockstep with freshly deployed HTML.
+      // Network-first prevents one-load API mismatches while preserving
+      // the cached script as the offline fallback.
+      if (url.pathname.endsWith(".js")) {
+        return fetchAndCache(event.request, cache)
+          .catch(() => cache.match(event.request).then(response => response || Response.error()));
       }
 
       return cache.match(event.request).then(cachedResponse => {

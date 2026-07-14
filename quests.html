@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <link rel="stylesheet" href="css/attribute-icons.css">
 <link rel="stylesheet" href="css/plan-modal.css">
+<link rel="stylesheet" href="css/panel-navigation.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--ab:#020D18;--ab2:#04192E;--ab3:#071F38;--neon:#00E5FF;--oc:#00B4D8;--ocd:#005F87;--bd:rgba(0,180,216,0.18);--bd2:rgba(0,180,216,0.36);--tx:#C8EAF5;--txd:#4A7A90;--txm:#7BAFC8;--am:#EF9F27;--gr:#1D9E75;--re:#E24B4A}
@@ -66,7 +67,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .fb.on i{opacity:1}
 .qlist{padding:0 16px;display:flex;flex-direction:column;gap:7px}
 .qc-wrap{position:relative;border-radius:4px;overflow:hidden}
-.qc-swipe-bg{position:absolute;inset:0;display:flex;align-items:center;border-radius:4px}
+.qc-swipe-bg{position:absolute;inset:0;display:flex;align-items:center;border-radius:4px;opacity:0;pointer-events:none}
 .qc-swipe-bg.complete-bg{background:rgba(29,158,117,.25);justify-content:flex-start;padding-left:20px}
 .qc-swipe-bg.delete-bg{background:rgba(226,75,74,.25);justify-content:flex-end;padding-right:20px}
 .qc-swipe-bg i{font-size:20px}
@@ -126,7 +127,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .ni.on span{color:var(--neon)}
 .modal-overlay{position:fixed;inset:0;background:rgba(2,13,24,.85);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
 .modal-overlay.open{opacity:1;pointer-events:all}
-.modal{width:390px;background:var(--ab2);border-top:1px solid var(--bd2);padding:18px 16px 40px;transform:translateY(100%);transition:transform .25s ease}
+.modal{width:min(390px,100%);background:var(--ab2);border-top:1px solid var(--bd2);padding:18px 16px 40px;transform:translateY(100%);transition:transform .25s ease}
 .modal-overlay.open .modal{transform:translateY(0)}
 .m-title{font-size:12px;font-weight:500;color:var(--neon);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px}
 .m-lbl{font-size:10px;color:var(--txd);margin-bottom:4px;display:block;text-transform:uppercase;letter-spacing:.08em}
@@ -171,19 +172,42 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;background:re
 .operation-meta{display:flex;justify-content:space-between;gap:12px;margin-top:8px;color:var(--abyss-muted);font-size:8px;text-transform:uppercase;letter-spacing:.08em}.operation-meta span{display:flex;align-items:center;gap:5px}.operation-meta i{font-size:12px;color:var(--abyss-soft)}.operation-meta strong{color:var(--abyss-soft);font-weight:600}
 .lvlup{margin:0 0 12px;border:1px solid transparent;border-radius:6px;padding-left:12px;padding-right:12px}.lvlup.show{max-height:52px;border-color:rgba(53,244,230,.2)}
 .mission-section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:0 1px 11px}.mission-section-kicker{display:flex;align-items:center;gap:7px;font-size:8px;color:var(--abyss-aqua);text-transform:uppercase;letter-spacing:.15em}.mission-section-kicker i{font-size:15px}.mission-section-title{margin-top:4px;font-size:17px;font-weight:600;color:var(--abyss-text);letter-spacing:0}.mission-section-count{font-size:8px;color:var(--abyss-muted);text-transform:uppercase;letter-spacing:.09em;padding-bottom:2px}
+.mission-section-tools{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:6px}.completed-visibility{min-height:28px;padding:4px 8px;display:flex;align-items:center;justify-content:center;gap:5px;border:1px solid rgba(141,239,255,.18);border-radius:5px;background:rgba(10,28,48,.48);color:var(--abyss-soft);font-size:8px;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;white-space:nowrap}.completed-visibility i{font-size:12px;color:var(--abyss-aqua)}.completed-visibility.active{border-color:rgba(65,230,164,.3);background:rgba(65,230,164,.06);color:var(--abyss-green)}.completed-visibility.active i{color:var(--abyss-green)}.completed-visibility[hidden]{display:none!important}
 .filters{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:0 0 13px;padding:0;overflow:visible}.fb{width:100%;height:48px;min-height:48px;min-width:0;padding:4px 2px;flex-direction:column;justify-content:center;gap:4px;border-radius:7px;background:rgba(10,28,48,.5);border-color:var(--abyss-border);box-shadow:inset 0 1px rgba(255,255,255,.025)}.fb i{font-size:18px}.fb span,.fb.on span{display:block;max-width:100%;overflow:hidden;font-size:7px;line-height:1;text-overflow:ellipsis}.fb.on{padding:4px 2px;background:var(--filter-bg);box-shadow:0 0 18px rgba(53,244,230,.13),inset 0 1px rgba(255,255,255,.05)}
 .qlist{padding:0;gap:9px}.qc-wrap,.qc-swipe-bg{border-radius:8px}.qc{border-radius:8px;padding:11px 12px 12px 15px;background:linear-gradient(160deg,rgba(13,38,64,.75),rgba(7,19,38,.7));border-color:var(--abyss-border);box-shadow:0 12px 28px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.035)}.qc::after{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(141,239,255,.18),transparent)}.qc:hover{background:linear-gradient(160deg,rgba(15,44,74,.8),rgba(8,24,43,.74));border-color:rgba(141,239,255,.31)}.qc-accent{width:3px;top:8px;bottom:8px;border-radius:0 4px 4px 0}
 .mission-code{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;padding-left:48px;color:var(--abyss-muted);font-size:7px;text-transform:uppercase;letter-spacing:.14em}.mission-state{color:var(--abyss-soft)}.qc.featured{border-color:rgba(247,201,72,.38);box-shadow:0 15px 36px rgba(0,0,0,.25),0 0 24px rgba(247,201,72,.08),inset 0 1px rgba(255,255,255,.045)}.qc.featured .mission-state{color:var(--abyss-gold)}
-.qc-top{align-items:center;gap:10px}.qmission-icon{width:38px;height:38px;flex:0 0 38px;border:1px solid;border-radius:7px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 16px rgba(47,157,255,.07)}.qmission-icon i{font-size:19px}.qbody{min-width:0}.qt{font-size:13px;font-weight:600;line-height:1.35;color:var(--abyss-text)}.qmeta{margin-top:6px;gap:0;color:var(--abyss-muted);font-size:8px;text-transform:uppercase;letter-spacing:.07em}.qattr{padding:0;background:transparent!important;border:0!important;border-radius:0;font-size:8px}.qattr i{display:none}.qdiff,.qtime{padding:0;border:0;border-radius:0;color:var(--abyss-muted);font-size:8px}.qdiff::before,.qtime::before{content:"/";display:inline-block;margin:0 6px;color:rgba(141,239,255,.24)}.qtime{display:inline-flex;align-items:center;gap:3px}.qtime i{font-size:10px;color:var(--abyss-purple)}.qxp{align-self:center;min-width:45px;padding:0;border:0;border-radius:0;margin:0 2px 0 auto;color:var(--abyss-cyan);background:transparent;font-size:10px;text-align:right}.qchk{order:3;width:26px;height:26px;flex:0 0 26px;border-radius:6px;margin:0;border-color:rgba(141,239,255,.32);background:rgba(2,7,19,.42)}.qability,.priority-label{display:none}.qc.done{opacity:.55;background:rgba(7,19,38,.5);box-shadow:none}.qc.done .qt{text-decoration:none;color:var(--abyss-muted)}.qc.done .mission-state{color:var(--abyss-green)}.qc.done .qchk{background:rgba(65,230,164,.84);border-color:var(--abyss-green)}.qc.done .qxp{color:var(--abyss-muted)}
+.qc-top{align-items:center;gap:10px}.qmission-icon{width:38px;height:38px;flex:0 0 38px;border:1px solid;border-radius:7px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 16px rgba(47,157,255,.07)}.qmission-icon i{font-size:19px}.qbody{min-width:0}.qt{font-size:13px;font-weight:600;line-height:1.35;color:var(--abyss-text)}.qmeta{margin-top:6px;gap:0;color:var(--abyss-muted);font-size:8px;text-transform:uppercase;letter-spacing:.07em}.qattr{padding:0;background:transparent!important;border:0!important;border-radius:0;font-size:8px}.qattr i{display:none}.qdiff,.qtime{padding:0;border:0;border-radius:0;color:var(--abyss-muted);font-size:8px}.qdiff::before,.qtime::before{content:"/";display:inline-block;margin:0 6px;color:rgba(141,239,255,.24)}.qtime{display:inline-flex;align-items:center;gap:3px}.qtime i{font-size:10px;color:var(--abyss-purple)}.qxp{align-self:center;min-width:45px;padding:0;border:0;border-radius:0;margin:0 2px 0 auto;color:var(--abyss-cyan);background:transparent;font-size:10px;text-align:right}.qchk{order:3;width:26px;height:26px;flex:0 0 26px;border-radius:6px;margin:0;border-color:rgba(141,239,255,.32);background:rgba(2,7,19,.42)}.qability,.priority-label{display:none}.qc.done{opacity:.55;background:rgba(7,19,38,.5);box-shadow:none}.qc.done .qt{text-decoration:none;color:var(--abyss-muted)}.qc.done .mission-state{color:var(--abyss-green)}.qc.done .qchk{background:var(--abyss-green);border-color:var(--abyss-green);color:var(--abyss-black)}.qc.done .qchk i{font-size:15px}.qc.done .qxp{color:var(--abyss-muted)}
 .quest-empty{border:1px dashed rgba(141,239,255,.2);border-radius:8px;padding:28px 20px;text-align:center;background:rgba(7,19,38,.34)}.quest-empty i{display:block;font-size:27px;color:var(--abyss-aqua);margin-bottom:9px}.quest-empty strong{display:block;font-size:12px;color:var(--abyss-soft);text-transform:uppercase;letter-spacing:.08em}.quest-empty span{display:block;margin-top:5px;font-size:10px;color:var(--abyss-muted);line-height:1.45}.all-done{margin:11px 0 0;border-radius:8px;background:rgba(65,230,164,.05);border-color:rgba(65,230,164,.22)}
 .quest-actions{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:8px;margin-top:13px}.quest-actions .add-btn{margin:0;width:100%;min-height:44px;border-radius:6px;font-weight:600}.add-btn.primary-action{color:var(--abyss-black);border:1px solid rgba(141,239,255,.62);background:linear-gradient(90deg,var(--abyss-blue),var(--abyss-aqua));box-shadow:0 0 20px rgba(53,244,230,.14)}.add-btn.primary-action:hover{background:linear-gradient(90deg,var(--abyss-aqua),var(--abyss-cyan))}.add-btn.secondary-action{border-style:solid;background:rgba(10,28,48,.48);color:var(--abyss-soft)}
+.boss-mission-slot:empty{display:none}
+.boss-mission-card{position:relative;overflow:hidden;margin:0 0 13px;padding:13px;border:1px solid rgba(255,92,122,.34);border-radius:8px;background:linear-gradient(145deg,rgba(50,20,42,.72),rgba(10,28,48,.78));box-shadow:0 14px 32px rgba(0,0,0,.25),0 0 25px rgba(255,92,122,.07)}
+.boss-mission-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(var(--abyss-coral),var(--abyss-gold));box-shadow:0 0 12px rgba(255,92,122,.65)}
+.boss-mission-head{display:flex;align-items:center;gap:10px}.boss-mission-icon{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;border:1px solid rgba(255,92,122,.38);border-radius:7px;background:rgba(255,92,122,.08);color:var(--abyss-coral)}.boss-mission-icon i{font-size:20px;filter:drop-shadow(0 0 7px rgba(255,92,122,.4))}
+.boss-mission-identity{min-width:0;flex:1}.boss-mission-kicker{font-size:7px;color:var(--abyss-coral);text-transform:uppercase;letter-spacing:.14em}.boss-mission-name{margin-top:3px;overflow:hidden;color:var(--abyss-text);font-size:12px;font-weight:650;text-overflow:ellipsis;white-space:nowrap}.boss-mission-name span{color:var(--abyss-gold);font-weight:500}.boss-mission-clock{flex:0 0 auto;text-align:right}.boss-mission-clock small{display:block;color:var(--abyss-muted);font-size:7px;text-transform:uppercase;letter-spacing:.1em}.boss-mission-clock strong{display:block;margin-top:3px;color:var(--abyss-cyan);font-size:12px;font-variant-numeric:tabular-nums}
+.boss-mission-target{margin-top:11px;padding:10px;border:1px solid rgba(141,239,255,.13);border-radius:6px;background:rgba(2,7,19,.42)}.boss-mission-target small{display:block;color:var(--abyss-muted);font-size:7px;text-transform:uppercase;letter-spacing:.1em}.boss-mission-target strong{display:block;margin-top:4px;color:var(--abyss-soft);font-size:11px;font-weight:550;line-height:1.4;overflow-wrap:anywhere}
+.boss-mission-effects{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.boss-mission-effect{display:flex;align-items:center;gap:7px;padding:7px 8px;border:1px solid rgba(141,239,255,.11);border-radius:6px;background:rgba(2,7,19,.3)}.boss-mission-effect i{font-size:14px;color:var(--abyss-gold)}.boss-mission-effect:last-child i{color:var(--abyss-green)}.boss-mission-effect span{display:block;color:var(--abyss-muted);font-size:7px;text-transform:uppercase;letter-spacing:.07em}.boss-mission-effect strong{display:block;margin-top:2px;color:var(--abyss-text);font-size:10px;font-weight:600}
+.boss-mission-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:7px;margin-top:10px}.boss-mission-button{min-height:38px;border-radius:6px;font-size:9px;font-weight:650;text-transform:uppercase;letter-spacing:.07em;cursor:pointer}.boss-mission-button.cancel{border:1px solid rgba(255,92,122,.3);background:rgba(255,92,122,.045);color:#FF9AAF}.boss-mission-button.complete{border:1px solid rgba(65,230,164,.5);background:linear-gradient(90deg,rgba(29,158,117,.75),rgba(65,230,164,.86));color:var(--abyss-black);box-shadow:0 0 18px rgba(65,230,164,.12)}.boss-mission-button:focus-visible{outline:1px solid var(--abyss-aqua);outline-offset:2px}.boss-mission-button:active{transform:scale(.98)}
+.boss-mission-sync{display:flex;align-items:center;gap:9px;margin:0 0 13px;padding:11px;border:1px solid rgba(247,201,72,.25);border-radius:7px;background:rgba(247,201,72,.045);color:var(--abyss-soft);font-size:9px}.boss-mission-sync i{font-size:16px;color:var(--abyss-gold)}
+.boss-confirm-overlay{position:fixed;inset:0;z-index:35;display:flex;align-items:flex-end;justify-content:center;padding-top:env(safe-area-inset-top,0px);background:rgba(2,7,19,.86);opacity:0;pointer-events:none;transition:opacity .2s}.boss-confirm-overlay.open{opacity:1;pointer-events:auto}.boss-confirm-dialog{width:min(430px,100%);padding:18px 16px calc(22px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(141,239,255,.3);border-radius:10px 10px 0 0;background:linear-gradient(180deg,rgba(13,38,64,.99),var(--abyss-deep));transform:translateY(100%);transition:transform .24s ease}.boss-confirm-overlay.open .boss-confirm-dialog{transform:translateY(0)}.boss-confirm-kicker{color:var(--abyss-coral);font-size:8px;text-transform:uppercase;letter-spacing:.14em}.boss-confirm-title{margin-top:5px;color:var(--abyss-text);font-size:17px;font-weight:650}.boss-confirm-copy{margin-top:8px;color:var(--abyss-soft);font-size:11px;line-height:1.55}.boss-confirm-warning{display:flex;align-items:flex-start;gap:7px;margin-top:11px;padding:9px;border:1px solid rgba(247,201,72,.2);border-radius:6px;background:rgba(247,201,72,.045);color:var(--abyss-muted);font-size:9px;line-height:1.4}.boss-confirm-warning i{flex:0 0 auto;color:var(--abyss-gold);font-size:14px}.boss-confirm-actions{display:grid;grid-template-columns:1fr 1.5fr;gap:8px;margin-top:14px}.boss-confirm-actions button{min-height:42px;border-radius:6px;font-size:9px;font-weight:650;text-transform:uppercase;letter-spacing:.07em;cursor:pointer}.boss-confirm-back{border:1px solid var(--abyss-border);background:rgba(2,7,19,.45);color:var(--abyss-soft)}.boss-confirm-submit{border:1px solid rgba(65,230,164,.5);background:var(--abyss-green);color:var(--abyss-black)}.boss-confirm-submit.danger{border-color:rgba(255,92,122,.5);background:var(--abyss-coral);color:var(--abyss-black)}
+.boss-target-signal{display:flex;align-items:center;gap:5px;margin:8px 0 0 48px;padding-top:7px;border-top:1px solid rgba(var(--boss-rgb),.12);color:var(--boss-color);font-size:7px;text-transform:uppercase}.boss-target-signal i{font-size:11px;filter:drop-shadow(0 0 5px rgba(var(--boss-rgb),.35))}.boss-target-signal strong{margin-left:auto;color:var(--boss-color);font-size:8px}
 .report-banner{margin:0 0 12px;border-radius:8px;background:linear-gradient(180deg,rgba(34,31,49,.74),rgba(10,28,48,.58));border-color:rgba(247,201,72,.26)}
 .modal{background:linear-gradient(180deg,rgba(13,38,64,.98),var(--abyss-deep));border-color:var(--abyss-active);border-radius:10px 10px 0 0}.modal-overlay{background:rgba(2,7,19,.82)}.m-input{border-radius:6px;background:rgba(2,7,19,.62)}.do,.co,.m-cancel,.m-ok{border-radius:6px}.m-ok{background:linear-gradient(90deg,var(--abyss-blue),var(--abyss-aqua))}
-@media(max-width:350px){.quest-board-shell{padding-left:12px;padding-right:12px}.mission-heading h1{font-size:19px}.status-pill{padding-left:7px;padding-right:7px}.fb{height:42px;min-height:42px}.fb span,.fb.on span{display:none}.quest-actions{grid-template-columns:1fr}.operation-meta{font-size:7px}}
+
+/* Mission Forge */
+body.modal-active{overflow:hidden}.modal-overlay{z-index:45;padding-top:calc(12px + env(safe-area-inset-top,0px));backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);background:rgba(2,7,19,.74);transition:opacity .24s ease}.quest-forge{position:relative;isolation:isolate;width:min(430px,100%);max-height:calc(100dvh - 12px - env(safe-area-inset-top,0px));overflow-x:hidden;overflow-y:auto;padding:9px 16px calc(18px + env(safe-area-inset-bottom,0px));border:1px solid rgba(141,239,255,.28);border-bottom:0;border-radius:12px 12px 0 0;background:linear-gradient(180deg,rgba(13,38,64,.99),rgba(7,19,38,.995) 46%,rgba(2,7,19,.998));box-shadow:0 -22px 70px rgba(0,0,0,.5),0 -1px 24px rgba(47,157,255,.12);transform:translateY(calc(100% + 20px)) scale(.985);transition:transform .34s cubic-bezier(.2,.78,.2,1);scrollbar-width:none}.quest-forge::-webkit-scrollbar{display:none}.modal-overlay.open .quest-forge{transform:translateY(0) scale(1)}.quest-forge::before{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(53,244,230,.025),transparent),repeating-linear-gradient(0deg,transparent 0 25px,rgba(141,239,255,.016) 26px 27px)}.forge-scan{position:absolute;z-index:0;left:0;right:0;top:0;height:1px;pointer-events:none;opacity:0;background:linear-gradient(90deg,transparent,var(--abyss-aqua),transparent);box-shadow:0 0 10px rgba(53,244,230,.45)}.modal-overlay.open .forge-scan{animation:forgeSweep 1.15s .12s ease-out both}.forge-grip{position:relative;z-index:1;width:38px;height:3px;margin:0 auto 12px;border-radius:3px;background:rgba(141,239,255,.22)}
+.forge-header{position:relative;z-index:1;display:grid;grid-template-columns:42px minmax(0,1fr) 36px;align-items:center;gap:11px;padding-bottom:13px;border-bottom:1px solid rgba(141,239,255,.13)}.forge-emblem{width:42px;height:42px;display:grid;place-items:center;border:1px solid rgba(53,244,230,.35);border-radius:7px;background:rgba(53,244,230,.06);color:var(--abyss-aqua);box-shadow:inset 0 0 18px rgba(53,244,230,.035),0 0 18px rgba(47,157,255,.08)}.forge-emblem i{font-size:20px;filter:drop-shadow(0 0 6px rgba(53,244,230,.35))}.forge-kicker{font-size:8px;color:var(--abyss-aqua);text-transform:uppercase;letter-spacing:.16em}.forge-title{margin-top:3px;font-size:19px;line-height:1.1;color:var(--abyss-text);font-weight:650;letter-spacing:0}.forge-close{width:36px;height:36px;display:grid;place-items:center;border:1px solid rgba(141,239,255,.15);border-radius:6px;background:rgba(2,7,19,.35);color:var(--abyss-muted);cursor:pointer}.forge-close i{font-size:17px}.forge-close:active{transform:scale(.94)}
+.forge-section{position:relative;z-index:1;margin-top:15px}.forge-section-head{display:flex;align-items:center;gap:7px;margin-bottom:7px}.forge-step{width:20px;height:20px;display:grid;place-items:center;border:1px solid rgba(141,239,255,.18);border-radius:4px;background:rgba(10,28,48,.55);color:var(--abyss-aqua);font-size:7px;font-weight:700}.forge-label{color:var(--abyss-soft);font-size:9px;text-transform:uppercase;letter-spacing:.11em}.forge-section-note{margin-left:auto;color:var(--abyss-muted);font-size:7px;text-transform:uppercase;letter-spacing:.08em}
+.forge-input-shell{position:relative;display:flex;align-items:center;border:1px solid rgba(141,239,255,.22);border-radius:7px;background:rgba(2,7,19,.58);box-shadow:inset 0 1px rgba(255,255,255,.025);transition:border-color .18s,box-shadow .18s,background .18s}.forge-input-shell>i{position:absolute;left:12px;color:var(--abyss-muted);font-size:16px;transition:color .18s,filter .18s}.forge-input-shell:focus-within{border-color:rgba(53,244,230,.62);background:rgba(3,13,26,.76);box-shadow:0 0 0 2px rgba(53,244,230,.055),0 0 22px rgba(47,157,255,.08)}.forge-input-shell:focus-within>i{color:var(--abyss-aqua);filter:drop-shadow(0 0 5px rgba(53,244,230,.35))}.forge-input-shell.invalid{border-color:rgba(255,92,122,.72);animation:forgeReject .28s ease}.forge-input-shell.invalid>i{color:var(--abyss-coral)}.quest-forge .m-input{height:48px;margin:0;padding:0 12px 0 39px;border:0;border-radius:7px;background:transparent;color:var(--abyss-text);font-size:13px;letter-spacing:0}.quest-forge .m-input::placeholder{color:rgba(111,142,163,.66)}.quest-forge .m-input:focus{border:0}.forge-input-error{max-height:0;overflow:hidden;margin:0 2px;color:var(--abyss-coral);font-size:8px;opacity:0;transition:max-height .18s,margin .18s,opacity .18s}.forge-input-error.show{max-height:18px;margin-top:5px;opacity:1}
+.quest-forge .dg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:0}.quest-forge .do{position:relative;min-width:0;height:64px;padding:7px 5px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:1px solid rgba(141,239,255,.15);border-radius:7px;background:rgba(10,28,48,.48);color:var(--abyss-muted);cursor:pointer;transition:transform .16s,border-color .16s,background .16s,box-shadow .16s}.quest-forge .do>i{font-size:16px}.quest-forge .do strong{font-size:9px;font-weight:650;text-transform:uppercase;letter-spacing:.08em}.quest-forge .do span{font-size:8px;opacity:.76}.quest-forge .do:active{transform:scale(.96)}.quest-forge .do.se{border-color:rgba(65,230,164,.48);background:rgba(65,230,164,.075);color:var(--abyss-green);box-shadow:0 0 18px rgba(65,230,164,.055)}.quest-forge .do.sn{border-color:rgba(53,244,230,.48);background:rgba(53,244,230,.075);color:var(--abyss-aqua);box-shadow:0 0 18px rgba(53,244,230,.055)}.quest-forge .do.sh{border-color:rgba(255,92,122,.5);background:rgba(255,92,122,.075);color:var(--abyss-coral);box-shadow:0 0 18px rgba(255,92,122,.055)}
+.quest-forge .cg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:0}.quest-forge .co{position:relative;min-width:0;height:48px;padding:7px 9px;display:flex;align-items:center;gap:8px;border:1px solid rgba(141,239,255,.14);border-radius:7px;background:rgba(10,28,48,.44);color:var(--abyss-muted);cursor:pointer;text-align:left;transition:transform .16s,border-color .16s,background .16s,box-shadow .16s}.quest-forge .co .attribute-icon{width:24px;height:24px}.quest-forge .co>span{min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:8px;font-weight:600;text-transform:uppercase;letter-spacing:.055em}.quest-forge .co>.co-check{margin-left:auto;font-size:13px;opacity:0;color:var(--attr-color)}.quest-forge .co.sel{border-color:color-mix(in srgb,var(--attr-color) 52%,transparent);background:color-mix(in srgb,var(--attr-color) 8%,transparent);color:var(--attr-color);box-shadow:0 0 18px color-mix(in srgb,var(--attr-color) 8%,transparent)}.quest-forge .co.sel>.co-check{opacity:1}.quest-forge .co:active{transform:scale(.97)}
+.forge-output{position:relative;z-index:1;display:grid;grid-template-columns:36px minmax(0,1fr) auto;align-items:center;gap:10px;margin-top:15px;padding:10px 11px;border:1px solid rgba(141,239,255,.16);border-radius:7px;background:linear-gradient(90deg,rgba(10,28,48,.62),rgba(7,19,38,.46));overflow:hidden}.forge-output::before{content:"";position:absolute;left:0;top:7px;bottom:7px;width:2px;background:var(--preview-color,var(--abyss-aqua));box-shadow:0 0 8px var(--preview-color,var(--abyss-aqua))}.forge-output-icon{width:34px;height:34px;display:grid;place-items:center;border:1px solid color-mix(in srgb,var(--preview-color) 38%,transparent);border-radius:6px;background:color-mix(in srgb,var(--preview-color) 7%,transparent);color:var(--preview-color)}.forge-output-icon .attribute-icon{width:20px;height:20px}.forge-output-kicker{color:var(--abyss-muted);font-size:7px;text-transform:uppercase;letter-spacing:.11em}.forge-output-name{margin-top:3px;color:var(--abyss-soft);font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}.forge-output-xp{text-align:right;color:var(--xp-color,var(--preview-color));font-size:15px;font-weight:650}.forge-output-xp small{display:block;margin-top:2px;color:var(--abyss-muted);font-size:6px;font-weight:500;text-transform:uppercase;letter-spacing:.1em}
+.quest-forge .m-acts{position:relative;z-index:1;display:grid;grid-template-columns:.8fr 1.4fr;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(141,239,255,.11)}.quest-forge .m-cancel,.quest-forge .m-ok{min-height:44px;padding:8px 10px;display:flex;align-items:center;justify-content:center;gap:7px;border-radius:7px;font-size:9px;font-weight:650;text-transform:uppercase;letter-spacing:.07em;cursor:pointer}.quest-forge .m-cancel{border:1px solid rgba(141,239,255,.16);background:rgba(2,7,19,.32);color:var(--abyss-muted)}.quest-forge .m-ok{border:1px solid rgba(141,239,255,.52);background:linear-gradient(90deg,rgba(47,157,255,.92),rgba(53,244,230,.9));color:var(--abyss-black);box-shadow:0 8px 24px rgba(47,157,255,.12)}.quest-forge .m-ok i{font-size:14px}.quest-forge .m-ok:active,.quest-forge .m-cancel:active{transform:scale(.98)}.modal-overlay.open .forge-header,.modal-overlay.open .forge-section,.modal-overlay.open .forge-output,.modal-overlay.open .m-acts{animation:forgeReveal .32s cubic-bezier(.2,.75,.2,1) both}.modal-overlay.open .forge-section:nth-of-type(1){animation-delay:.08s}.modal-overlay.open .forge-section:nth-of-type(2){animation-delay:.12s}.modal-overlay.open .forge-section:nth-of-type(3){animation-delay:.16s}.modal-overlay.open .forge-output{animation-delay:.2s}.modal-overlay.open .m-acts{animation-delay:.23s}
+@keyframes forgeSweep{0%{top:0;opacity:0}20%{opacity:.65}100%{top:100%;opacity:0}}@keyframes forgeReveal{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@keyframes forgeReject{0%,100%{transform:translateX(0)}30%{transform:translateX(-5px)}70%{transform:translateX(5px)}}
+@media(max-width:350px){.quest-board-shell{padding-left:12px;padding-right:12px}.mission-heading h1{font-size:19px}.status-pill{padding-left:7px;padding-right:7px}.fb{height:42px;min-height:42px}.fb span,.fb.on span{display:none}.quest-actions{grid-template-columns:1fr}.operation-meta{font-size:7px}.mission-section-count{display:none}.completed-visibility{padding-left:7px;padding-right:7px}.boss-mission-card{padding:11px}.boss-mission-clock strong{font-size:11px}.boss-mission-effects{grid-template-columns:1fr}.boss-mission-actions{grid-template-columns:1fr 1.45fr}.quest-forge{padding-left:12px;padding-right:12px}.forge-header{grid-template-columns:38px minmax(0,1fr) 34px;gap:9px}.forge-emblem{width:38px;height:38px}.forge-title{font-size:17px}.quest-forge .do{height:58px}.quest-forge .co{height:44px;padding-left:7px;padding-right:7px}.quest-forge .co>span{font-size:7px}.forge-section{margin-top:12px}.forge-output{margin-top:12px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style>
 </head>
-<body>
+<body data-panel="quests">
 <div id="global-error-banner" style="display:none;position:fixed;top:0;left:0;right:0;background:#5a1010;color:#ffdede;padding:12px 14px;font-family:monospace;font-size:11px;z-index:99999;max-height:40vh;overflow-y:auto;white-space:pre-wrap;border-bottom:2px solid #ff4444"></div>
 <script>
 window.addEventListener('error', function(e){
@@ -197,15 +221,15 @@ window.addEventListener('error', function(e){
 });
 </script>
 
-<div class="app quest-board-shell">
-  <header class="mission-header">
+<div class="app quest-board-shell panel-nav-shell">
+  <header class="mission-header panel-nav-header" style="--panel-progress:20%">
     <div class="mission-header-top">
       <a class="mission-back" href="index.html" aria-label="Return to command center">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/><path d="M8 12h11"/></svg>
+        <i class="ti ti-home" aria-hidden="true"></i>
       </a>
       <div class="mission-heading">
-        <div class="mission-kicker">Mission control</div>
-        <h1>Quest Board</h1>
+        <div class="mission-kicker">Panel 01</div>
+        <h1>Quests</h1>
       </div>
       <div class="mission-status">
         <div class="status-pill streak"><i class="ti ti-flame"></i><span id="mission-h-streak">0-day streak</span></div>
@@ -253,8 +277,15 @@ window.addEventListener('error', function(e){
       <div class="mission-section-kicker"><i class="ti ti-target-arrow"></i>Today's missions</div>
       <div class="mission-section-title">Mission Queue</div>
     </div>
-    <div class="mission-section-count">Active channels</div>
+    <div class="mission-section-tools">
+      <div class="mission-section-count">Active channels</div>
+      <button class="completed-visibility" id="completed-visibility" type="button" onclick="toggleCompletedVisibility()" aria-pressed="false" hidden>
+        <i class="ti ti-archive" id="completed-visibility-icon"></i>
+        <span id="completed-visibility-label">Hide cleared</span>
+      </button>
+    </div>
   </div>
+  <div class="boss-mission-slot" id="boss-mission-slot"></div>
   <div class="filters" id="filters"></div>
   <div class="qlist" id="qlist"></div>
   <div class="all-done" id="all-done">
@@ -280,21 +311,52 @@ window.addEventListener('error', function(e){
 </div>
 
 <div class="modal-overlay" id="modal" onclick="bgClose(event)">
-  <div class="modal">
-    <div class="m-title">New quest</div>
-    <label class="m-lbl">Quest name</label>
-    <input class="m-input" id="qin" placeholder="e.g. Study Python for 1 hour"/>
-    <label class="m-lbl">Difficulty</label>
-    <div class="dg">
-      <div class="do se" data-d="easy" onclick="selD(this)">Easy<br><span style="font-size:9px;opacity:.7">+50 XP</span></div>
-      <div class="do" data-d="normal" onclick="selD(this)">Normal<br><span style="font-size:9px;opacity:.7">+100 XP</span></div>
-      <div class="do" data-d="hard" onclick="selD(this)">Hard<br><span style="font-size:9px;opacity:.7">+200 XP</span></div>
+  <div class="modal quest-forge" role="dialog" aria-modal="true" aria-labelledby="forge-title">
+    <div class="forge-scan" aria-hidden="true"></div>
+    <div class="forge-grip" aria-hidden="true"></div>
+    <header class="forge-header">
+      <div class="forge-emblem"><i class="ti ti-target-arrow"></i></div>
+      <div><div class="forge-kicker">Mission Forge</div><div class="forge-title" id="forge-title">Deploy New Quest</div></div>
+      <button class="forge-close" type="button" onclick="closeModal()" aria-label="Close quest creator"><i class="ti ti-x"></i></button>
+    </header>
+    <section class="forge-section">
+      <div class="forge-section-head"><span class="forge-step">01</span><label class="forge-label" for="qin">Mission Directive</label><span class="forge-section-note">Required</span></div>
+      <div class="forge-input-shell" id="quest-input-shell"><i class="ti ti-crosshair"></i><input class="m-input" id="qin" placeholder="What will you accomplish?" autocomplete="off" oninput="clearForgeError()"/></div>
+      <div class="forge-input-error" id="quest-input-error">Enter a mission directive before deployment.</div>
+    </section>
+    <section class="forge-section">
+      <div class="forge-section-head"><span class="forge-step">02</span><div class="forge-label">Threat Level</div><span class="forge-section-note">XP yield</span></div>
+      <div class="dg">
+        <button class="do se" type="button" data-d="easy" onclick="selD(this)"><i class="ti ti-feather"></i><strong>Easy</strong><span>+50 XP</span></button>
+        <button class="do" type="button" data-d="normal" onclick="selD(this)"><i class="ti ti-bolt"></i><strong>Normal</strong><span>+100 XP</span></button>
+        <button class="do" type="button" data-d="hard" onclick="selD(this)"><i class="ti ti-flame"></i><strong>Hard</strong><span>+200 XP</span></button>
+      </div>
+    </section>
+    <section class="forge-section">
+      <div class="forge-section-head"><span class="forge-step">03</span><div class="forge-label">Attribute Channel</div><span class="forge-section-note">Growth target</span></div>
+      <div class="cg" id="catg"></div>
+    </section>
+    <div class="forge-output" id="forge-output">
+      <div class="forge-output-icon" id="forge-preview-icon"></div>
+      <div><div class="forge-output-kicker">Deployment Output</div><div class="forge-output-name" id="forge-preview-name">Intelligence / Easy</div></div>
+      <div class="forge-output-xp" id="forge-preview-xp">+50<small>XP</small></div>
     </div>
-    <label class="m-lbl">Attribute</label>
-    <div class="cg" id="catg"></div>
     <div class="m-acts">
-      <button class="m-cancel" onclick="closeModal()">Cancel</button>
-      <button class="m-ok" onclick="addQ()">Deploy quest</button>
+      <button class="m-cancel" type="button" onclick="closeModal()">Cancel</button>
+      <button class="m-ok" id="forge-deploy" type="button" onclick="addQ()"><i class="ti ti-rocket"></i><span>Deploy Quest</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="boss-confirm-overlay" id="boss-mission-confirm" onclick="closeBossMissionConfirm(event)">
+  <div class="boss-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="boss-confirm-title">
+    <div class="boss-confirm-kicker" id="boss-confirm-kicker">Boss mission</div>
+    <div class="boss-confirm-title" id="boss-confirm-title">Confirm mission</div>
+    <div class="boss-confirm-copy" id="boss-confirm-copy"></div>
+    <div class="boss-confirm-warning"><i class="ti ti-alert-triangle"></i><span id="boss-confirm-warning"></span></div>
+    <div class="boss-confirm-actions">
+      <button class="boss-confirm-back" type="button" onclick="closeBossMissionConfirm()">Go back</button>
+      <button class="boss-confirm-submit" id="boss-confirm-submit" type="button" onclick="confirmBossMissionAction()">Confirm</button>
     </div>
   </div>
 </div>
@@ -333,11 +395,208 @@ const ATTR_ID_REVERSE={intelligence:'intel',strength:'str',charisma:'cha',willpo
 
 let st={filter:'all',sd:'easy',sc:'intel'};
 let gs=null; // current GameState snapshot, refreshed after every mutation
+const COMPLETED_VISIBILITY_KEY='rpg-quest-hidden-completed-v1';
+let bossMissionTimer=null;
+let bossMissionAction=null;
+let bossMissionExpiryBusy=false;
+
+function escapeQuestUi(value){
+  return String(value==null?'':value).replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+}
+
+function formatBossMissionTime(milliseconds){
+  const totalSeconds=Math.max(0,Math.ceil(milliseconds/1000));
+  const days=Math.floor(totalSeconds/86400);
+  const hours=Math.floor((totalSeconds%86400)/3600);
+  const minutes=Math.floor((totalSeconds%3600)/60);
+  const seconds=totalSeconds%60;
+  if(days>0) return days+'d '+String(hours).padStart(2,'0')+'h';
+  if(hours>0) return String(hours).padStart(2,'0')+':'+String(minutes).padStart(2,'0')+':'+String(seconds).padStart(2,'0');
+  return String(minutes).padStart(2,'0')+':'+String(seconds).padStart(2,'0');
+}
+
+function updateBossMissionClock(){
+  const clock=document.getElementById('boss-mission-clock');
+  const mission=gs&&gs.bosses&&gs.bosses.activeMission;
+  if(!clock||!mission) return;
+  const remaining=Number(mission.deadlineAt)-Date.now();
+  clock.textContent=formatBossMissionTime(remaining);
+  if(remaining<=0) expireBossMissionFromBoard();
+}
+
+function startBossMissionClock(){
+  if(bossMissionTimer){clearInterval(bossMissionTimer);bossMissionTimer=null}
+  const mission=gs&&gs.bosses&&gs.bosses.activeMission;
+  if(!mission) return;
+  updateBossMissionClock();
+  if(!gs.bosses.activeMission) return;
+  bossMissionTimer=setInterval(updateBossMissionClock,1000);
+}
+
+function renderBossMission(){
+  const slot=document.getElementById('boss-mission-slot');
+  const mission=gs&&gs.bosses&&gs.bosses.activeMission;
+  if(!mission||mission.status!=='active'){
+    slot.innerHTML='';
+    startBossMissionClock();
+    return;
+  }
+
+  if(typeof Bosses.completeActiveMission!=='function'||typeof Bosses.cancelActiveMission!=='function'){
+    slot.innerHTML='<div class="boss-mission-sync"><i class="ti ti-refresh-alert"></i><span>Boss Mission protocol is updating. Reload while online to restore controls.</span></div>';
+    return;
+  }
+
+  const bossDef=SEED_DATA.bosses[mission.bossId];
+  const point=bossDef&&Array.isArray(bossDef.weakPoints)?bossDef.weakPoints.find(item=>item.id===mission.weakPointId):null;
+  if(!bossDef||!point){
+    slot.innerHTML='<div class="boss-mission-sync"><i class="ti ti-alert-triangle"></i><span>Mission data is unavailable. Open the Boss screen to review this encounter.</span></div>';
+    return;
+  }
+
+  const nominalDamage=Math.round((Number(bossDef.maxHp)||0)*(Number(point.breakDamagePct)||0));
+  const integrityDamage=Math.min(Math.max(0,Number(gs.bosses.currentHp)||0),nominalDamage);
+  const dominanceReduction=Math.min(Math.max(0,Number(gs.bosses.dominance)||0),Math.max(0,Number(point.dominanceReduction)||0));
+  slot.innerHTML=`<article class="boss-mission-card">
+    <div class="boss-mission-head">
+      <div class="boss-mission-icon"><i class="ti ti-crosshair"></i></div>
+      <div class="boss-mission-identity"><div class="boss-mission-kicker">Primary Boss Mission</div><div class="boss-mission-name">${escapeQuestUi(bossDef.name)} <span>/ ${escapeQuestUi(point.name)}</span></div></div>
+      <div class="boss-mission-clock"><small>Time left</small><strong id="boss-mission-clock">${formatBossMissionTime(Number(mission.deadlineAt)-Date.now())}</strong></div>
+    </div>
+    <div class="boss-mission-target"><small>Mission target</small><strong>${escapeQuestUi(mission.userTarget)}</strong></div>
+    <div class="boss-mission-effects">
+      <div class="boss-mission-effect"><i class="ti ti-shield-bolt"></i><div><span>Integrity damage</span><strong>-${integrityDamage} HP</strong></div></div>
+      <div class="boss-mission-effect"><i class="ti ti-trending-down"></i><div><span>Dominance effect</span><strong>-${Math.round(dominanceReduction*100)/100}</strong></div></div>
+    </div>
+    <div class="boss-mission-actions">
+      <button class="boss-mission-button cancel" type="button" onclick="openBossMissionConfirm('cancel')"><i class="ti ti-x"></i> Cancel</button>
+      <button class="boss-mission-button complete" type="button" onclick="openBossMissionConfirm('complete')"><i class="ti ti-check"></i> Complete mission</button>
+    </div>
+  </article>`;
+  startBossMissionClock();
+}
+
+function expireBossMissionFromBoard(){
+  if(bossMissionExpiryBusy||!gs.bosses.activeMission||typeof Bosses.processMissionExpiration!=='function') return;
+  bossMissionExpiryBusy=true;
+  let outcome;
+  gs=GameState.set(state=>{outcome=Bosses.processMissionExpiration(state,Date.now())});
+  bossMissionExpiryBusy=false;
+  if(outcome&&outcome.expired){
+    closeBossMissionConfirm();
+    renderHeader();
+    renderQuests();
+    if(outcome.encounterDefeated) showBoardNotice('Encounter lost','The boss has retreated. Open the Boss screen for the encounter report.',4500);
+    else showBoardNotice('Boss Mission expired','Dominance +'+outcome.dominanceIncreased+'. Review the failure on the Boss screen.',4500);
+  }
+}
+
+function openBossMissionConfirm(action){
+  const mission=gs&&gs.bosses&&gs.bosses.activeMission;
+  if(!mission) return;
+  bossMissionAction=action;
+  const isComplete=action==='complete';
+  document.getElementById('boss-confirm-kicker').textContent=isComplete?'Weak point strike':'Abort protocol';
+  document.getElementById('boss-confirm-title').textContent=isComplete?'Complete this Boss Mission?':'Cancel this Boss Mission?';
+  document.getElementById('boss-confirm-copy').textContent=isComplete
+    ? 'Confirm that the real-life target has been completed. The weak point will break immediately.'
+    : 'The mission will end without dealing Integrity damage.';
+  const bossDef=SEED_DATA.bosses[mission.bossId];
+  document.getElementById('boss-confirm-warning').textContent=isComplete
+    ? 'This progression action is final and cannot be undone.'
+    : 'Cancellation increases Dominance by up to '+Math.max(0,Number(bossDef&&bossDef.cancellationDominancePenalty)||0)+'.';
+  const submit=document.getElementById('boss-confirm-submit');
+  submit.textContent=isComplete?'Break weak point':'Cancel mission';
+  submit.classList.toggle('danger',!isComplete);
+  document.getElementById('boss-mission-confirm').classList.add('open');
+}
+
+function closeBossMissionConfirm(event){
+  const overlay=document.getElementById('boss-mission-confirm');
+  if(event&&event.target!==overlay) return;
+  overlay.classList.remove('open');
+  bossMissionAction=null;
+}
+
+function confirmBossMissionAction(){
+  const action=bossMissionAction;
+  if(action!=='complete'&&action!=='cancel') return;
+  let outcome;
+  gs=GameState.set(state=>{
+    outcome=action==='complete'
+      ? Bosses.completeActiveMission(state,Date.now())
+      : Bosses.cancelActiveMission(state,Date.now());
+  });
+  closeBossMissionConfirm();
+  renderHeader();
+  renderQuests();
+
+  if(outcome&&outcome.encounterDefeated){
+    showBoardNotice('Encounter lost','The boss has retreated. Open the Boss screen for the encounter report.',4500);
+    return;
+  }
+  if(outcome&&outcome.expired){
+    showBoardNotice('Boss Mission expired','The deadline passed before confirmation. Review the failure on the Boss screen.',4500);
+    return;
+  }
+  if(action==='complete'&&outcome&&outcome.completed){
+    if(outcome.defeated) showBossDefeatedToast(outcome.bossId);
+    else showBoardNotice('Weak point destroyed','-'+outcome.damageDealt+' Integrity / -'+outcome.dominanceReduced+' Dominance',4200);
+    return;
+  }
+  if(action==='cancel'&&outcome&&outcome.cancelled){
+    showBoardNotice('Boss Mission cancelled','Dominance +'+outcome.dominanceIncreased,4200);
+    return;
+  }
+  showBoardNotice('Mission not changed','The mission state was already updated. Reload and try again.',3500);
+}
+
+function loadCompletedVisibility(){
+  const today=DateUtils.getLocalDateKey();
+  try{
+    const hiddenDate=localStorage.getItem(COMPLETED_VISIBILITY_KEY);
+    if(hiddenDate===today) return true;
+    if(hiddenDate) localStorage.removeItem(COMPLETED_VISIBILITY_KEY);
+  }catch(error){
+    console.error('Could not read completed quest visibility.',error);
+  }
+  return false;
+}
+
+let hideCompleted=loadCompletedVisibility();
+
+function saveCompletedVisibility(){
+  try{
+    if(hideCompleted) localStorage.setItem(COMPLETED_VISIBILITY_KEY,DateUtils.getLocalDateKey());
+    else localStorage.removeItem(COMPLETED_VISIBILITY_KEY);
+  }catch(error){
+    console.error('Could not save completed quest visibility.',error);
+  }
+}
+
+function toggleCompletedVisibility(){
+  hideCompleted=!hideCompleted;
+  saveCompletedVisibility();
+  renderQuests();
+}
+
+function renderCompletedVisibility(tasks){
+  const doneCount=tasks.filter(task=>task.done).length;
+  const button=document.getElementById('completed-visibility');
+  button.hidden=doneCount===0;
+  button.classList.toggle('active',hideCompleted);
+  button.setAttribute('aria-pressed',hideCompleted?'true':'false');
+  document.getElementById('completed-visibility-icon').className='ti '+(hideCompleted?'ti-eye':'ti-archive');
+  document.getElementById('completed-visibility-label').textContent=hideCompleted?'Show cleared':'Hide cleared ('+doneCount+')';
+}
 
 function refreshFromGameState(){
   const report=GameLoop.bootstrapDay();
   if(report.streakResult&&report.streakResult.penaltyApplied) showPenaltyToast(report.streakResult);
   gs=GameState.get();
+  if(report.dominanceUpdate&&report.dominanceUpdate.encounterDefeated){
+    showBoardNotice('Encounter lost','Dominance reached 100. The boss has retreated.',4500);
+  }
   if(report.questsReset) renderDayReport();
 }
 
@@ -392,13 +651,23 @@ function renderFilters(){
 function setF(id){st.filter=id;renderFilters();renderQuests()}
 function renderQuests(){
   const tasks=gs.quests.active;
-  const vis=st.filter==='all'?tasks:tasks.filter(t=>ATTR_ID_REVERSE[t.attribute]===st.filter);
+  renderBossMission();
+  renderCompletedVisibility(tasks);
+  const visibleTasks=hideCompleted?tasks.filter(t=>!t.done):tasks;
+  const vis=st.filter==='all'?visibleTasks:visibleTasks.filter(t=>ATTR_ID_REVERSE[t.attribute]===st.filter);
   const list=document.getElementById('qlist');list.innerHTML='';
-  if(vis.length===0){
+  const allClearedHidden=hideCompleted&&tasks.length>0&&tasks.every(task=>task.done);
+  if(vis.length===0&&!allClearedHidden){
     list.innerHTML=`<div class="quest-empty"><i class="ti ti-radar-off"></i><strong>${tasks.length?'No matching missions':'No missions deployed'}</strong><span>${tasks.length?'Switch attribute channels to find another quest.':'Create a quest when you are ready to move your character forward.'}</span></div>`;
   }
   vis.forEach((t,index)=>{
     const a=aById(ATTR_ID_REVERSE[t.attribute]||'intel');
+    const bossDef=Bosses.getCurrentBossDef(gs);
+    const bossDamage=Bosses.getQuestDamageBreakdown(bossDef,t);
+    const bossMatch=bossDamage.matches[0]||null;
+    const bossStyle=bossMatch&&bossMatch.matchType==='tag'
+      ? (bossMatch.match==='discipline'?{color:'#F7C948',rgb:'247,201,72'}:{color:'#8B5CF6',rgb:'139,92,246'})
+      : {color:a.col,rgb:a.col==='#35F4E6'?'53,244,230':a.col==='#41E6A4'?'65,230,164':a.col==='#F06AA6'?'240,106,166':'255,92,122'};
     const wrap=document.createElement('div');
     wrap.className='qc-wrap';
     wrap.innerHTML=`
@@ -416,14 +685,15 @@ function renderQuests(){
       <div class="qc-top">
         <div class="qmission-icon" style="color:${a.col};background:${a.bg};border-color:${a.bd}">${AttributeIcons.markup(t.attribute,a.icon)}</div>
         <div class="qbody">
-          <div class="qt">${t.title}</div>
+          <div class="qt">${escapeQuestUi(t.title)}</div>
           <div class="qmeta">
             <span class="qattr" style="background:${a.bg};border:1px solid ${a.bd};color:${a.col}"><i class="ti ${a.icon}"></i>${a.label}</span>
             <span class="qdiff">${t.difficulty}</span>${t.scheduledTime?`<span class="qtime"><i class="ti ti-clock"></i>${t.scheduledTime}</span>`:''}<span class="qxp">+${t.xp} XP</span>
           </div>
         </div>
         <div class="qchk">${t.done?'<i class="ti ti-check"></i>':''}</div>
-      </div>`;
+      </div>
+      ${bossMatch?`<div class="boss-target-signal" style="--boss-color:${bossStyle.color};--boss-rgb:${bossStyle.rgb}"><i class="ti ti-crosshair"></i><span>${bossMatch.matchType==='tag'?escapeQuestUi(bossMatch.match):'Weak point locked'}</span><strong>${bossDamage.totalDamage} DMG</strong></div>`:''}`;
     if(!t.done) c.onclick=()=>toggle(t.id,c);
     wrap.appendChild(c);
     list.appendChild(wrap);
@@ -512,7 +782,8 @@ function toggle(id,card){
     burst(card,result.quest.xp);
     if(result.playerLeveledUp) showLU();
     if(result.newAchievements.length) result.newAchievements.forEach(a=>showAchievementToast(a));
-    if(result.bossDefeated) showBossDefeatedToast(result.bossDefeated);
+    if(result.bossEncounterDefeated) showBoardNotice('Encounter lost','Dominance reached 100. The boss has retreated.',4500);
+    else if(result.bossDefeated) showBossDefeatedToast(result.bossDefeated);
     else if(result.bossDamageDealt>0) bossDamageBurst(card,result.bossDamageDealt);
   }
   renderHeader();
@@ -530,7 +801,14 @@ function bossDamageBurst(card,damage){
     setTimeout(()=>{b.style.opacity='0';setTimeout(()=>b.remove(),300);},1400);
   }));
 }
-function showLU(){const el=document.getElementById('lvlup');document.getElementById('lu-txt').textContent='Level '+gs.level+' reached';el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3500);}
+function showBoardNotice(title,subtitle,duration){
+  const el=document.getElementById('lvlup');
+  document.getElementById('lu-txt').textContent=title;
+  el.querySelector('.lu-sub').textContent=subtitle;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),duration||3500);
+}
+function showLU(){showBoardNotice('Level '+gs.level+' reached','New perks available in skill tree',3500)}
 let achievementQueue=[];
 let achievementPopupShowing=false;
 
@@ -557,11 +835,13 @@ function closeAchievementPopup(){
 function showBossDefeatedToast(bossId){
   const el=document.getElementById('lvlup');
   const bossDef=SEED_DATA.bosses[bossId];
+  el.querySelector('.lu-sub').textContent='Encounter cleared. Boss rewards secured.';
   document.getElementById('lu-txt').textContent=(bossDef?bossDef.name:bossId)+' defeated!';
   el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3500);
 }
 function showPenaltyToast(streakResult){
   const el=document.getElementById('lvlup');
+  el.querySelector('.lu-sub').textContent='Daily progression penalty applied.';
   document.getElementById('lu-txt').textContent='Discipline decay — streak reset, -'+streakResult.xpLost+' XP';
   el.classList.add('show');setTimeout(()=>el.classList.remove('show'),4500);
 }
@@ -572,15 +852,28 @@ function burst(card,xp){
     setTimeout(()=>{b.style.opacity='0';b.style.transform='translateY(-30px)';setTimeout(()=>b.remove(),400);},580);
   }));
 }
-function openModal(){st.sd='easy';st.sc='intel';document.getElementById('qin').value='';renderCG();renderDG();document.getElementById('modal').classList.add('open');setTimeout(()=>document.getElementById('qin').focus(),300);}
-function closeModal(){document.getElementById('modal').classList.remove('open')}
+function updateForgePreview(){
+  const attr=aById(st.sc);
+  const xpMap={easy:50,normal:100,hard:200};
+  const xpColors={easy:'#41E6A4',normal:'#35F4E6',hard:'#FF5C7A'};
+  const difficulty=st.sd.charAt(0).toUpperCase()+st.sd.slice(1);
+  const output=document.getElementById('forge-output');
+  output.style.setProperty('--preview-color',attr.col);
+  output.style.setProperty('--xp-color',xpColors[st.sd]);
+  document.getElementById('forge-preview-icon').innerHTML=AttributeIcons.markup(ATTR_ID_MAP[attr.id],attr.icon);
+  document.getElementById('forge-preview-name').textContent=attr.label+' / '+difficulty;
+  document.getElementById('forge-preview-xp').innerHTML='+'+xpMap[st.sd]+'<small>XP</small>';
+}
+function clearForgeError(){document.getElementById('quest-input-shell').classList.remove('invalid');document.getElementById('quest-input-error').classList.remove('show')}
+function openModal(){st.sd='easy';st.sc='intel';document.getElementById('qin').value='';clearForgeError();renderCG();renderDG();document.body.classList.add('modal-active');document.getElementById('modal').classList.add('open');setTimeout(()=>document.getElementById('qin').focus(),360);}
+function closeModal(){document.getElementById('modal').classList.remove('open');document.body.classList.remove('modal-active');clearForgeError()}
 function bgClose(e){if(e.target===document.getElementById('modal'))closeModal()}
 function selD(el){st.sd=el.dataset.d;renderDG()}
-function renderDG(){document.querySelectorAll('.do').forEach(el=>{el.className='do';if(el.dataset.d===st.sd)el.classList.add(st.sd==='easy'?'se':st.sd==='normal'?'sn':'sh');});}
-function renderCG(){const g=document.getElementById('catg');g.innerHTML='';ATTRS.forEach(a=>{const d=document.createElement('div');d.className='co'+(a.id===st.sc?' sel':'');d.innerHTML=AttributeIcons.markup(ATTR_ID_MAP[a.id],a.icon)+a.label;d.onclick=()=>{st.sc=a.id;renderCG()};g.appendChild(d);});}
+function renderDG(){document.querySelectorAll('.quest-forge .do').forEach(el=>{el.className='do';const selected=el.dataset.d===st.sd;if(selected)el.classList.add(st.sd==='easy'?'se':st.sd==='normal'?'sn':'sh');el.setAttribute('aria-pressed',selected?'true':'false');});updateForgePreview()}
+function renderCG(){const g=document.getElementById('catg');g.innerHTML='';ATTRS.forEach(a=>{const d=document.createElement('button');d.type='button';d.className='co'+(a.id===st.sc?' sel':'');d.style.setProperty('--attr-color',a.col);d.setAttribute('aria-pressed',a.id===st.sc?'true':'false');d.innerHTML=AttributeIcons.markup(ATTR_ID_MAP[a.id],a.icon)+'<span>'+a.label+'</span><i class="ti ti-check co-check"></i>';d.onclick=()=>{st.sc=a.id;renderCG()};g.appendChild(d);});updateForgePreview()}
 function addQ(){
   const title=document.getElementById('qin').value.trim();
-  if(!title)return;
+  if(!title){document.getElementById('quest-input-shell').classList.add('invalid');document.getElementById('quest-input-error').classList.add('show');document.getElementById('qin').focus();return}
   const xpMap={easy:50,normal:100,hard:200};
   GameState.set(state=>{
     Quests.addQuest(state,{title,attribute:ATTR_ID_MAP[st.sc],difficulty:st.sd,xp:xpMap[st.sd]});
@@ -598,6 +891,7 @@ if(new URLSearchParams(window.location.search).get('plan')==='1'){
   if(window.history&&window.history.replaceState) window.history.replaceState(null,'','quests.html');
 }
 </script>
+<script src="js/panel-navigation.js"></script>
 <script src="js/sw-register.js"></script>
 <script src="js/app-version.js"></script>
 </body>

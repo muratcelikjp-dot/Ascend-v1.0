@@ -13,6 +13,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <title>RPG — Rewards</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<link rel="stylesheet" href="css/panel-navigation.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--ab:#020D18;--ab2:#04192E;--ab3:#071F38;--neon:#00E5FF;--oc:#00B4D8;--ocd:#005F87;--bd:rgba(0,180,216,0.18);--bd2:rgba(0,180,216,0.36);--tx:#C8EAF5;--txd:#4A7A90;--am:#EF9F27;--gr:#1D9E75;--re:#E24B4A;--pu:#7F77DD}
@@ -132,9 +133,49 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .m-cancel{flex:1;padding:10px;border:1px solid var(--bd);border-radius:2px;background:transparent;font-size:10px;cursor:pointer;color:var(--txd);text-transform:uppercase;letter-spacing:.07em}
 .m-ok{flex:2;padding:10px;border:none;background:var(--oc);border-radius:2px;color:var(--ab);font-size:10px;font-weight:500;cursor:pointer;text-transform:uppercase;letter-spacing:.07em;transition:background .15s}
 .m-ok:hover{background:var(--neon)}
+
+/* Abyss Reward Vault */
+:root{color-scheme:dark;--abyss-black:#020713;--abyss-deep:#071326;--abyss-ocean:#091B2F;--abyss-rift:#0B2744;--abyss-blue:#2F9DFF;--abyss-aqua:#35F4E6;--abyss-cyan:#8DEFFF;--abyss-purple:#8B5CF6;--abyss-gold:#F7C948;--abyss-green:#41E6A4;--abyss-coral:#FF5C7A;--abyss-text:#EAF8FF;--abyss-soft:#A7C7D9;--abyss-muted:#6F8EA3;--abyss-border:rgba(141,239,255,.18);--ab:var(--abyss-black);--ab2:var(--abyss-deep);--ab3:var(--abyss-ocean);--neon:var(--abyss-aqua);--oc:var(--abyss-blue);--bd:var(--abyss-border);--bd2:rgba(141,239,255,.34);--tx:var(--abyss-text);--txd:var(--abyss-muted);--am:var(--abyss-gold);--gr:var(--abyss-green);--re:var(--abyss-coral);--pu:var(--abyss-purple)}
+html{background:var(--abyss-black);overscroll-behavior:none}
+body{min-height:100vh;color:var(--abyss-text);background:var(--abyss-black)}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(118deg,transparent 0 72px,rgba(141,239,255,.024) 73px 74px),linear-gradient(160deg,rgba(247,201,72,.045),transparent 33%,rgba(139,92,246,.05) 75%,transparent)}
+.reward-vault-shell{position:relative;isolation:isolate;width:100%;max-width:430px;min-height:100svh;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(30px + env(safe-area-inset-bottom,0px));overflow:hidden;background:linear-gradient(180deg,rgba(2,7,19,.98),rgba(7,19,38,.94) 48%,rgba(2,7,19,.99))}
+.reward-vault-shell::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(247,201,72,.025),transparent),repeating-linear-gradient(0deg,transparent 0 25px,rgba(141,239,255,.016) 26px 27px)}
+.vault-header{position:relative;display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:11px;padding-bottom:13px;margin-bottom:14px;border-bottom:1px solid rgba(141,239,255,.16)}
+.vault-header::after{content:"";position:absolute;left:0;bottom:-1px;width:86px;height:1px;background:linear-gradient(90deg,var(--abyss-gold),transparent);box-shadow:0 0 10px rgba(247,201,72,.28)}
+.vault-back{width:42px;height:42px;display:grid;place-items:center;color:var(--abyss-cyan);text-decoration:none;border:1px solid var(--abyss-border);border-radius:7px;background:rgba(10,28,48,.58);-webkit-tap-highlight-color:transparent}
+.vault-back i{font-size:20px}.vault-back:active{transform:scale(.96)}
+.vault-kicker{font-size:8px;color:var(--abyss-gold);text-transform:uppercase;letter-spacing:.16em}
+.vault-heading h1{margin-top:3px;font-size:21px;line-height:1.1;font-weight:650;color:var(--abyss-text);letter-spacing:0}
+.vault-security{display:flex;align-items:center;gap:5px;color:rgba(65,230,164,.74);font-size:8px;text-transform:uppercase;letter-spacing:.1em}.vault-security::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--abyss-green);box-shadow:0 0 8px rgba(65,230,164,.65)}
+
+.vault-balance{position:relative;overflow:hidden;display:flex;align-items:center;gap:13px;padding:15px;margin-bottom:18px;border:1px solid rgba(247,201,72,.25);border-radius:8px;background:linear-gradient(135deg,rgba(33,31,35,.78),rgba(10,28,48,.68));box-shadow:0 16px 38px rgba(0,0,0,.24),0 0 26px rgba(247,201,72,.06)}
+.vault-balance::before{content:"";position:absolute;left:0;top:0;width:88px;height:1px;background:var(--abyss-gold);box-shadow:0 0 12px rgba(247,201,72,.5)}
+.vault-balance::after{content:"";position:absolute;right:-24px;bottom:-34px;width:108px;height:108px;border:1px solid rgba(247,201,72,.08);border-radius:50%;box-shadow:0 0 0 17px rgba(247,201,72,.025),0 0 0 34px rgba(247,201,72,.012);pointer-events:none}
+.balance-emblem{width:46px;height:46px;display:grid;place-items:center;flex:0 0 auto;border:1px solid rgba(247,201,72,.36);border-radius:7px;background:rgba(247,201,72,.07);color:var(--abyss-gold);box-shadow:inset 0 0 18px rgba(247,201,72,.035)}
+.balance-emblem i{font-size:23px}.balance-copy{min-width:0;flex:1}.balance-label{font-size:8px;color:var(--abyss-muted);text-transform:uppercase;letter-spacing:.13em}.balance-value{display:flex;align-items:baseline;gap:7px;margin-top:3px}.balance-value strong{font-size:27px;line-height:1;color:var(--abyss-text);font-weight:650}.balance-value span{font-size:9px;color:var(--abyss-gold);letter-spacing:.1em}.balance-state{font-size:8px;color:rgba(141,239,255,.48);text-transform:uppercase;letter-spacing:.08em;text-align:right}
+
+.vault-section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:0 1px 10px}.vault-section-kicker{display:flex;align-items:center;gap:6px;color:var(--abyss-gold);font-size:8px;text-transform:uppercase;letter-spacing:.14em}.vault-section-kicker i{font-size:14px}.vault-section-title{margin-top:4px;font-size:17px;color:var(--abyss-text);font-weight:600}.vault-section-status{color:var(--abyss-muted);font-size:8px;text-transform:uppercase;letter-spacing:.09em}
+.cat-all{--cat-color:#35f4e6;--cat-rgb:53,244,230}.cat-entertainment{--cat-color:#ff5fa2;--cat-rgb:255,95,162}.cat-food{--cat-color:#ff9f43;--cat-rgb:255,159,67}.cat-shopping{--cat-color:#f7c948;--cat-rgb:247,201,72}.cat-rest{--cat-color:#9b8cff;--cat-rgb:155,140,255}.cat-social{--cat-color:#41e6a4;--cat-rgb:65,230,164}.cat-other{--cat-color:#4fa8ff;--cat-rgb:79,168,255}
+.cat-tabs{display:flex;gap:6px;padding:0 0 12px;overflow-x:auto;scrollbar-width:none}.cat-tabs::-webkit-scrollbar{display:none}.cat-tab{min-width:58px;height:47px;padding:5px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-radius:7px;border-color:rgba(var(--cat-rgb),.17);background:rgba(10,28,48,.48);color:rgba(var(--cat-rgb),.56);font-size:6.8px;letter-spacing:.04em}.cat-tab i{font-size:17px;color:var(--cat-color);opacity:.72;filter:drop-shadow(0 0 5px rgba(var(--cat-rgb),.12))}.cat-tab.on{border-color:rgba(var(--cat-rgb),.5);background:rgba(var(--cat-rgb),.08);color:var(--cat-color);box-shadow:0 0 16px rgba(var(--cat-rgb),.08)}.cat-tab.on i{opacity:1;filter:drop-shadow(0 0 6px rgba(var(--cat-rgb),.35))}
+.reward-list{padding:0;gap:9px}.rw-card{display:grid;grid-template-columns:44px minmax(0,1fr);align-items:center;gap:0 11px;padding:12px;border-radius:8px;border-color:var(--abyss-border);background:linear-gradient(155deg,rgba(13,38,64,.74),rgba(7,19,38,.7));box-shadow:0 12px 28px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.03);animation:rewardDeploy .38s cubic-bezier(.2,.72,.25,1) both;animation-delay:calc(var(--deploy-index,0) * 55ms)}
+@keyframes rewardDeploy{0%{opacity:0;transform:translateY(-14px) scale(.985);filter:brightness(.72)}65%{opacity:1;filter:brightness(1.08)}100%{opacity:1;transform:translateY(0) scale(1);filter:brightness(1)}}
+.rw-card::before{content:"";position:absolute;left:0;top:9px;bottom:9px;width:2px;border-radius:0 3px 3px 0;background:var(--cat-color);opacity:.7;box-shadow:0 0 9px rgba(var(--cat-rgb),.38)}
+.rw-card.afford{border-color:rgba(65,230,164,.28)}
+.rw-card.premium{border-color:rgba(var(--cat-rgb),.38);background:linear-gradient(145deg,rgba(var(--cat-rgb),.07),rgba(7,19,38,.74))}
+.rw-card.locked{opacity:.66;background:repeating-linear-gradient(135deg,rgba(10,28,48,.68) 0 8px,rgba(14,31,53,.68) 8px 16px)}.rw-icon{width:42px;height:42px;border-radius:7px;background:rgba(var(--cat-rgb),.07);border-color:rgba(var(--cat-rgb),.28)}.rw-icon i{font-size:19px;color:var(--cat-color);filter:drop-shadow(0 0 5px rgba(var(--cat-rgb),.28))}.rw-card.locked .rw-icon i{color:var(--cat-color);opacity:.58}.rw-card.afford{box-shadow:0 12px 28px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.03),0 0 22px rgba(65,230,164,.045)}.rw-name{font-size:12px;font-weight:600;color:var(--abyss-text)}.rw-premium-tag{font-size:7px;border-color:rgba(var(--cat-rgb),.35);border-radius:3px;background:rgba(var(--cat-rgb),.1);color:var(--cat-color)}.rw-cost-line{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:4px}.rw-cost{margin-top:0;color:var(--cat-color);font-size:10px;letter-spacing:.06em}.rw-readiness{font-size:7px;color:var(--abyss-muted);text-transform:uppercase;letter-spacing:.07em;white-space:nowrap}.rw-card.afford .rw-readiness{color:var(--abyss-green)}.rw-progress{height:2px;margin-top:7px;overflow:hidden;border-radius:2px;background:rgba(var(--cat-rgb),.08)}.rw-progress-fill{display:block;height:100%;border-radius:inherit;background:var(--cat-color);box-shadow:0 0 8px rgba(var(--cat-rgb),.4)}.rw-lock-msg{margin-top:4px;color:rgba(var(--cat-rgb),.68);font-size:9px;text-transform:uppercase;letter-spacing:.06em}.rw-actions{grid-column:1/-1;display:grid;grid-template-columns:32px 32px minmax(0,1fr);gap:6px;margin-top:10px;padding-top:9px;border-top:1px solid rgba(141,239,255,.1)}.rw-btn{width:32px;height:32px;border-radius:5px;border-color:rgba(141,239,255,.18);background:rgba(2,7,19,.32)}.rw-btn.buy{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:32px;padding:0 11px;background:linear-gradient(90deg,rgba(47,157,255,.8),rgba(53,244,230,.82));border-color:rgba(141,239,255,.48);color:var(--abyss-black);font-size:9px;font-weight:650}.rw-btn.buy i{font-size:13px}.rw-btn.buy:hover{background:linear-gradient(90deg,var(--abyss-aqua),var(--abyss-cyan))}.rw-btn.buy:disabled{background:rgba(10,28,48,.64);border-color:var(--abyss-border);color:var(--abyss-muted)}
+.m-cat-opt[class*="cat-"] i{color:var(--cat-color)}.m-cat-opt[class*="cat-"].sel{border-color:rgba(var(--cat-rgb),.5);background:rgba(var(--cat-rgb),.08);color:var(--cat-color)}
+.add-btn{margin:10px 0 0;width:100%;min-height:44px;border-style:solid;border-radius:6px;border-color:rgba(247,201,72,.25);background:rgba(247,201,72,.035);color:var(--abyss-gold);font-weight:600}.add-btn:hover{background:rgba(247,201,72,.07);border-color:rgba(247,201,72,.48);color:var(--abyss-gold)}
+.toast{margin:9px 0 0;border-radius:6px}.empty-state{margin:0;padding:24px 18px;border-radius:8px;background:rgba(7,19,38,.3)}
+
+.vault-ledger{margin-top:17px;border-top:1px solid rgba(141,239,255,.14);border-bottom:1px solid rgba(141,239,255,.1)}.vault-ledger>summary{height:50px;display:flex;align-items:center;gap:8px;list-style:none;color:var(--abyss-soft);cursor:pointer;-webkit-tap-highlight-color:transparent}.vault-ledger>summary::-webkit-details-marker{display:none}.vault-ledger>summary>i:first-child{font-size:15px;color:var(--abyss-purple)}.vault-ledger>summary span{font-size:9px;text-transform:uppercase;letter-spacing:.12em}.vault-ledger-summary{margin-left:auto;color:var(--abyss-muted)!important;font-size:8px!important}.vault-ledger-chevron{font-size:14px;color:var(--abyss-muted);transition:transform .2s}.vault-ledger[open] .vault-ledger-chevron{transform:rotate(180deg)}.vault-ledger-body{padding:0 0 13px}.stats-row{margin:0 0 13px;gap:6px;background:transparent;border:0}.s-cell{padding:10px 5px;border:1px solid rgba(141,239,255,.12);border-radius:5px;background:rgba(10,28,48,.46)}.s-num{font-size:16px;color:var(--abyss-text)}.s-lbl{font-size:7px}.ledger-label{display:flex;align-items:center;gap:6px;margin:13px 1px 7px;color:var(--abyss-muted);font-size:8px;text-transform:uppercase;letter-spacing:.11em}.ledger-label i{font-size:13px;color:var(--abyss-purple)}.cat-breakdown-list,.history-list{padding:0;gap:6px}.cb-row,.hist-row{padding:9px 10px;border-radius:5px;border-color:rgba(141,239,255,.12);background:rgba(10,28,48,.42)}.cb-label{color:var(--abyss-soft)}
+.ach-popup-overlay{max-width:430px}.modal-overlay{background:rgba(2,7,19,.86)}.modal{width:min(100%,430px);padding:20px 16px calc(28px + env(safe-area-inset-bottom,0px));border-color:rgba(247,201,72,.35);border-radius:10px 10px 0 0;background:linear-gradient(180deg,rgba(13,38,64,.99),var(--abyss-deep))}.m-title{color:var(--abyss-gold)}.m-input{border-radius:6px;background:rgba(2,7,19,.62)}.m-cat-opt,.m-toggle-row,.m-cancel,.m-ok{border-radius:6px}.m-ok{background:linear-gradient(90deg,var(--abyss-blue),var(--abyss-aqua))}
+
+@media(max-width:350px){.reward-vault-shell{padding-left:12px;padding-right:12px}.vault-security{display:none}.vault-header{grid-template-columns:38px minmax(0,1fr)}.vault-back{width:38px;height:38px}.balance-state{display:none}.vault-ledger-summary{display:none}.rw-card{padding:10px}.cat-tab{min-width:54px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-delay:0ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style>
 </head>
-<body>
+<body data-panel="rewards">
 <div id="global-error-banner" style="display:none;position:fixed;top:0;left:0;right:0;background:#5a1010;color:#ffdede;padding:12px 14px;font-family:monospace;font-size:11px;z-index:99999;max-height:40vh;overflow-y:auto;white-space:pre-wrap;border-bottom:2px solid #ff4444"></div>
 <script>
 window.addEventListener('error', function(e){
@@ -148,43 +189,57 @@ window.addEventListener('error', function(e){
 });
 </script>
 
-<div class="app">
-  <div class="banner">
-    <div class="scan"></div>
-    <div class="bn-row">
-      <div><div class="bn-title">Rewards shop</div><div class="bn-sub">Spend XP on rewards you define</div></div>
-      <div class="pill-xp"><i class="ti ti-bolt" style="font-size:12px"></i><span id="xp-balance">0</span></div>
+<div class="app reward-vault-shell panel-nav-shell">
+  <header class="vault-header panel-nav-header" style="--panel-progress:80%">
+    <a class="vault-back" href="index.html" aria-label="Return to command center"><i class="ti ti-home"></i></a>
+    <div class="vault-heading">
+      <div class="vault-kicker">Panel 04</div>
+      <h1>Rewards</h1>
     </div>
-  </div>
+    <div class="vault-security">Vault secure</div>
+  </header>
 
-  <div class="stats-row">
-    <div class="s-cell"><div class="s-num" id="s-spent">0</div><div class="s-lbl">XP spent</div></div>
-    <div class="s-cell"><div class="s-num" id="s-purchases">0</div><div class="s-lbl">Purchases</div></div>
-    <div class="s-cell"><div class="s-num" id="s-favcat">—</div><div class="s-lbl">Top category</div></div>
-  </div>
+  <section class="vault-balance">
+    <div class="balance-emblem"><i class="ti ti-bolt"></i></div>
+    <div class="balance-copy">
+      <div class="balance-label">Available progression</div>
+      <div class="balance-value"><strong id="xp-balance">0</strong><span>XP</span></div>
+    </div>
+    <div class="balance-state" id="balance-state">Vault scanning</div>
+  </section>
 
+  <div class="vault-section-head">
+    <div>
+      <div class="vault-section-kicker"><i class="ti ti-chest"></i>Vault inventory</div>
+      <div class="vault-section-title">Available Rewards</div>
+    </div>
+    <div class="vault-section-status">Personal loot</div>
+  </div>
   <div class="cat-tabs" id="cat-tabs"></div>
-
-  <div class="sec-bar"><span class="sec-title">Available rewards</span></div>
   <div class="reward-list" id="reward-list"></div>
-  <button class="add-btn" onclick="openAddModal()"><i class="ti ti-plus"></i> Add custom reward</button>
+  <button class="add-btn" onclick="openAddModal()"><i class="ti ti-plus"></i> Forge custom reward</button>
 
   <div class="toast" id="toast"><i class="ti ti-check" style="font-size:14px" id="toast-icon"></i><span id="toast-txt"></span></div>
 
-  <div class="sec-bar"><span class="sec-title">Spending by category</span></div>
-  <div class="cat-breakdown-list" id="cat-breakdown-list"></div>
-
-  <div class="sec-bar"><span class="sec-title">Purchase history</span></div>
-  <div class="history-list" id="history-list"></div>
+  <details class="vault-ledger">
+    <summary>
+      <i class="ti ti-book-2"></i><span>Vault ledger</span>
+      <span class="vault-ledger-summary">Spending · History</span>
+      <i class="ti ti-chevron-down vault-ledger-chevron"></i>
+    </summary>
+    <div class="vault-ledger-body">
+      <div class="stats-row">
+        <div class="s-cell"><div class="s-num" id="s-spent">0</div><div class="s-lbl">XP spent</div></div>
+        <div class="s-cell"><div class="s-num" id="s-purchases">0</div><div class="s-lbl">Purchases</div></div>
+        <div class="s-cell"><div class="s-num" id="s-favcat">—</div><div class="s-lbl">Top category</div></div>
+      </div>
+      <div class="ledger-label"><i class="ti ti-chart-donut"></i>Spending by category</div>
+      <div class="cat-breakdown-list" id="cat-breakdown-list"></div>
+      <div class="ledger-label"><i class="ti ti-history"></i>Purchase history</div>
+      <div class="history-list" id="history-list"></div>
+    </div>
+  </details>
 </div>
-
-<nav class="nav">
-  <a class="ni" href="quests.html"><i class="ti ti-list-check"></i><span>Quests</span></a>
-  <a class="ni" href="stats.html"><i class="ti ti-chart-bar"></i><span>Stats</span></a>
-  <a class="ni" href="boss.html"><i class="ti ti-skull"></i><span>Boss</span></a>
-  <a class="ni on" href="rewards.html"><i class="ti ti-gift"></i><span>Rewards</span></a>
-  <a class="ni" href="hero.html"><i class="ti ti-user"></i><span>Hero</span></a>
-</nav>
 
 <div class="ach-popup-overlay" id="ach-popup">
   <div class="ach-popup-card">
@@ -240,8 +295,16 @@ let activeCategory='all';
 let isPremiumToggle=false;
 let selectedCategory='other';
 
+function escapeRewardUi(value){
+  return String(value==null?'':value).replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+}
+
 function renderBalance(){
   document.getElementById('xp-balance').textContent=gs.xp;
+  const rewards=Rewards.getByCategory(gs,'all');
+  const ready=rewards.filter(r=>!Rewards.isLocked(gs,r)&&gs.xp>=r.cost).length;
+  const state=document.getElementById('balance-state');
+  state.textContent=ready>0?`${ready} reward${ready===1?'':'s'} ready`:(rewards.length?'Gather more XP':'Vault empty');
 }
 
 function renderStats(){
@@ -261,7 +324,7 @@ function renderStats(){
 function renderCatTabs(){
   const tabs=[{id:'all',label:'All',icon:'ti-layout-grid'},...SEED_DATA.rewardCategories];
   document.getElementById('cat-tabs').innerHTML=tabs.map(c=>
-    `<button class="cat-tab${activeCategory===c.id?' on':''}" onclick="setCategory('${c.id}')"><i class="ti ${c.icon}"></i>${c.label}</button>`
+    `<button class="cat-tab cat-${c.id}${activeCategory===c.id?' on':''}" onclick="setCategory('${c.id}')"><i class="ti ${c.icon}"></i>${c.label}</button>`
   ).join('');
 }
 
@@ -277,25 +340,32 @@ function renderRewards(){
     list.innerHTML='<div class="empty-state">No rewards in this category yet.</div>';
     return;
   }
-  list.innerHTML=rewards.map(r=>{
+  list.innerHTML=rewards.map((r,index)=>{
     const canAfford=gs.xp>=r.cost;
     const locked=Rewards.isLocked(gs,r);
+    const progress=Math.min(100,Math.round((gs.xp/r.cost)*100));
+    const remaining=Math.max(0,r.cost-gs.xp);
     const catMeta=SEED_DATA.rewardCategories.find(c=>c.id===r.category)||{icon:'ti-gift'};
-    let cls='rw-card';
+    let cls=`rw-card cat-${r.category}`;
     if(r.isPremium) cls+=' premium';
     if(locked) cls+=' locked';
     else if(canAfford) cls+=' afford';
 
-    return `<div class="${cls}" id="card-${r.id}">
+    return `<div class="${cls}" id="card-${r.id}" style="--deploy-index:${Math.min(index,8)}">
       <div class="rw-icon"><i class="ti ${locked?'ti-lock':catMeta.icon}"></i></div>
       <div class="rw-body">
-        <div class="rw-name">${r.name}${r.isPremium?'<span class="rw-premium-tag">Premium</span>':''}</div>
-        ${locked?`<div class="rw-lock-msg">Unlocks at level ${r.requiredLevel}</div>`:`<div class="rw-cost">${r.cost} XP</div>`}
+        <div class="rw-name">${escapeRewardUi(r.name)}${r.isPremium?'<span class="rw-premium-tag">Premium</span>':''}</div>
+        ${locked?`<div class="rw-lock-msg">Unlocks at level ${r.requiredLevel}</div>`:`
+          <div class="rw-cost-line">
+            <div class="rw-cost">${r.cost} XP</div>
+            <div class="rw-readiness">${canAfford?'Redeem available':remaining+' XP remaining'}</div>
+          </div>
+          <div class="rw-progress" aria-hidden="true"><span class="rw-progress-fill" style="width:${progress}%"></span></div>`}
       </div>
       <div class="rw-actions">
-        <button class="rw-btn" onclick="openEditModal('${r.id}')"><i class="ti ti-pencil"></i></button>
-        <button class="rw-btn danger" onclick="removeReward('${r.id}')"><i class="ti ti-trash"></i></button>
-        <button class="rw-btn buy" ${(canAfford&&!locked)?'':'disabled'} onclick="buyReward('${r.id}')">${locked?'Locked':'Buy'}</button>
+        <button class="rw-btn" aria-label="Edit reward" title="Edit reward" onclick="openEditModal('${r.id}')"><i class="ti ti-pencil"></i></button>
+        <button class="rw-btn danger" aria-label="Delete reward" title="Delete reward" onclick="removeReward('${r.id}')"><i class="ti ti-trash"></i></button>
+        <button class="rw-btn buy" ${(canAfford&&!locked)?'':'disabled'} onclick="buyReward('${r.id}')">${locked?'<i class="ti ti-lock"></i> Locked':'<i class="ti ti-sparkles"></i> Redeem'}</button>
       </div>
     </div>`;
   }).join('');
@@ -328,7 +398,7 @@ function renderHistory(){
     return;
   }
   list.innerHTML=history.map(h=>
-    `<div class="hist-row"><span class="hist-name">${h.rewardName}</span><span class="hist-cost">-${h.cost} XP</span></div>`
+    `<div class="hist-row"><span class="hist-name">${escapeRewardUi(h.rewardName)}</span><span class="hist-cost">-${h.cost} XP</span></div>`
   ).join('');
 }
 
@@ -425,7 +495,7 @@ function openEditModal(rewardId){
 function renderCatGrid(selected){
   selectedCategory=selected;
   document.getElementById('m-cat-grid').innerHTML=SEED_DATA.rewardCategories.map(c=>
-    `<div class="m-cat-opt${selectedCategory===c.id?' sel':''}" onclick="selectCategory('${c.id}')"><i class="ti ${c.icon}"></i>${c.label}</div>`
+    `<div class="m-cat-opt cat-${c.id}${selectedCategory===c.id?' sel':''}" onclick="selectCategory('${c.id}')"><i class="ti ${c.icon}"></i>${c.label}</div>`
   ).join('');
 }
 function selectCategory(id){
@@ -468,6 +538,8 @@ function showToast(type,msg){
 
 renderAll();
 </script>
+<script src="js/panel-navigation.js"></script>
+<script src="js/app-version.js"></script>
 <script src="js/sw-register.js"></script>
 </body>
 </html>

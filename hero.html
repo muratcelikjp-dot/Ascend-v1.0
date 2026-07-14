@@ -14,6 +14,7 @@
 <title>RPG — Hero</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <link rel="stylesheet" href="css/attribute-icons.css">
+<link rel="stylesheet" href="css/panel-navigation.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -307,9 +308,12 @@ body{
 .attribute-module{margin-top:14px;border-top:1px solid rgba(0,180,216,.16)}
 .attribute-module .section-heading{margin-top:16px}
 .attr-tabs{margin:0 14px;padding:5px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;background:rgba(2,13,24,.74);border:1px solid rgba(0,180,216,.18);border-radius:7px;overflow:visible}
-.a-tab{min-width:0;height:58px;padding:7px 3px;display:flex;flex-direction:column;justify-content:center;gap:5px;border:1px solid transparent;border-radius:4px;font-size:7.5px;letter-spacing:.04em;text-align:center;overflow:hidden}
+.a-tab{min-width:0;height:68px;padding:7px 3px;display:flex;flex-direction:column;justify-content:center;gap:3px;border:1px solid transparent;border-radius:4px;font-size:7.5px;letter-spacing:.04em;text-align:center;overflow:hidden}
 .a-tab .attribute-glyph{width:25px;height:25px;filter:drop-shadow(0 0 4px currentColor)}
 .a-tab i{width:22px;height:22px;font-size:21px}
+.a-tab-label{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.a-tab-level{color:var(--txd);font-size:7px;line-height:1;letter-spacing:.08em}
+.a-tab.active .a-tab-level{color:currentColor}
 .a-tab:nth-child(1){color:#54dff6}
 .a-tab:nth-child(2){color:#4bd7a9}
 .a-tab:nth-child(3){color:#ef78ab}
@@ -320,7 +324,7 @@ body{
 .ab-lv{font-size:9px}
 .ab-bar{height:5px;border:1px solid rgba(0,180,216,.12);overflow:hidden}
 .ab-fill{box-shadow:0 0 9px currentColor}
-.skill-tree-wrap{padding:8px 14px 8px}
+.skill-tree-wrap{display:none;padding:8px 14px 8px}
 .skill-connector{height:11px;background:linear-gradient(var(--bd2),rgba(0,180,216,.12))}
 .skill-connector.active{box-shadow:0 0 7px rgba(0,229,255,.35)}
 .skill-card{min-height:62px;padding:11px 12px;background:rgba(4,25,46,.6);border-radius:5px}
@@ -412,7 +416,7 @@ body{
   .pill-lvl,.pill-streak{min-width:0}
   .activity-row{grid-template-columns:1fr}
   .legacy-count{display:none}
-  .a-tab{height:54px;font-size:6.8px}
+  .a-tab{height:63px;font-size:6.8px}
   .a-tab .attribute-glyph{width:22px;height:22px}
 }
 @media(prefers-reduced-motion:reduce){
@@ -420,7 +424,7 @@ body{
 }
 </style>
 </head>
-<body>
+<body data-panel="hero">
 <div id="global-error-banner" style="display:none;position:fixed;top:0;left:0;right:0;background:#5a1010;color:#ffdede;padding:12px 14px;font-family:monospace;font-size:11px;z-index:99999;max-height:40vh;overflow-y:auto;white-space:pre-wrap;border-bottom:2px solid #ff4444"></div>
 <script>
 window.addEventListener('error', function(e){
@@ -434,12 +438,12 @@ window.addEventListener('error', function(e){
 });
 </script>
 
-<div class="app hero-shell">
+<div class="app hero-shell panel-nav-shell">
 
-<header class="hero-topbar">
-  <a class="back-command" href="index.html" aria-label="Back to home"><i class="ti ti-arrow-left"></i></a>
-  <div>
-    <div class="screen-kicker">Character file</div>
+<header class="hero-topbar panel-nav-header" style="--panel-progress:100%">
+  <a class="back-command" href="index.html" aria-label="Back to home"><i class="ti ti-home"></i></a>
+  <div class="hero-heading">
+    <div class="screen-kicker">Panel 05</div>
     <h1 class="screen-title">Hero</h1>
   </div>
   <div class="system-state">Active</div>
@@ -494,7 +498,7 @@ window.addEventListener('error', function(e){
     <div class="ab-bar"><div class="ab-fill" id="ab-fill" style="width:0%"></div></div>
   </div>
 
-  <div class="skill-tree-wrap" id="skill-tree-wrap"></div>
+  <div class="skill-tree-wrap" id="skill-tree-wrap" aria-hidden="true"></div>
 </section>
 
 <section class="recent-growth">
@@ -805,7 +809,7 @@ function closeAchievementPopup(){
 
 function renderTabs(){
   document.getElementById('attr-tabs').innerHTML=ATTR_META.map(a=>
-    `<div class="a-tab${a.id===activeAttr?' active':''}" onclick="switchAttr('${a.id}')">${AttributeIcons.markup(a.id,a.icon)}${a.label}</div>`
+    `<div class="a-tab${a.id===activeAttr?' active':''}" onclick="switchAttr('${a.id}')">${AttributeIcons.markup(a.id,a.icon)}<span class="a-tab-label">${a.label}</span><span class="a-tab-level">LV ${gs.attributes[a.id].level}</span></div>`
   ).join('');
 }
 
@@ -909,6 +913,7 @@ window.addEventListener('storage',event=>{
   if(event.key===UserProfile.storageKey) renderProfile();
 });
 </script>
+<script src="js/panel-navigation.js"></script>
 <script src="js/app-version.js"></script>
 <script src="js/sw-register.js"></script>
 </body>

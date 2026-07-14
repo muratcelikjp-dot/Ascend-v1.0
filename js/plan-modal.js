@@ -15,6 +15,12 @@ const PlanModal = (function () {
     willpower: { label: "Willpower", icon: "ti-flame", color: "#FF5C7A", bg: "rgba(255,92,122,.1)", border: "rgba(255,92,122,.3)" }
   };
 
+  const difficulties = {
+    easy: { label: "Easy", xp: 50, icon: "ti-feather", color: "#41E6A4" },
+    normal: { label: "Normal", xp: 100, icon: "ti-bolt", color: "#35F4E6" },
+    hard: { label: "Hard", xp: 200, icon: "ti-flame", color: "#FF5C7A" }
+  };
+
   function escapeHtml(value) {
     return String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#039;" })[char]);
   }
@@ -26,9 +32,11 @@ const PlanModal = (function () {
     dialog.className = "plan-dialog";
     dialog.innerHTML = `
       <div class="plan-sheet">
+        <div class="plan-scan" aria-hidden="true"></div>
+        <div class="plan-grip" aria-hidden="true"></div>
         <header class="plan-sheet-head">
-          <div class="plan-sheet-mark"><i class="ti ti-moon-stars"></i></div>
-          <div class="plan-sheet-heading"><div class="plan-sheet-kicker">Night protocol</div><h2>Plan Tomorrow</h2></div>
+          <div class="plan-sheet-mark"><i class="ti ti-calendar-bolt"></i></div>
+          <div class="plan-sheet-heading"><div class="plan-sheet-kicker">Tomorrow protocol</div><h2>Plan Tomorrow</h2></div>
           <div class="plan-sheet-date" id="pm-date"></div>
           <button class="plan-close" type="button" onclick="PlanModal.close()" aria-label="Close plan"><i class="ti ti-x"></i></button>
         </header>
@@ -41,18 +49,32 @@ const PlanModal = (function () {
           <section class="plan-block">
             <div class="plan-block-head"><div><div class="plan-block-kicker"><i class="ti ti-swords"></i>Quest deployment</div><h3 class="plan-block-title">Build Tomorrow</h3></div><div class="plan-block-note">One Main Quest and up to three Side Quests</div></div>
             <div class="plan-composer">
-              <label class="plan-label" for="pm-goal">Quest name</label><input class="plan-input" id="pm-goal" placeholder="What will move you forward?">
-              <div class="plan-quest-options">
-                <div><span class="plan-label">Quest type</span><div class="plan-type-grid" id="pm-type-grid"></div></div>
-                <div><span class="plan-label">Difficulty</span><div class="plan-difficulty-grid" id="pm-difficulty-grid"></div></div>
+              <div class="plan-composer-section">
+                <div class="plan-step-head"><span>01</span><strong>Directive</strong></div>
+                <div class="plan-input-shell" id="pm-goal-shell"><i class="ti ti-pencil-bolt"></i><input class="plan-input" id="pm-goal" placeholder="What will move you forward?" oninput="PlanModal.clearGoalError()"></div>
+                <div class="plan-input-error" id="pm-goal-error">Enter a quest directive</div>
               </div>
-              <div class="plan-block" style="margin-top:8px"><span class="plan-label">Attribute</span><div class="plan-focus-grid" id="pm-attribute-grid"></div></div>
-              <div class="plan-composer-row">
-                <div><span class="plan-label">Time (optional)</span><button class="plan-time-trigger" id="pm-time-trigger" type="button" onclick="PlanModal.pickGoalTime()"><i class="ti ti-clock-hour-4"></i><span>Set time</span><i class="ti ti-chevron-right"></i></button></div>
-                <div><span class="plan-label">Reward</span><div class="plan-input" id="pm-xp-preview" style="display:flex;align-items:center;color:#8defff">+100 XP</div></div>
+              <div class="plan-composer-section">
+                <div class="plan-step-head"><span>02</span><strong>Mission Profile</strong></div>
+                <div class="plan-quest-options">
+                  <div><span class="plan-label">Quest type</span><div class="plan-type-grid" id="pm-type-grid"></div></div>
+                  <div><span class="plan-label">Difficulty</span><div class="plan-difficulty-grid" id="pm-difficulty-grid"></div></div>
+                </div>
+              </div>
+              <div class="plan-composer-section">
+                <div class="plan-step-head"><span>03</span><strong>Channel &amp; Time</strong></div>
+                <span class="plan-label">Attribute</span><div class="plan-focus-grid" id="pm-attribute-grid"></div>
+                <div class="plan-composer-row">
+                  <div><span class="plan-label">Time (optional)</span><button class="plan-time-trigger" id="pm-time-trigger" type="button" onclick="PlanModal.pickGoalTime()"><i class="ti ti-clock-hour-4"></i><span>Set time</span><i class="ti ti-chevron-right"></i></button></div>
+                </div>
+              </div>
+              <div class="plan-output" id="pm-output">
+                <div class="plan-output-icon" id="pm-output-icon"></div>
+                <div class="plan-output-body"><div class="plan-output-kicker">Deployment Output</div><div class="plan-output-name" id="pm-output-name"></div></div>
+                <div class="plan-output-xp" id="pm-xp-preview">+100<small>XP</small></div>
               </div>
               <div class="plan-limit" id="pm-limit"></div>
-              <button class="plan-add" type="button" onclick="PlanModal.addGoal()"><i class="ti ti-plus"></i>Add quest</button>
+              <button class="plan-add" type="button" onclick="PlanModal.addGoal()"><i class="ti ti-rocket"></i>Deploy for tomorrow</button>
             </div>
             <div class="plan-goals" id="pm-goals"></div>
           </section>
@@ -207,18 +229,30 @@ const PlanModal = (function () {
 
   function renderAttribute() {
     document.getElementById("pm-attribute-grid").innerHTML = Object.entries(attributes).map(([id, meta]) =>
-      `<button class="plan-focus${selectedAttribute === id ? " selected" : ""}" type="button" style="--focus-color:${meta.color};--focus-bg:${meta.bg};--focus-border:${meta.border}" onclick="PlanModal.selectAttribute('${id}')" aria-label="${meta.label}" title="${meta.label}">${AttributeIcons.markup(id, meta.icon)}</button>`
+      `<button class="plan-focus${selectedAttribute === id ? " selected" : ""}" type="button" style="--focus-color:${meta.color};--focus-bg:${meta.bg};--focus-border:${meta.border}" onclick="PlanModal.selectAttribute('${id}')" aria-label="${meta.label}">${AttributeIcons.markup(id, meta.icon)}<span>${meta.label}</span><i class="ti ti-check plan-focus-check"></i></button>`
     ).join("");
+  }
+
+  function renderOutput() {
+    const output = document.getElementById("pm-output");
+    if (!output) return;
+    const attribute = attributes[selectedAttribute] || attributes.willpower;
+    const difficulty = difficulties[selectedDifficulty] || difficulties.normal;
+    output.style.setProperty("--output-color", attribute.color);
+    output.style.setProperty("--xp-color", difficulty.color);
+    document.getElementById("pm-output-icon").innerHTML = AttributeIcons.markup(selectedAttribute, attribute.icon);
+    document.getElementById("pm-output-name").textContent = attribute.label + " / " + difficulty.label;
+    document.getElementById("pm-xp-preview").innerHTML = "+" + difficulty.xp + "<small>XP</small>";
   }
 
   function renderQuestControls() {
     document.getElementById("pm-type-grid").innerHTML = ["main", "side"].map(type =>
-      `<button class="plan-type${selectedQuestType === type ? " selected-" + type : ""}" type="button" onclick="PlanModal.selectQuestType('${type}')">${type} quest</button>`
+      `<button class="plan-type${selectedQuestType === type ? " selected-" + type : ""}" type="button" onclick="PlanModal.selectQuestType('${type}')"><i class="ti ${type === "main" ? "ti-crown" : "ti-route"}"></i><span>${type} quest</span></button>`
     ).join("");
-    document.getElementById("pm-difficulty-grid").innerHTML = ["easy", "normal", "hard"].map(difficulty =>
-      `<button class="plan-difficulty${selectedDifficulty === difficulty ? " selected-" + difficulty : ""}" type="button" onclick="PlanModal.selectDifficulty('${difficulty}')">${difficulty}</button>`
+    document.getElementById("pm-difficulty-grid").innerHTML = Object.entries(difficulties).map(([id, difficulty]) =>
+      `<button class="plan-difficulty${selectedDifficulty === id ? " selected-" + id : ""}" type="button" onclick="PlanModal.selectDifficulty('${id}')"><i class="ti ${difficulty.icon}"></i><strong>${difficulty.label}</strong><span>+${difficulty.xp}</span></button>`
     ).join("");
-    document.getElementById("pm-xp-preview").textContent = "+" + ({ easy: 50, normal: 100, hard: 200 })[selectedDifficulty] + " XP";
+    renderOutput();
     renderLimit();
   }
 
@@ -243,10 +277,11 @@ const PlanModal = (function () {
       const meta = attributes[attributeId] || attributes.willpower;
       const isMain = goal.priority === "high";
       const difficulty = goal.difficulty || "normal";
+      const difficultyMeta = difficulties[difficulty] || difficulties.normal;
       return `<article class="plan-item" style="--item-color:${meta.color};--item-bg:${meta.bg};--item-border:${meta.border}">
         <div class="plan-item-icon">${AttributeIcons.markup(attributeId, meta.icon)}</div>
         <div class="plan-item-body"><div class="plan-item-title">${escapeHtml(goal.text)}</div><div class="plan-item-meta"><span class="plan-item-type${isMain ? " main" : ""}">${isMain ? "Main Quest" : "Side Quest"}</span>${meta.label} / ${difficulty}${goal.scheduledTime ? " / " + escapeHtml(goal.scheduledTime) : ""}</div></div>
-        <div class="plan-item-xp">+${goal.xp} XP</div>
+        <div class="plan-item-xp" style="--xp-color:${difficultyMeta.color}">+${goal.xp} XP</div>
         <button class="plan-icon-btn" type="button" onclick="PlanModal.removeGoal(${index})" aria-label="Remove quest"><i class="ti ti-x"></i></button>
       </article>`;
     }).join("");
@@ -259,10 +294,11 @@ const PlanModal = (function () {
       const selected = selectedIds.has(template.id);
       const entry = state.planning.tomorrowFixed.find(item => item.templateId === template.id);
       const meta = attributes[template.attribute] || attributes.intelligence;
+      const difficultyMeta = difficulties[template.difficulty] || difficulties.normal;
       return `<article class="plan-item${selected ? " selected" : ""}" style="--item-color:${meta.color};--item-bg:${meta.bg};--item-border:${meta.border}">
         <button class="plan-routine-toggle" type="button" onclick="PlanModal.toggleRoutine('${template.id}')" aria-label="${selected ? "Remove" : "Add"} ${escapeHtml(template.title)}">${selected ? '<i class="ti ti-check"></i>' : ""}</button>
         <div class="plan-item-icon">${AttributeIcons.markup(template.attribute, meta.icon)}</div>
-        <div class="plan-item-body"><div class="plan-item-title">${escapeHtml(template.title)}</div><div class="plan-item-meta">${meta.label} / +${template.xp} XP</div></div>
+        <div class="plan-item-body"><div class="plan-item-title">${escapeHtml(template.title)}</div><div class="plan-item-meta">${meta.label} / <span class="plan-routine-xp" style="--xp-color:${difficultyMeta.color}">+${template.xp} XP</span></div></div>
         ${selected ? `<button class="plan-routine-time" type="button" onclick="PlanModal.pickRoutineTime('${template.id}','${entry && entry.scheduledTime || ""}')" aria-label="Choose scheduled time"><i class="ti ti-clock"></i><span>${entry && entry.scheduledTime || "--:--"}</span></button>` : ""}
       </article>`;
     }).join("");
@@ -279,7 +315,7 @@ const PlanModal = (function () {
         else goal.priority = "normal";
         goal.attribute = goal.attribute || "willpower";
         goal.difficulty = goal.difficulty || "normal";
-        goal.xp = Number(goal.xp) || ({ easy: 50, normal: 100, hard: 200 })[goal.difficulty];
+        goal.xp = Number(goal.xp) || (difficulties[goal.difficulty] || difficulties.normal).xp;
       });
     });
     selectedQuestType = state.planning.tomorrowGoals.some(goal => goal.priority === "high") ? "side" : "main";
@@ -287,6 +323,7 @@ const PlanModal = (function () {
     selectedDifficulty = "normal";
     draftGoalTime = null;
     document.getElementById("pm-goal").value = "";
+    clearGoalError();
     updateGoalTimeTrigger();
     const saveButton = document.getElementById("pm-save");
     saveButton.innerHTML = '<i class="ti ti-lock"></i><span>Save tomorrow\'s plan</span>';
@@ -306,24 +343,36 @@ const PlanModal = (function () {
     else { dialog.removeAttribute("open"); dialog.classList.remove("plan-dialog-fallback"); document.body.classList.remove("plan-modal-open"); }
   }
 
-  function selectAttribute(attribute) { selectedAttribute = attribute; renderAttribute(); }
+  function selectAttribute(attribute) { selectedAttribute = attribute; renderAttribute(); renderOutput(); }
   function selectQuestType(type) { selectedQuestType = type; renderQuestControls(); }
   function selectDifficulty(difficulty) { selectedDifficulty = difficulty; renderQuestControls(); }
 
   function addGoal() {
     const input = document.getElementById("pm-goal");
     const text = input.value.trim();
-    if (!text) return;
+    if (!text) {
+      document.getElementById("pm-goal-shell").classList.add("invalid");
+      document.getElementById("pm-goal-error").classList.add("show");
+      input.focus();
+      return;
+    }
     const goals = state.planning.tomorrowGoals;
     const mainCount = goals.filter(goal => goal.priority === "high").length;
     const sideCount = goals.length - mainCount;
     if (selectedQuestType === "main" && mainCount >= 1) { renderLimit("Remove the current Main Quest first"); return; }
     if (selectedQuestType === "side" && sideCount >= 3) { renderLimit("Side Quest limit reached"); return; }
-    const xp = ({ easy: 50, normal: 100, hard: 200 })[selectedDifficulty];
+    const xp = (difficulties[selectedDifficulty] || difficulties.normal).xp;
     state = GameState.set(gs => { gs.planning.tomorrowGoals.push({ text, attribute: selectedAttribute, difficulty: selectedDifficulty, xp, priority: selectedQuestType === "main" ? "high" : "normal", scheduledTime: draftGoalTime || null }); });
-    input.value = ""; draftGoalTime = null; updateGoalTimeTrigger();
+    input.value = ""; clearGoalError(); draftGoalTime = null; updateGoalTimeTrigger();
     if (selectedQuestType === "main") selectedQuestType = "side";
     renderQuestControls(); renderGoals();
+  }
+
+  function clearGoalError() {
+    const shell = document.getElementById("pm-goal-shell");
+    const error = document.getElementById("pm-goal-error");
+    if (shell) shell.classList.remove("invalid");
+    if (error) error.classList.remove("show");
   }
 
   function removeGoal(index) { state = GameState.set(gs => { gs.planning.tomorrowGoals.splice(index, 1); }); renderGoals(); renderQuestControls(); }
@@ -345,7 +394,7 @@ const PlanModal = (function () {
     setTimeout(close, 650);
   }
 
-  return { open, close, selectAttribute, selectQuestType, selectDifficulty, addGoal, removeGoal, toggleRoutine, pickGoalTime, pickRoutineTime, closeTimePicker, adjustTime, selectTimePreset, confirmTime, clearTime, save };
+  return { open, close, selectAttribute, selectQuestType, selectDifficulty, addGoal, clearGoalError, removeGoal, toggleRoutine, pickGoalTime, pickRoutineTime, closeTimePicker, adjustTime, selectTimePreset, confirmTime, clearTime, save };
 })();
 
 if (typeof window !== "undefined") window.PlanModal = PlanModal;

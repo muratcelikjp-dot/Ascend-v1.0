@@ -28,6 +28,8 @@ const GameLoop = (function () {
       shieldRefreshed: false,
       questsReset: false,
       streakResult: null,
+      dominanceUpdate: null,
+      missionExpiration: null,
       newAchievements: []
     };
 
@@ -55,6 +57,13 @@ const GameLoop = (function () {
         const comebackDef = Achievements.checkComeback(state);
         if (comebackDef) report.newAchievements.push(comebackDef);
       }
+
+      // Dominance grows from elapsed real time, not from page-load count.
+      // The stored timestamp makes repeated same-day loads idempotent.
+      report.dominanceUpdate = Bosses.updateDominance(state);
+      report.missionExpiration = typeof Bosses.processMissionExpiration === "function"
+        ? Bosses.processMissionExpiration(state)
+        : null;
     });
 
     return report;

@@ -14,60 +14,36 @@
 <title>RPG — Stats</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <link rel="stylesheet" href="css/attribute-icons.css">
+<link rel="stylesheet" href="css/panel-navigation.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--ab:#020D18;--ab2:#04192E;--ab3:#071F38;--neon:#00E5FF;--oc:#00B4D8;--ocd:#005F87;--bd:rgba(0,180,216,0.18);--bd2:rgba(0,180,216,0.36);--tx:#C8EAF5;--txd:#4A7A90;--txm:#7BAFC8;--am:#EF9F27;--gr:#1D9E75}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--ab);display:flex;justify-content:center}
-.app{max-width:390px;width:100%;background:var(--ab);min-height:100vh;padding-bottom:72px}
-.banner{background:var(--ab2);border-bottom:1px solid var(--bd);padding:14px 16px;position:relative;overflow:hidden}
-.scan{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--neon),transparent);animation:sc 3s linear infinite;opacity:.22;pointer-events:none}
-@keyframes sc{0%{top:0}100%{top:110%}}
-.bn-row{display:flex;align-items:center;justify-content:space-between}
-.hb-screen{font-size:10px;color:var(--txd);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
-.hb-week{font-size:20px;font-weight:500;color:var(--neon);letter-spacing:.04em}
-.bn-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
-.pill-lvl{background:var(--ab3);color:var(--neon);font-size:10px;padding:2px 9px;border:1px solid var(--ocd);border-radius:2px;letter-spacing:.08em}
-.metric-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--bd);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)}
-.m-cell{background:var(--ab2);padding:12px 14px}
-.m-lbl{font-size:10px;color:var(--txd);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;display:flex;align-items:center;gap:5px}
-.m-lbl i{font-size:13px}
-.m-val{font-size:22px;font-weight:500;color:var(--tx)}
-.m-delta{font-size:10px;margin-top:3px;display:flex;align-items:center;gap:3px;text-transform:uppercase;letter-spacing:.05em}
-.up{color:#5DCAA5}.down{color:#F09595}.flat{color:var(--txd)}
-.sec-bar{padding:12px 16px 8px;display:flex;align-items:center;justify-content:space-between}
-.range-tabs{display:flex;gap:3px}
-.range-tab{padding:3px 9px;border-radius:2px;border:1px solid var(--bd);background:transparent;font-size:9px;color:var(--txd);cursor:pointer;text-transform:uppercase;letter-spacing:.04em;transition:all .15s}
-.range-tab.on{background:rgba(0,180,216,.12);border-color:var(--oc);color:var(--neon)}
-.sec-title{font-size:10px;color:var(--txd);text-transform:uppercase;letter-spacing:.1em}
-.chart-wrap{background:var(--ab2);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);padding:14px 14px 10px;margin:0 16px;border-radius:4px;border:1px solid var(--bd)}
-.chart-title{font-size:11px;color:var(--txm);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
-.attr-list{padding:0 16px;display:flex;flex-direction:column;gap:6px}
-.ab-row{display:flex;align-items:center;gap:10px;background:var(--ab2);border:1px solid var(--bd);border-radius:2px;padding:10px 12px}
-.ab-icon{width:30px;height:30px;border-radius:2px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.ab-icon i{font-size:15px}
-.ab-info{flex:1;min-width:0}
-.ab-name{font-size:12px;color:var(--tx);text-transform:uppercase;letter-spacing:.05em}
-.ab-bar-bg{height:4px;background:var(--ab3);border-radius:2px;margin-top:5px;overflow:hidden}
-.ab-bar-fill{height:100%;border-radius:2px;transition:width 1s cubic-bezier(.4,0,.2,1)}
-.ab-xp{font-size:12px;font-weight:500;white-space:nowrap}
-.heatmap{margin:10px 16px 0;background:var(--ab2);border:1px solid var(--bd);border-radius:4px;padding:12px}
-.hm-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
-.hm-col{display:flex;flex-direction:column;align-items:center;gap:4px}
-.hm-lbl{font-size:9px;color:var(--txd);text-transform:uppercase}
-.hm-pip{width:100%;aspect-ratio:1;border-radius:2px;background:var(--ab3)}
-.hm-pip.active{background:var(--neon);opacity:.65}
-.hm-pip.today{outline:1px solid var(--neon);outline-offset:2px}
-.hm-xp{font-size:9px;color:var(--txd);font-weight:500}
-.nav{display:flex;justify-content:space-around;padding:10px 0 20px;background:var(--ab2);border-top:1px solid var(--bd);position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:390px;z-index:10}
-.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 6px;text-decoration:none;transition:transform .12s}
-.ni:active{transform:scale(.88)}
-.ni i{font-size:21px;color:var(--txd)}
-.ni.on i{color:var(--neon)}
-.ni span{font-size:9px;color:var(--txd);text-transform:uppercase;letter-spacing:.07em}
-.ni.on span{color:var(--neon)}
+:root{color-scheme:dark;--abyss-black:#020713;--abyss-deep:#071326;--abyss-ocean:#091b2f;--abyss-rift:#0b2744;--abyss-blue:#2f9dff;--abyss-aqua:#35f4e6;--abyss-cyan:#8defff;--abyss-purple:#8b5cf6;--abyss-gold:#f7c948;--abyss-green:#41e6a4;--abyss-coral:#ff5c7a;--abyss-text:#eaf8ff;--abyss-soft:#a7c7d9;--abyss-muted:#6f8ea3;--abyss-border:rgba(141,239,255,.18);--ab:var(--abyss-black);--ab2:var(--abyss-deep);--ab3:var(--abyss-ocean);--neon:var(--abyss-aqua);--oc:var(--abyss-blue);--ocd:rgba(47,157,255,.4);--bd:var(--abyss-border);--bd2:rgba(141,239,255,.34);--tx:var(--abyss-text);--txd:var(--abyss-muted);--txm:var(--abyss-soft);--am:var(--abyss-gold);--gr:var(--abyss-green)}
+html{background:var(--abyss-black);overscroll-behavior:none}
+body{min-height:100vh;display:flex;justify-content:center;color:var(--abyss-text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--abyss-black)}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(118deg,transparent 0 72px,rgba(141,239,255,.022) 73px 74px),linear-gradient(160deg,rgba(53,244,230,.04),transparent 34%,rgba(139,92,246,.045) 76%,transparent)}
+button{font:inherit}
+.app{position:relative;isolation:isolate;width:100%;max-width:430px;min-height:100svh;padding-bottom:calc(30px + env(safe-area-inset-bottom,0px));overflow:hidden;background:linear-gradient(180deg,rgba(2,7,19,.98),rgba(7,19,38,.94) 48%,rgba(2,7,19,.99))}
+.app::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(53,244,230,.025),transparent),repeating-linear-gradient(0deg,transparent 0 25px,rgba(141,239,255,.015) 26px 27px)}
+.pill-lvl{padding:4px 8px;border:1px solid rgba(53,244,230,.3);border-radius:5px;background:rgba(53,244,230,.055);color:var(--abyss-aqua);font-size:9px;font-weight:650;letter-spacing:.08em}
+.stats-content{padding:14px 16px 0}
+.performance-overview{position:relative;overflow:hidden;padding:14px;border:1px solid rgba(53,244,230,.22);border-radius:8px;background:linear-gradient(145deg,rgba(13,38,64,.8),rgba(7,19,38,.7));box-shadow:0 16px 38px rgba(0,0,0,.22),0 0 26px rgba(47,157,255,.055)}
+.performance-overview::before{content:"";position:absolute;top:0;left:0;width:94px;height:1px;background:var(--abyss-aqua);box-shadow:0 0 12px rgba(53,244,230,.5)}
+.snapshot-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.snapshot-label{display:flex;align-items:center;gap:7px;color:var(--abyss-aqua);font-size:8px;text-transform:uppercase;letter-spacing:.14em}.snapshot-label i{font-size:15px}.snapshot-period{color:var(--abyss-muted);font-size:8px;text-transform:uppercase;letter-spacing:.1em}
+.snapshot-primary{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:14px;padding-bottom:13px;border-bottom:1px solid rgba(141,239,255,.11)}.snapshot-xp-label{color:var(--abyss-muted);font-size:7px;text-transform:uppercase;letter-spacing:.11em}.snapshot-xp{display:flex;align-items:baseline;gap:7px;margin-top:3px}.snapshot-xp strong{font-size:34px;line-height:1;color:var(--abyss-text);font-weight:680;font-variant-numeric:tabular-nums}.snapshot-xp span{color:var(--abyss-aqua);font-size:9px;font-weight:650;letter-spacing:.08em}.m-delta{display:flex;align-items:center;justify-content:flex-end;max-width:128px;font-size:8px;line-height:1.35;text-align:right;text-transform:uppercase;letter-spacing:.06em}.up{color:var(--abyss-green)}.down{color:var(--abyss-coral)}.flat{color:var(--abyss-muted)}
+.snapshot-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:12px}.snapshot-stat{min-width:0;padding:0 9px;border-right:1px solid rgba(141,239,255,.11);text-align:center}.snapshot-stat:first-child{padding-left:0}.snapshot-stat:last-child{padding-right:0;border-right:0}.snapshot-stat i{display:block;margin-bottom:4px;color:var(--stat-color,var(--abyss-aqua));font-size:14px}.snapshot-stat strong{display:block;color:var(--abyss-text);font-size:16px;font-weight:650;white-space:nowrap}.snapshot-stat span{display:block;margin-top:3px;color:var(--abyss-muted);font-size:7px;text-transform:uppercase;letter-spacing:.07em}
+.stats-module{margin-top:21px}.module-head{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin:0 1px 10px}.module-kicker{display:flex;align-items:center;gap:6px;color:var(--module-color,var(--abyss-aqua));font-size:8px;text-transform:uppercase;letter-spacing:.14em}.module-kicker i{font-size:14px}.module-title{margin-top:4px;color:var(--abyss-text);font-size:17px;font-weight:620}.module-note{color:var(--abyss-muted);font-size:7px;text-align:right;text-transform:uppercase;letter-spacing:.08em}
+.range-tabs{display:flex;gap:4px}.range-tab{min-width:38px;height:28px;padding:0 8px;border:1px solid rgba(141,239,255,.15);border-radius:5px;background:rgba(10,28,48,.46);color:var(--abyss-muted);font-size:8px;font-weight:600;text-transform:uppercase;cursor:pointer}.range-tab.on{border-color:rgba(53,244,230,.46);background:rgba(53,244,230,.07);color:var(--abyss-aqua);box-shadow:0 0 14px rgba(53,244,230,.06)}
+.momentum-frame{position:relative;overflow:hidden;padding:13px 11px 11px;border:1px solid var(--abyss-border);border-radius:8px;background:linear-gradient(155deg,rgba(13,38,64,.7),rgba(7,19,38,.64));box-shadow:0 14px 32px rgba(0,0,0,.18)}.momentum-frame::before{content:"";position:absolute;top:0;right:18%;left:18%;height:1px;background:linear-gradient(90deg,transparent,rgba(53,244,230,.5),transparent)}.chart-canvas{position:relative;width:100%;height:178px}.chart-unavailable{padding:34px 12px;color:var(--abyss-muted);font-size:9px;text-align:center;text-transform:uppercase;letter-spacing:.08em}.range-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:9px}.range-stat{padding:8px 5px;border-top:1px solid rgba(141,239,255,.1);text-align:center}.range-stat strong{display:block;color:var(--abyss-soft);font-size:11px;font-weight:650}.range-stat span{display:block;margin-top:3px;color:var(--abyss-muted);font-size:6px;text-transform:uppercase;letter-spacing:.08em}
+.attr-list{display:flex;flex-direction:column;gap:7px}.ab-row{position:relative;display:grid;grid-template-columns:38px minmax(0,1fr) auto;align-items:center;gap:10px;padding:10px 11px;border:1px solid rgba(141,239,255,.14);border-radius:7px;background:linear-gradient(155deg,rgba(13,38,64,.64),rgba(7,19,38,.58));overflow:hidden}.ab-row::before{content:"";position:absolute;top:8px;bottom:8px;left:0;width:2px;background:var(--attr-color);box-shadow:0 0 8px var(--attr-color)}.ab-icon{width:36px;height:36px;display:grid;place-items:center;border:1px solid color-mix(in srgb,var(--attr-color) 36%,transparent);border-radius:7px;background:color-mix(in srgb,var(--attr-color) 7%,transparent);color:var(--attr-color)}.ab-icon .attribute-icon,.ab-icon .attribute-glyph{width:21px;height:21px}.ab-info{min-width:0}.ab-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.ab-name{overflow:hidden;color:var(--abyss-soft);font-size:9px;font-weight:650;text-overflow:ellipsis;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}.ab-level{color:var(--attr-color);font-size:7px;text-transform:uppercase;letter-spacing:.07em}.ab-bar-bg{height:4px;margin-top:7px;border-radius:3px;background:rgba(2,7,19,.72);overflow:hidden}.ab-bar-fill{height:100%;border-radius:inherit;background:var(--attr-color);box-shadow:0 0 9px color-mix(in srgb,var(--attr-color) 42%,transparent);transition:width .8s cubic-bezier(.2,.75,.2,1)}.ab-xp{color:var(--attr-color);font-size:10px;font-weight:650;white-space:nowrap}
+.battle-panel{position:relative;overflow:hidden;padding:13px;border:1px solid rgba(255,92,122,.22);border-radius:8px;background:linear-gradient(145deg,rgba(42,20,40,.62),rgba(10,28,48,.7))}.battle-panel::before{content:"";position:absolute;top:0;bottom:0;left:0;width:2px;background:linear-gradient(var(--abyss-coral),var(--abyss-purple));box-shadow:0 0 10px rgba(255,92,122,.42)}.battle-main{display:flex;align-items:center;gap:11px}.battle-emblem{width:42px;height:42px;display:grid;place-items:center;flex:0 0 42px;border:1px solid rgba(255,92,122,.32);border-radius:7px;background:rgba(255,92,122,.065);color:var(--abyss-coral)}.battle-emblem i{font-size:21px}.battle-copy{min-width:0;flex:1}.battle-label{color:var(--abyss-muted);font-size:7px;text-transform:uppercase;letter-spacing:.1em}.battle-damage{display:flex;align-items:baseline;gap:6px;margin-top:3px}.battle-damage strong{color:var(--abyss-text);font-size:24px;line-height:1;font-weight:680}.battle-damage span{color:var(--abyss-coral);font-size:8px;text-transform:uppercase}.battle-best{text-align:right}.battle-best strong{display:block;color:var(--abyss-gold);font-size:12px}.battle-best span{display:block;margin-top:3px;color:var(--abyss-muted);font-size:6px;text-transform:uppercase;letter-spacing:.08em}.integrity-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;color:var(--abyss-muted);font-size:7px;text-transform:uppercase;letter-spacing:.08em}.integrity-row strong{color:var(--abyss-soft);font-size:8px}.integrity-track{height:6px;margin-top:6px;border:1px solid rgba(255,92,122,.17);border-radius:3px;background:rgba(2,7,19,.76);overflow:hidden}.integrity-fill{height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,var(--abyss-purple),var(--abyss-coral));box-shadow:0 0 10px rgba(255,92,122,.32);transition:width .7s ease}
+.consistency-frame{padding:12px;border:1px solid var(--abyss-border);border-radius:8px;background:rgba(10,28,48,.5)}.hm-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}.hm-col{min-width:0;text-align:center}.hm-lbl{color:var(--abyss-muted);font-size:7px;text-transform:uppercase}.hm-pip{position:relative;width:100%;height:42px;margin-top:6px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(141,239,255,.1);border-radius:5px;background:rgba(2,7,19,.52);color:var(--abyss-muted)}.hm-pip::before{content:"";width:6px;height:6px;border-radius:50%;background:rgba(111,142,163,.38)}.hm-pip.active{border-color:rgba(65,230,164,.28);background:rgba(65,230,164,.055);color:var(--abyss-green);box-shadow:inset 0 0 12px rgba(65,230,164,.035)}.hm-pip.active::before{background:var(--abyss-green);box-shadow:0 0 8px rgba(65,230,164,.55)}.hm-pip.today{border-color:rgba(53,244,230,.5);box-shadow:0 0 0 1px rgba(53,244,230,.08),inset 0 0 14px rgba(53,244,230,.04)}.hm-xp{margin-top:4px;overflow:hidden;color:var(--abyss-muted);font-size:7px;font-weight:600;text-overflow:ellipsis;white-space:nowrap}.consistency-summary{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:11px;padding-top:10px;border-top:1px solid rgba(141,239,255,.1);color:var(--abyss-muted);font-size:7px;text-transform:uppercase;letter-spacing:.07em}.consistency-summary strong{color:var(--abyss-green);font-size:9px}
+.performance-overview,.stats-module{animation:statsReveal .38s cubic-bezier(.2,.75,.2,1) both}.stats-module:nth-of-type(2){animation-delay:.06s}.stats-module:nth-of-type(3){animation-delay:.1s}.stats-module:nth-of-type(4){animation-delay:.14s}.stats-module:nth-of-type(5){animation-delay:.18s}
+@keyframes statsReveal{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:350px){.stats-content{padding-right:12px;padding-left:12px}.snapshot-xp strong{font-size:30px}.snapshot-stat{padding-right:5px;padding-left:5px}.range-tab{min-width:35px;padding-right:6px;padding-left:6px}.chart-canvas{height:164px}.ab-row{grid-template-columns:34px minmax(0,1fr) auto;padding-right:9px;padding-left:10px}.ab-icon{width:34px;height:34px}.battle-panel{padding-right:10px;padding-left:11px}.hm-grid{gap:3px}.hm-pip{height:38px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 </style>
 </head>
-<body>
+<body data-panel="stats">
 <div id="global-error-banner" style="display:none;position:fixed;top:0;left:0;right:0;background:#5a1010;color:#ffdede;padding:12px 14px;font-family:monospace;font-size:11px;z-index:99999;max-height:40vh;overflow-y:auto;white-space:pre-wrap;border-bottom:2px solid #ff4444"></div>
 <script>
 window.addEventListener('error', function(e){
@@ -81,50 +57,66 @@ window.addEventListener('error', function(e){
 });
 </script>
 
-<div class="app">
-  <div class="banner">
-    <div class="scan"></div>
-    <div class="bn-row">
-      <div><div class="hb-screen">Your stats</div><div class="hb-week">This week</div></div>
-      <div class="bn-right"><div class="pill-lvl" id="pill-lvl">LVL 01</div></div>
-    </div>
-  </div>
+<div class="app panel-nav-shell">
+  <header class="panel-nav-header panel-stats-header" style="--panel-progress:40%">
+    <a class="panel-home" href="index.html" aria-label="Return to command center"><i class="ti ti-home"></i></a>
+    <div class="panel-nav-heading"><div class="panel-nav-kicker">Panel 02</div><h1>Stats</h1></div>
+    <div class="panel-nav-status"><div class="pill-lvl" id="pill-lvl">LVL 01</div></div>
+  </header>
+  <div class="stats-content">
+    <section class="performance-overview">
+      <div class="snapshot-head"><div class="snapshot-label"><i class="ti ti-activity-heartbeat"></i>Performance Snapshot</div><div class="snapshot-period">This week</div></div>
+      <div class="snapshot-primary">
+        <div><div class="snapshot-xp-label">XP earned</div><div class="snapshot-xp"><strong id="m-xp">0</strong><span>XP</span></div></div>
+        <div class="m-delta flat" id="m-xp-delta"></div>
+      </div>
+      <div class="snapshot-grid">
+        <div class="snapshot-stat" style="--stat-color:var(--abyss-aqua)"><i class="ti ti-checks"></i><strong id="m-quests">0</strong><span>Quests</span></div>
+        <div class="snapshot-stat" style="--stat-color:var(--abyss-purple)"><i class="ti ti-calendar-check"></i><strong id="m-days">0 / 7</strong><span>Active days</span></div>
+        <div class="snapshot-stat" style="--stat-color:var(--abyss-gold)"><i class="ti ti-flame"></i><strong id="m-streak">0</strong><span>Day streak</span></div>
+      </div>
+    </section>
 
-  <div class="metric-grid">
-    <div class="m-cell"><div class="m-lbl"><i class="ti ti-bolt"></i>XP earned</div><div class="m-val" id="m-xp">0</div><div class="m-delta" id="m-xp-delta"></div></div>
-    <div class="m-cell"><div class="m-lbl"><i class="ti ti-check"></i>Quests done</div><div class="m-val" id="m-quests">0</div></div>
-    <div class="m-cell"><div class="m-lbl"><i class="ti ti-calendar"></i>Active days</div><div class="m-val" id="m-days">0 / 7</div></div>
-    <div class="m-cell"><div class="m-lbl"><i class="ti ti-flame"></i>Streak</div><div class="m-val" id="m-streak">0</div></div>
-  </div>
+    <section class="stats-module">
+      <div class="module-head"><div><div class="module-kicker"><i class="ti ti-wave-sine"></i>Progress signal</div><h2 class="module-title">Momentum</h2></div><div id="range-toggle"></div></div>
+      <div class="momentum-frame">
+        <div class="chart-canvas" id="momentum-canvas"><canvas id="chart-daily"></canvas></div>
+        <div class="chart-unavailable" id="chart-unavailable" hidden>Analytics renderer offline</div>
+        <div class="range-summary">
+          <div class="range-stat"><strong id="range-xp">0</strong><span>Total XP</span></div>
+          <div class="range-stat"><strong id="range-active">0</strong><span>Active days</span></div>
+          <div class="range-stat"><strong id="range-best">0</strong><span>Best day</span></div>
+        </div>
+      </div>
+    </section>
 
-  <div class="sec-bar"><span class="sec-title">XP per day</span><div id="range-toggle"></div></div>
-  <div class="chart-wrap"><div style="position:relative;width:100%;height:160px"><canvas id="chart-daily"></canvas></div></div>
+    <section class="stats-module">
+      <div class="module-head"><div><div class="module-kicker" style="--module-color:var(--abyss-purple)"><i class="ti ti-dna-2"></i>Character matrix</div><h2 class="module-title">Character Growth</h2></div><div class="module-note">Lifetime progression</div></div>
+      <div class="attr-list" id="attr-list"></div>
+    </section>
 
-  <div class="sec-bar"><span class="sec-title">4-week trend</span></div>
-  <div class="chart-wrap"><div style="position:relative;width:100%;height:140px"><canvas id="chart-trend"></canvas></div></div>
+    <section class="stats-module">
+      <div class="module-head"><div><div class="module-kicker" style="--module-color:var(--abyss-coral)"><i class="ti ti-crosshair"></i>Combat telemetry</div><h2 class="module-title">Battle Impact</h2></div><div class="module-note" id="battle-range-label">7D window</div></div>
+      <div class="battle-panel">
+        <div class="battle-main">
+          <div class="battle-emblem"><i class="ti ti-swords"></i></div>
+          <div class="battle-copy"><div class="battle-label">Damage dealt</div><div class="battle-damage"><strong id="battle-damage">0</strong><span>DMG</span></div></div>
+          <div class="battle-best"><strong id="battle-best">0</strong><span>Strongest day</span></div>
+        </div>
+        <div class="integrity-row"><span>Current boss integrity removed</span><strong id="integrity-label">0%</strong></div>
+        <div class="integrity-track"><div class="integrity-fill" id="integrity-fill"></div></div>
+      </div>
+    </section>
 
-  <div class="sec-bar"><span class="sec-title">Attribute growth</span></div>
-  <div class="chart-wrap"><div style="position:relative;width:100%;height:170px"><canvas id="chart-growth"></canvas></div></div>
-
-  <div class="sec-bar"><span class="sec-title">Boss damage dealt</span></div>
-  <div class="chart-wrap"><div style="position:relative;width:100%;height:140px"><canvas id="chart-boss"></canvas></div></div>
-
-  <div class="sec-bar"><span class="sec-title">By attribute</span></div>
-  <div class="attr-list" id="attr-list"></div>
-
-  <div class="heatmap">
-    <div class="sec-title" style="margin-bottom:10px">Activity heatmap</div>
-    <div class="hm-grid" id="hm-grid"></div>
+    <section class="stats-module">
+      <div class="module-head"><div><div class="module-kicker" style="--module-color:var(--abyss-green)"><i class="ti ti-calendar-stats"></i>Consistency signal</div><h2 class="module-title">Discipline Record</h2></div><div class="module-note">Last 7 days</div></div>
+      <div class="consistency-frame">
+        <div class="hm-grid" id="hm-grid"></div>
+        <div class="consistency-summary"><span>Days you showed up</span><strong id="consistency-score">0 / 7</strong></div>
+      </div>
+    </section>
   </div>
 </div>
-
-<nav class="nav">
-  <a class="ni" href="quests.html"><i class="ti ti-list-check"></i><span>Quests</span></a>
-  <a class="ni on" href="stats.html"><i class="ti ti-chart-bar"></i><span>Stats</span></a>
-  <a class="ni" href="boss.html"><i class="ti ti-skull"></i><span>Boss</span></a>
-  <a class="ni" href="rewards.html"><i class="ti ti-gift"></i><span>Rewards</span></a>
-  <a class="ni" href="hero.html"><i class="ti ti-user"></i><span>Hero</span></a>
-</nav>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="data/seed-data.js"></script>
@@ -145,20 +137,17 @@ window.addEventListener('error', function(e){
 <script src="js/attribute-icons.js"></script>
 <script>
 const ATTR_META=[
-  {id:'intelligence',label:'Intelligence',icon:'ti-book',col:'#00E5FF',bg:'rgba(0,229,255,.08)'},
-  {id:'strength',    label:'Strength',    icon:'ti-run',col:'#1D9E75',bg:'rgba(29,158,117,.08)'},
-  {id:'charisma',    label:'Charisma',    icon:'ti-messages',col:'#D4537E',bg:'rgba(212,83,126,.08)'},
-  {id:'willpower',   label:'Willpower',   icon:'ti-flame',col:'#E24B4A',bg:'rgba(226,75,74,.08)'},
+  {id:'intelligence',label:'Intelligence',icon:'ti-brain',col:'#35F4E6'},
+  {id:'strength',    label:'Strength',    icon:'ti-barbell',col:'#41E6A4'},
+  {id:'charisma',    label:'Charisma',    icon:'ti-messages',col:'#F06AA6'},
+  {id:'willpower',   label:'Willpower',   icon:'ti-flame',col:'#FF5C7A'},
 ];
 
 GameLoop.bootstrapDay();
 const gs=GameState.get();
 let activeRange=7;
 let dailyChartInstance=null;
-let growthChartInstance=null;
-let bossChartInstance=null;
-
-const ATTR_COLORS={intelligence:'#00E5FF',strength:'#1D9E75',charisma:'#D4537E',willpower:'#E24B4A'};
+const chartsAvailable=typeof Chart==='function';
 
 function renderMetrics(){
   document.getElementById('pill-lvl').textContent='LVL '+String(gs.level).padStart(2,'0');
@@ -187,8 +176,14 @@ function setRange(days){
   activeRange=days;
   renderRangeToggle();
   renderDailyChart();
-  renderGrowthChart();
-  renderBossChart();
+  renderRangeSummary();
+  renderBattleImpact();
+}
+
+function hideUnavailableCharts(){
+  if(chartsAvailable) return;
+  document.getElementById('momentum-canvas').hidden=true;
+  document.getElementById('chart-unavailable').hidden=false;
 }
 
 // Label density adapts to range: showing all 90 day labels would be
@@ -203,63 +198,43 @@ function buildLabels(dayEntries,range){
 }
 
 function renderDailyChart(){
+  if(!chartsAvailable) return;
   const days=Stats.getLastNDays(gs,activeRange);
   const labels=buildLabels(days,activeRange);
   const values=days.map(d=>d.xp);
   if(dailyChartInstance) dailyChartInstance.destroy();
   dailyChartInstance=new Chart(document.getElementById('chart-daily'),{
     type:'bar',
-    data:{labels,datasets:[{data:values,backgroundColor:'rgba(0,180,216,0.4)',borderColor:'#00E5FF',borderWidth:1,borderRadius:2,borderSkipped:false}]},
+    data:{labels,datasets:[{data:values,backgroundColor:'rgba(53,244,230,.22)',hoverBackgroundColor:'rgba(53,244,230,.42)',borderColor:'#35F4E6',borderWidth:1,borderRadius:4,borderSkipped:false,maxBarThickness:22}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{x:{grid:{display:false},ticks:{color:'#4A7A90',font:{size:9},maxRotation:0,autoSkip:false}},y:{grid:{color:'rgba(0,180,216,0.07)'},ticks:{color:'#4A7A90',font:{size:10}},beginAtZero:true}}}
+      animation:{duration:520,easing:'easeOutQuart'},
+      scales:{x:{border:{display:false},grid:{display:false},ticks:{color:'#6F8EA3',font:{size:8},maxRotation:0,autoSkip:false}},y:{border:{display:false},grid:{color:'rgba(141,239,255,.06)'},ticks:{color:'#6F8EA3',font:{size:8},precision:0},beginAtZero:true}}}
   });
 }
 
-function renderTrendChart(){
-  const weeks=Stats.get4WeekTrend(gs);
-  new Chart(document.getElementById('chart-trend'),{
-    type:'line',
-    data:{labels:['3 wks ago','2 wks ago','Last week','This week'],datasets:[{data:weeks,borderColor:'#00E5FF',backgroundColor:'rgba(0,229,255,0.07)',borderWidth:2,pointRadius:4,pointBackgroundColor:'#00E5FF',fill:true,tension:0.3}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{x:{grid:{display:false},ticks:{color:'#4A7A90',font:{size:10}}},y:{grid:{color:'rgba(0,180,216,0.07)'},ticks:{color:'#4A7A90',font:{size:10}},beginAtZero:true}}}
-  });
-}
-
-function renderGrowthChart(){
-  const growth=Stats.getAttributeGrowth(gs,activeRange);
+function renderRangeSummary(){
   const days=Stats.getLastNDays(gs,activeRange);
-  const labels=buildLabels(days,activeRange);
-  const datasets=Object.keys(growth.series).map(attrId=>({
-    label:attrId,
-    data:growth.series[attrId],
-    borderColor:ATTR_COLORS[attrId],
-    backgroundColor:'transparent',
-    borderWidth:1.5,
-    pointRadius:0,
-    tension:0.25
-  }));
-  if(growthChartInstance) growthChartInstance.destroy();
-  growthChartInstance=new Chart(document.getElementById('chart-growth'),{
-    type:'line',
-    data:{labels,datasets},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:true,position:'bottom',labels:{color:'#7BAFC8',font:{size:8},boxWidth:8,padding:6}}},
-      scales:{x:{grid:{display:false},ticks:{color:'#4A7A90',font:{size:9},maxRotation:0,autoSkip:false}},y:{grid:{color:'rgba(0,180,216,0.07)'},ticks:{color:'#4A7A90',font:{size:10}},beginAtZero:true}}}
-  });
+  const total=days.reduce((sum,day)=>sum+(Number(day.xp)||0),0);
+  const active=days.filter(day=>(Number(day.questsCompleted)||0)>0).length;
+  const best=days.reduce((highest,day)=>Math.max(highest,Number(day.xp)||0),0);
+  document.getElementById('range-xp').textContent=total;
+  document.getElementById('range-active').textContent=active+' / '+activeRange;
+  document.getElementById('range-best').textContent=best;
 }
 
-function renderBossChart(){
+function renderBattleImpact(){
   const history=Stats.getBossDamageHistory(gs,activeRange);
-  const days=Stats.getLastNDays(gs,activeRange);
-  const labels=buildLabels(days,activeRange);
-  const values=history.map(h=>h.damage);
-  if(bossChartInstance) bossChartInstance.destroy();
-  bossChartInstance=new Chart(document.getElementById('chart-boss'),{
-    type:'bar',
-    data:{labels,datasets:[{data:values,backgroundColor:'rgba(226,75,74,0.4)',borderColor:'#E24B4A',borderWidth:1,borderRadius:2,borderSkipped:false}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{x:{grid:{display:false},ticks:{color:'#4A7A90',font:{size:9},maxRotation:0,autoSkip:false}},y:{grid:{color:'rgba(226,75,74,0.07)'},ticks:{color:'#4A7A90',font:{size:10}},beginAtZero:true}}}
-  });
+  const total=history.reduce((sum,entry)=>sum+(Number(entry.damage)||0),0);
+  const best=history.reduce((highest,entry)=>Math.max(highest,Number(entry.damage)||0),0);
+  const bossDef=typeof Bosses.getCurrentBossDef==='function'?Bosses.getCurrentBossDef(gs):null;
+  const maxHp=Math.max(0,Number(bossDef&&bossDef.maxHp)||0);
+  const currentHp=Math.max(0,Number(gs.bosses&&gs.bosses.currentHp)||0);
+  const removed=maxHp>0?Math.max(0,Math.min(100,Math.round((1-currentHp/maxHp)*100))):0;
+  document.getElementById('battle-range-label').textContent=activeRange+'D window';
+  document.getElementById('battle-damage').textContent=total;
+  document.getElementById('battle-best').textContent=best+' DMG';
+  document.getElementById('integrity-label').textContent=removed+'%';
+  document.getElementById('integrity-fill').style.width=removed+'%';
 }
 
 function renderAttrs(){
@@ -268,10 +243,10 @@ function renderAttrs(){
   document.getElementById('attr-list').innerHTML=breakdown.map(a=>{
     const meta=ATTR_META.find(m=>m.id===a.id);
     const pct=Math.round((a.xp/maxXp)*100);
-    return `<div class="ab-row">
-        <div class="ab-icon" style="background:${meta.bg}">${AttributeIcons.markup(a.id,meta.icon)}</div>
-      <div class="ab-info"><div class="ab-name">${meta.label}</div><div class="ab-bar-bg"><div class="ab-bar-fill" style="width:${pct}%;background:${meta.col}"></div></div></div>
-      <div class="ab-xp" style="color:${meta.col}">${a.xp} XP</div>
+    return `<div class="ab-row" style="--attr-color:${meta.col}">
+      <div class="ab-icon">${AttributeIcons.markup(a.id,meta.icon)}</div>
+      <div class="ab-info"><div class="ab-top"><div class="ab-name">${meta.label}</div><div class="ab-level">Level ${a.level}</div></div><div class="ab-bar-bg"><div class="ab-bar-fill" style="width:${pct}%"></div></div></div>
+      <div class="ab-xp">${a.xp} XP</div>
     </div>`;
   }).join('');
 }
@@ -281,15 +256,18 @@ function renderHeatmap(){
   const todayStr=DateUtils.getLocalDateKey();
   document.getElementById('hm-grid').innerHTML=days.map(d=>{
     const dt=new Date(d.date+'T00:00:00');
-    const label=dt.toLocaleDateString('en',{weekday:'short'})[0];
+    const label=dt.toLocaleDateString('en',{weekday:'short'}).slice(0,2);
     const isToday=d.date===todayStr;
     const cls='hm-pip'+(d.questsCompleted>0?' active':'')+(isToday?' today':'');
-    return `<div class="hm-col"><div class="hm-lbl">${label}</div><div class="${cls}"></div><div class="hm-xp">${d.xp>0?d.xp:''}</div></div>`;
+    return `<div class="hm-col"><div class="hm-lbl">${label}</div><div class="${cls}" title="${d.questsCompleted||0} quests"></div><div class="hm-xp">${d.xp>0?d.xp+' XP':'--'}</div></div>`;
   }).join('');
+  document.getElementById('consistency-score').textContent=days.filter(day=>day.questsCompleted>0).length+' / 7';
 }
 
-renderMetrics();renderRangeToggle();renderDailyChart();renderTrendChart();renderGrowthChart();renderBossChart();renderAttrs();renderHeatmap();
+hideUnavailableCharts();renderMetrics();renderRangeToggle();renderDailyChart();renderRangeSummary();renderAttrs();renderBattleImpact();renderHeatmap();
 </script>
+<script src="js/panel-navigation.js"></script>
 <script src="js/sw-register.js"></script>
+<script src="js/app-version.js"></script>
 </body>
 </html>

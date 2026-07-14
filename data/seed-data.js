@@ -57,7 +57,7 @@ const SEED_DATA = {
 
   // Default state for a brand new player with no save file yet.
   defaultState: {
-    version: 2,
+    version: 7,
     level: 1,
     xp: 0,
     lifetimeXp: 0,
@@ -109,9 +109,25 @@ const SEED_DATA = {
     bosses: {
       currentBossId: "procrastination",
       currentHp: null,   // null = not yet initialized, engine fills in from boss roster on first load
+      dominance: null,   // 0-100 pressure meter; initialized from the active boss definition
+      lastDominanceUpdatedAt: null,
       defeated: [],
       titlesEarned: [],
-      damageHistory: {}  // { "2026-06-23": 145 } total boss damage dealt per day
+      damageHistory: {}, // { "2026-06-23": 145 } total boss damage dealt per day
+      contracts: {},     // legacy Boss Contracts, preserved for save compatibility
+      activeMission: null,
+      missionHistory: [],
+      weakPointStates: {},
+      pendingFailureReasonMissionId: null,
+      encounterStatus: "active",
+      encounterAttempt: 1,
+      encounterStartedAt: null,
+      encounterDefeatedAt: null,
+      retreatedAt: null,
+      rematchAvailableDate: null,
+      encounterLosses: [],
+      pendingDefeatNoticeId: null,
+      legacyContractsMigrated: true
     },
 
     rewards: {
@@ -284,10 +300,67 @@ const SEED_DATA = {
       ability: "Drains your Willpower the moment you sit down to start something hard, replacing urgency with comfort.",
       description: "The voice that always says 'later.'",
       maxHp: 1000,
+      startingDominance: 20,
+      passiveDominancePerDay: 4,
+      normalQuestDominanceReduction: 1,
+      cancellationDominancePenalty: 10,
+      expirationDominancePenalty: 25,
+      baseDamagePerXp: 0.2,
       damageRules: [
-        { matchType: "attribute", match: "willpower", damagePerXp: 1 },
-        { matchType: "tag", match: "discipline", damagePerXp: 0.5 },
-        { matchType: "titleContains", match: "study", damage: 50 }
+        { matchType: "attribute", match: "willpower", damagePerXp: 0.8 },
+        { matchType: "tag", match: "discipline", damagePerXp: 0.4 }
+      ],
+      weakPoints: [
+        {
+          id: "focus_lens",
+          name: "Focus Lens",
+          shortName: "Attention sensor",
+          color: "#8DEFFF",
+          icon: "ti-eye",
+          description: "The sensor array that redirects attention toward easier, lower-value work.",
+          missionTitle: "Start Before Ready",
+          missionDescription: "Choose one delayed task and begin before comfort creates another excuse.",
+          completionCondition: "Start within five minutes and finish one meaningful work block.",
+          durationMinutes: null,
+          dominanceReduction: 12,
+          target: { x: 50, y: 38 },
+          callout: { x: 4, y: 18, side: "left" },
+          breakDamagePct: 0.2
+        },
+        {
+          id: "delay_core",
+          name: "Delay Core",
+          shortName: "Central reactor",
+          color: "#FF5C7A",
+          icon: "ti-power",
+          description: "The central reactor that turns hesitation into lost time.",
+          missionTitle: "Priority Override",
+          missionDescription: "Confront the highest-impact task you have been avoiding.",
+          completionCondition: "Complete and deliver one clearly defined outcome.",
+          durationMinutes: null,
+          dominanceReduction: 18,
+          target: { x: 50, y: 56 },
+          callout: { x: 66, y: 47, side: "right" },
+          breakDamagePct: 0.35
+        },
+        {
+          id: "rear_leg",
+          name: "Execution Claw",
+          shortName: "Golden claw",
+          color: "#F7C948",
+          icon: "ti-target-arrow",
+          description: "The reinforced claw that keeps unfinished work trapped in Procrastination's grip.",
+          missionTitle: "Close the Open Loop",
+          missionDescription: "Bind one project you have delayed for too long and finish it completely.",
+          completionCondition: "Finish the selected project and deliver its final result.",
+          durationMinutes: null,
+          dominanceReduction: 15,
+          target: { x: 86, y: 87 },
+          callout: { x: 5, y: 76, side: "left" },
+          contractPrompt: "Name one project you have delayed for too long.",
+          contractPlaceholder: "e.g. Finish and submit my portfolio",
+          breakDamagePct: 0.3
+        }
       ],
       rewards: { xp: 500, title: "Procrastination Slayer" },
       nextBossId: "social_anxiety"
@@ -300,10 +373,14 @@ const SEED_DATA = {
       ability: "Makes silence feel safer than speaking, even when speaking is exactly what would move your life forward.",
       description: "The fear that keeps you quiet when you shouldn't be.",
       maxHp: 1200,
+      startingDominance: 20,
+      passiveDominancePerDay: 4,
+      normalQuestDominanceReduction: 1,
+      cancellationDominancePenalty: 10,
+      expirationDominancePenalty: 25,
+      baseDamagePerXp: 0.2,
       damageRules: [
-        { matchType: "attribute", match: "charisma", damagePerXp: 1 },
-        { matchType: "titleContains", match: "stranger", damage: 100 },
-        { matchType: "titleContains", match: "conversation", damage: 75 }
+        { matchType: "attribute", match: "charisma", damagePerXp: 0.8 }
       ],
       rewards: { xp: 600, title: "Voice Reclaimed" },
       nextBossId: "phone_addiction"
@@ -316,10 +393,14 @@ const SEED_DATA = {
       ability: "Hijacks idle moments before your willpower has a chance to redirect them toward something real.",
       description: "The reflex to reach for distraction instead of doing the work.",
       maxHp: 1400,
+      startingDominance: 20,
+      passiveDominancePerDay: 4,
+      normalQuestDominanceReduction: 1,
+      cancellationDominancePenalty: 10,
+      expirationDominancePenalty: 25,
+      baseDamagePerXp: 0.2,
       damageRules: [
-        { matchType: "attribute", match: "willpower", damagePerXp: 0.75 },
-        { matchType: "titleContains", match: "phone", damage: 100 },
-        { matchType: "titleContains", match: "focus", damage: 75 }
+        { matchType: "attribute", match: "willpower", damagePerXp: 0.8 }
       ],
       rewards: { xp: 700, title: "Present Mind" },
       nextBossId: "self_doubt"
@@ -338,10 +419,15 @@ const SEED_DATA = {
       ability: "Quietly discounts every real win, making consistent effort feel invisible even as it compounds.",
       description: "The endgame boss — only appears after the original three are defeated.",
       maxHp: 2200,
+      startingDominance: 20,
+      passiveDominancePerDay: 4,
+      normalQuestDominanceReduction: 1,
+      cancellationDominancePenalty: 10,
+      expirationDominancePenalty: 25,
+      baseDamagePerXp: 0.2,
       damageRules: [
-        { matchType: "attribute", match: "willpower", damagePerXp: 0.5 },
-        { matchType: "tag", match: "discipline", damagePerXp: 0.5 },
-        { matchType: "titleContains", match: "reflect", damage: 60 }
+        { matchType: "attribute", match: "willpower", damagePerXp: 0.3 },
+        { matchType: "tag", match: "discipline", damagePerXp: 0.4 }
       ],
       rewards: { xp: 1200, title: "Self-Assured" },
       nextBossId: "the_plateau"
@@ -354,8 +440,14 @@ const SEED_DATA = {
       ability: "Makes consistent, unglamorous effort feel pointless by removing the dopamine of visible, fast progress.",
       description: "The final boss of the current campaign — beating this is what prestige is built to prepare you for.",
       maxHp: 3000,
+      startingDominance: 20,
+      passiveDominancePerDay: 4,
+      normalQuestDominanceReduction: 1,
+      cancellationDominancePenalty: 10,
+      expirationDominancePenalty: 25,
+      baseDamagePerXp: 0.2,
       damageRules: [
-        { matchType: "attribute", match: "willpower", damagePerXp: 0.4 },
+        { matchType: "attribute", match: "willpower", damagePerXp: 0.2 },
         { matchType: "tag", match: "discipline", damagePerXp: 0.4 },
         { matchType: "attribute", match: "intelligence", damagePerXp: 0.2 },
         { matchType: "attribute", match: "strength", damagePerXp: 0.2 },

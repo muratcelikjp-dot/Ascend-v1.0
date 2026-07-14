@@ -2,167 +2,196 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#00E5FF">
+<meta name="theme-color" content="#020713">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="RPG Self">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-<title>RPG — Boss</title>
+<title>Ascend - Boss Encounter</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
-<link rel="stylesheet" href="css/attribute-icons.css">
+<link rel="stylesheet" href="css/panel-navigation.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --ab:#020D18;--ab2:#04192E;--ab3:#071F38;
-  --neon:#00E5FF;--oc:#00B4D8;--ocd:#005F87;
-  --bd:rgba(0,180,216,0.18);--bd2:rgba(0,180,216,0.36);
-  --tx:#C8EAF5;--txd:#4A7A90;--txm:#7BAFC8;
-  --am:#EF9F27;--gr:#1D9E75;--re:#E24B4A
+  color-scheme:dark;
+  --void:#020713;--deep:#071326;--ocean:#091b2f;--rift:#0b2744;
+  --blue:#2f9dff;--aqua:#35f4e6;--cyan:#8defff;--purple:#8b5cf6;
+  --gold:#f7c948;--green:#41e6a4;--danger:#ff5c7a;
+  --text:#eaf8ff;--soft:#a7c7d9;--muted:#6f8ea3;--disabled:#3f5a6f;
+  --border:rgba(141,239,255,.18);--surface:rgba(10,28,48,.66)
 }
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--ab);display:flex;justify-content:center}
-.app{max-width:390px;width:100%;background:var(--ab);min-height:100vh;padding-bottom:72px;position:relative;overflow-x:hidden}
-
-@keyframes sc{0%{top:0}100%{top:110%}}
-@keyframes pulseglow{0%,100%{opacity:.5}50%{opacity:1}}
-@keyframes flicker{0%,100%{opacity:1}45%{opacity:.85}55%{opacity:1}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-@keyframes ringpulse{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.5);opacity:0}}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
-@keyframes popin{from{opacity:0;transform:scale(.85) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
-@keyframes dmgfloat{0%{opacity:0;transform:translate(-50%,0) scale(.6)}15%{opacity:1;transform:translate(-50%,-10px) scale(1.25)}100%{opacity:0;transform:translate(calc(-50% + var(--dx,0px)),-60px) scale(1)}}
-
-.top-banner{background:linear-gradient(180deg,var(--ab2),var(--ab));border-bottom:1px solid var(--bd);padding:18px 16px 16px;position:relative;overflow:hidden}
-.scan-line{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--neon),transparent);animation:sc 2.4s linear infinite;opacity:.3;pointer-events:none}
-.threat-label{font-size:10px;color:var(--re);text-transform:uppercase;letter-spacing:.14em;text-align:center;margin-bottom:8px;animation:flicker 2s ease-in-out infinite;display:flex;align-items:center;justify-content:center;gap:6px}
-
-.boss-portrait-wrap{display:flex;justify-content:center;margin:6px 0 10px;position:relative}
-.boss-ring{position:absolute;width:96px;height:96px;border-radius:50%;border:1px solid var(--re);top:0;left:50%;transform:translateX(-50%)}
-.boss-ring.r2{animation:ringpulse 2.5s ease-out infinite}
-.boss-ring.r3{animation:ringpulse 2.5s ease-out infinite .8s}
-.boss-portrait{width:96px;height:96px;border-radius:50%;background:var(--ab3);border:1.5px solid var(--re);display:flex;align-items:center;justify-content:center;font-size:40px;color:#F09595;position:relative;z-index:2;animation:float 3s ease-in-out infinite}
-
-.boss-name{font-size:17px;font-weight:500;color:var(--re);text-align:center;letter-spacing:.04em;text-transform:uppercase}
-.boss-desc{font-size:11px;color:var(--txd);text-align:center;margin-top:4px;font-style:italic}
-
-.lore-card{margin:12px 16px 0;background:var(--ab2);border:1px solid var(--bd);border-radius:4px;padding:13px 14px}
-.lore-label{font-size:9px;color:var(--txd);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;display:flex;align-items:center;gap:5px}
-.lore-text{font-size:12px;color:var(--tx);line-height:1.6}
-.ability-row{margin-top:10px;padding-top:10px;border-top:1px solid var(--bd);display:flex;gap:8px;align-items:flex-start}
-.ability-icon{width:24px;height:24px;border-radius:2px;background:rgba(226,75,74,.12);border:1px solid rgba(226,75,74,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.ability-icon i{font-size:12px;color:#F09595}
-.ability-text{font-size:11px;color:var(--txd);line-height:1.55}
-
-.hp-section{margin:14px 16px 0;background:var(--ab2);border:1px solid var(--bd);border-radius:4px;padding:14px;position:relative;overflow:hidden}
-.hp-top{display:flex;justify-content:space-between;margin-bottom:6px}
-.hp-lbl{font-size:10px;color:var(--txd);text-transform:uppercase;letter-spacing:.1em}
-.hp-val{font-size:11px;font-weight:500;color:var(--re)}
-.hp-track{height:12px;background:var(--ab3);border-radius:2px;overflow:hidden;position:relative;border:1px solid rgba(226,75,74,0.2)}
-.hp-fill{height:100%;background:linear-gradient(90deg,#993D3D,var(--re));border-radius:2px;transition:width 1s cubic-bezier(.4,0,.2,1);position:relative}
-.hp-fill::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.08) 0 6px,transparent 6px 12px)}
-.dmg-popup{position:absolute;font-size:18px;font-weight:700;color:#fff;text-shadow:0 0 10px var(--re),0 2px 3px rgba(0,0,0,.6);pointer-events:none;z-index:10;opacity:0;left:50%;top:20%}
-.dmg-popup.fire{animation:dmgfloat .7s cubic-bezier(.2,.8,.3,1) forwards}
-
-.objectives-bar{padding:11px 16px 7px;display:flex;align-items:center;justify-content:space-between}
-.sec-title{font-size:10px;color:var(--txd);text-transform:uppercase;letter-spacing:.1em}
-
-.dmg-rules-list{padding:0 16px;display:flex;flex-direction:column;gap:6px}
-.rule-card{background:var(--ab2);border:1px solid var(--bd);border-radius:4px;padding:10px 12px;display:flex;align-items:center;gap:10px}
-.rule-icon{width:26px;height:26px;border-radius:2px;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.rule-icon i{font-size:13px;color:var(--neon)}
-.rule-text{font-size:11px;color:var(--tx);flex:1}
-.rule-dmg{font-size:10px;color:var(--am);font-weight:500;white-space:nowrap}
-
-.reward-section{margin:14px 16px 0;background:var(--ab2);border:1px solid rgba(239,159,39,.25);border-radius:4px;padding:14px;position:relative;overflow:hidden}
-.reward-glow{position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(239,159,39,.12),transparent 70%);animation:pulseglow 3s ease-in-out infinite}
-.reward-title{font-size:10px;color:var(--am);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;display:flex;align-items:center;gap:6px;position:relative}
-.reward-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:relative}
-.reward-item{background:var(--ab3);border:1px solid rgba(239,159,39,.18);border-radius:2px;padding:9px 10px;text-align:center}
-.reward-val{font-size:14px;font-weight:500;color:var(--am)}
-.reward-lbl{font-size:9px;color:var(--txd);margin-top:2px;text-transform:uppercase;letter-spacing:.05em}
-
-.roster-list{padding:0 16px;display:flex;flex-direction:column;gap:7px}
-.roster-card{display:flex;align-items:center;gap:10px;background:var(--ab2);border:1px solid var(--bd);border-radius:4px;padding:11px 12px;opacity:1}
-.roster-card.locked{opacity:.4}
-.roster-icon{width:32px;height:32px;border-radius:2px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--ab3);border:1px solid var(--bd2)}
-.roster-card.defeated .roster-icon{background:rgba(29,158,117,.12);border-color:var(--gr)}
-.roster-card.current .roster-icon{background:rgba(226,75,74,.12);border-color:var(--re)}
-.roster-icon i{font-size:15px;color:var(--txd)}
-.roster-card.defeated .roster-icon i{color:var(--gr)}
-.roster-card.current .roster-icon i{color:#F09595}
-.roster-body{flex:1;min-width:0}
-.roster-name{font-size:12px;color:var(--tx)}
-.roster-status{font-size:9px;text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
-.roster-card.defeated .roster-status{color:var(--gr)}
-.roster-card.current .roster-status{color:#F09595}
-.roster-card.locked .roster-status{color:var(--txd)}
-.roster-title{font-size:10px;color:var(--am);font-style:italic}
-
-.victory-overlay{position:fixed;inset:0;background:rgba(2,13,24,.96);display:none;align-items:center;justify-content:center;flex-direction:column;z-index:50;padding:24px;max-width:390px;margin:0 auto}
-.victory-overlay.show{display:flex;animation:popin .4s ease}
-.victory-icon{font-size:52px;color:var(--am);margin-bottom:12px}
-.victory-title{font-size:20px;font-weight:500;color:var(--am);text-transform:uppercase;letter-spacing:.08em;text-align:center}
-.victory-sub{font-size:12px;color:var(--txd);margin-top:8px;text-align:center;line-height:1.6}
-.victory-rewards{margin-top:20px;display:flex;gap:10px}
-.victory-pill{background:var(--ab2);border:1px solid rgba(239,159,39,.3);border-radius:4px;padding:10px 16px;text-align:center}
-.victory-pill-val{font-size:16px;font-weight:500;color:var(--am)}
-.victory-pill-lbl{font-size:9px;color:var(--txd);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
-.victory-close{margin-top:24px;padding:11px 32px;background:var(--am);border:none;border-radius:4px;color:var(--ab);font-size:11px;font-weight:500;cursor:pointer;text-transform:uppercase;letter-spacing:.08em}
-
-.shaking{animation:shake .3s ease}
-
-.empty-state{margin:16px;padding:24px;text-align:center;background:var(--ab2);border:1px solid rgba(29,158,117,.25);border-radius:4px}
-.empty-state i{font-size:32px;color:var(--gr);margin-bottom:10px;display:block}
-.empty-title{font-size:14px;color:var(--tx);text-transform:uppercase;letter-spacing:.06em}
-.empty-sub{font-size:11px;color:var(--txd);margin-top:6px}
-
-.nav{display:flex;justify-content:space-around;padding:10px 0 20px;background:var(--ab2);border-top:1px solid var(--bd);position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:390px;z-index:10}
-.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 6px;text-decoration:none;transition:transform .12s}
-.ni:active{transform:scale(.88)}
-.ni i{font-size:20px;color:var(--txd)}
-.ni.on i{color:var(--neon)}
-.ni span{font-size:8.5px;color:var(--txd);text-transform:uppercase;letter-spacing:.05em}
-.ni.on span{color:var(--neon)}
+html{background:var(--void)}
+body{min-height:100vh;display:flex;justify-content:center;background:var(--void);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button{font:inherit}
+.app{position:relative;width:100%;max-width:430px;min-height:100svh;overflow:hidden;padding:calc(14px + env(safe-area-inset-top,0px)) 14px calc(48px + env(safe-area-inset-bottom,0px));background:linear-gradient(180deg,#020713 0%,#071326 53%,#020713 100%)}
+.app::before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 31px,rgba(141,239,255,.018) 32px 33px),linear-gradient(90deg,transparent,rgba(47,157,255,.025),transparent)}
+.encounter-header{position:relative;z-index:5;display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:11px}
+.back-button{width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--border);border-radius:7px;background:rgba(10,28,48,.58);color:var(--cyan);text-decoration:none}
+.back-button:active{transform:scale(.94)}
+.back-button i{font-size:20px}
+.header-copy span,.status-chip{font-size:8px;line-height:1;text-transform:uppercase}
+.header-copy span{color:var(--muted)}
+.header-copy h1{margin-top:4px;font-size:16px;font-weight:620;line-height:1.1}
+.status-chip{--chip-color:var(--danger);display:flex;align-items:center;gap:6px;padding:7px 8px;border:1px solid color-mix(in srgb,var(--chip-color) 28%,transparent);border-radius:5px;background:color-mix(in srgb,var(--chip-color) 6%,transparent);color:var(--chip-color);white-space:nowrap}
+.status-chip::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--chip-color);box-shadow:0 0 8px color-mix(in srgb,var(--chip-color) 78%,transparent);animation:statusPulse 2s ease-in-out infinite}.status-chip.suppressed{--chip-color:var(--cyan)}.status-chip.warning{--chip-color:var(--gold)}.status-chip.critical,.status-chip.imminent{--chip-color:var(--danger)}
+.boss-identity{position:relative;z-index:3;margin-top:13px;text-align:center}
+.unit-label{font-size:8px;color:var(--muted);text-transform:uppercase}
+.boss-identity h2{margin-top:4px;font-family:Impact,"Arial Black",sans-serif;font-size:40px;line-height:.96;font-weight:900;letter-spacing:0;color:transparent;background:linear-gradient(90deg,var(--aqua),var(--cyan) 28%,var(--soft) 42%,var(--danger) 52%,var(--soft) 64%,var(--cyan) 80%,var(--aqua));background-clip:text;-webkit-background-clip:text;text-transform:uppercase;filter:drop-shadow(0 0 8px rgba(53,244,230,.18)) drop-shadow(0 0 9px rgba(255,92,122,.18))}
+.boss-identity p{max-width:290px;margin:7px auto 0;color:var(--muted);font-size:10px;line-height:1.4}
+.encounter-stage{--threat-level:.2;--threat-color:var(--purple);--stage-mix:7%;--ring-mix:10%;--ring-shadow-mix:7%;--ring-blur:46px;position:relative;z-index:2;width:calc(100% + 28px);margin:3px -14px 0;aspect-ratio:1/1.04;overflow:hidden;background:radial-gradient(circle at 50% 46%,color-mix(in srgb,var(--threat-color) var(--stage-mix),rgba(11,39,68,.88)),rgba(5,15,29,.7) 56%,rgba(2,7,19,0) 77%);transition:background .5s ease,filter .5s ease}
+.encounter-stage::before,.encounter-stage::after{content:"";position:absolute;left:50%;top:48%;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none}
+.encounter-stage::before{width:68%;aspect-ratio:1;border:1px solid color-mix(in srgb,var(--threat-color) var(--ring-mix),transparent);box-shadow:0 0 0 26px rgba(47,157,255,.018),0 0 var(--ring-blur) color-mix(in srgb,var(--threat-color) var(--ring-shadow-mix),transparent);transition:border-color .5s ease,box-shadow .5s ease}
+.encounter-stage::after{width:1px;height:80%;background:linear-gradient(transparent,rgba(141,239,255,.08),transparent)}
+.boss-rig{--boss-float-speed:5.4s;--left-arm-speed:6.2s;--right-arm-speed:6.7s;--core-speed:2.5s;--sensor-speed:3.2s;--claw-speed:3.8s;--light-base:.66;--light-low:.48;--claw-low:.41;--claw-high:.61;--light-boost:1;--rig-glow:4px;position:absolute;z-index:1;inset:3% 3% 2%;filter:drop-shadow(0 20px 18px rgba(0,0,0,.46)) drop-shadow(0 0 var(--rig-glow) color-mix(in srgb,var(--threat-color) 24%,transparent));animation:bossFloat var(--boss-float-speed) ease-in-out infinite;transition:filter .5s ease}
+.boss-layer{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.boss-base{z-index:1}.boss-arm{z-index:2;will-change:transform;transition:opacity .45s ease,filter .45s ease}.boss-arm-left{transform-origin:18% 35%;animation:leftArm var(--left-arm-speed) ease-in-out infinite}.boss-arm-right{transform-origin:82% 35%;animation:rightArm var(--right-arm-speed) ease-in-out infinite}
+.boss-light{position:absolute;z-index:3;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;mix-blend-mode:screen}
+.core-light{left:50%;top:55.5%;width:18%;aspect-ratio:1;background:radial-gradient(circle,rgba(255,128,148,.9),rgba(255,92,122,.3) 38%,transparent 71%);filter:blur(4px) brightness(var(--light-boost));animation:corePulse var(--core-speed) ease-in-out infinite}
+.sensor-light{left:50%;top:38%;width:14%;height:6%;background:radial-gradient(ellipse,rgba(141,239,255,.96),rgba(47,157,255,.22) 46%,transparent 73%);filter:blur(3px) brightness(var(--light-boost));animation:sensorPulse var(--sensor-speed) ease-in-out infinite}
+.claw-light{left:86%;top:87%;width:11%;aspect-ratio:1;background:radial-gradient(circle,rgba(247,201,72,.76),rgba(247,201,72,.16) 46%,transparent 72%);filter:blur(3px) brightness(var(--light-boost));animation:clawPulse var(--claw-speed) ease-in-out infinite}
+.part-damage{position:absolute;z-index:5;width:30px;height:30px;display:none;place-items:center;transform:translate(-50%,-50%);border:1px solid rgba(255,92,122,.58);border-radius:50%;background:rgba(2,7,19,.72);color:var(--danger);box-shadow:0 0 16px rgba(255,92,122,.24);pointer-events:none}.part-damage::before,.part-damage::after{content:"";position:absolute;width:22px;height:1px;background:currentColor;box-shadow:0 0 5px currentColor}.part-damage::before{transform:rotate(42deg)}.part-damage::after{transform:rotate(-52deg)}.part-damage i{position:relative;z-index:2;font-size:12px}.sensor-damage{left:50%;top:38%}.core-damage{left:50%;top:55.5%;width:42px;height:42px}.claw-damage{left:86%;top:87%}
+.boss-rig.sensor-broken .sensor-light{opacity:.06!important;animation:none}.boss-rig.sensor-broken .sensor-damage{display:grid}.boss-rig.core-broken .core-light{opacity:.08!important;animation:none;filter:blur(2px) saturate(.25)}.boss-rig.core-broken .core-damage{display:grid}.boss-rig.claw-broken .claw-light{opacity:.06!important;animation:none}.boss-rig.claw-broken .claw-damage{display:grid}.boss-rig.claw-broken .boss-arm-right{opacity:.45;filter:grayscale(.55) brightness(.58);animation:none;transform:rotate(5deg) translateY(7px)}
+.encounter-stage.threat-warning{--threat-color:var(--gold)}.encounter-stage.threat-critical,.encounter-stage.threat-imminent{--threat-color:var(--danger)}.encounter-stage.threat-imminent{filter:saturate(1.08)}
+.connection-map{position:absolute;z-index:4;inset:0;width:100%;height:100%;pointer-events:none}
+.connection-map path{fill:none;stroke:var(--point-color,var(--cyan));stroke-width:.34;stroke-dasharray:1.2 1.1;opacity:.55;filter:drop-shadow(0 0 2px var(--point-color,var(--cyan)))}
+.connection-map path.broken{stroke:var(--green);stroke-dasharray:.45 1.8;opacity:.24;filter:none}
+.weakpoint-target{position:absolute;z-index:6;width:38px;height:38px;display:grid;place-items:center;transform:translate(-50%,-50%);border:0;border-radius:50%;background:rgba(2,7,19,.46);color:var(--point-color,var(--cyan));cursor:pointer}
+.weakpoint-target::before,.weakpoint-target::after{content:"";position:absolute;border-radius:50%;border:1px solid var(--point-color,var(--cyan))}
+.weakpoint-target::before{inset:5px;box-shadow:0 0 12px color-mix(in srgb,var(--point-color,var(--cyan)) 48%,transparent)}
+.weakpoint-target::after{inset:0;border-style:dashed;opacity:.5;animation:targetSpin 8s linear infinite}
+.weakpoint-target i{position:relative;z-index:2;font-size:13px;filter:drop-shadow(0 0 4px currentColor)}
+.weakpoint-callout{position:absolute;z-index:7;width:108px;min-height:46px;padding:7px 8px;border:1px solid color-mix(in srgb,var(--point-color,var(--cyan)) 46%,transparent);border-radius:6px;background:rgba(4,17,32,.88);color:var(--text);text-align:left;cursor:pointer;box-shadow:0 8px 18px rgba(0,0,0,.25),inset 0 0 14px color-mix(in srgb,var(--point-color,var(--cyan)) 6%,transparent)}
+.weakpoint-callout::before{content:"";position:absolute;left:0;top:7px;bottom:7px;width:2px;background:var(--point-color,var(--cyan));box-shadow:0 0 7px var(--point-color,var(--cyan))}
+.weakpoint-callout small{display:block;color:var(--point-color,var(--cyan));font-size:7px;line-height:1;text-transform:uppercase}
+.weakpoint-callout strong{display:block;margin-top:4px;font-size:9px;line-height:1.15;font-weight:620}
+.weakpoint-callout .callout-state{display:block;margin-top:3px;color:var(--muted);font-size:7px;text-transform:uppercase}
+.weakpoint-callout:active{transform:scale(.96)}.weakpoint-target:active{transform:translate(-50%,-50%) scale(.94)}
+.weakpoint-target:focus-visible,.weakpoint-callout:focus-visible,.back-button:focus-visible,.sheet-close:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.weakpoint-callout.broken{--point-color:var(--green)!important}.weakpoint-target.broken{--point-color:var(--green)!important}.weakpoint-callout.broken .callout-state{color:var(--green)}
+.fallback-boss{position:absolute;inset:13%;display:grid;place-items:center;border:1px solid var(--border);color:var(--danger);font-size:74px;background:radial-gradient(circle,rgba(47,157,255,.1),transparent 65%)}
+.combat-meters{position:relative;z-index:4;margin-top:-9px;display:grid;gap:10px;padding:12px;border:1px solid var(--border);border-radius:8px;background:linear-gradient(145deg,rgba(13,38,64,.86),rgba(4,12,27,.93));box-shadow:0 16px 32px rgba(0,0,0,.28)}
+.meter{--meter-color:var(--danger)}
+.meter.dominance{--meter-color:var(--purple)}
+.meter-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:6px}
+.meter-label{display:flex;align-items:center;gap:6px;color:var(--soft);font-size:8px;text-transform:uppercase}.meter-label i{color:var(--meter-color);font-size:12px}
+.meter-value{color:var(--text);font-size:12px;font-weight:650}.meter-value span{color:var(--muted);font-size:8px;font-weight:500}
+.meter-track{height:9px;overflow:hidden;border:1px solid color-mix(in srgb,var(--meter-color) 31%,transparent);border-radius:3px;background:repeating-linear-gradient(90deg,rgba(2,7,19,.9) 0 calc(10% - 1px),color-mix(in srgb,var(--meter-color) 11%,transparent) calc(10% - 1px) 10%);box-shadow:inset 0 0 8px rgba(0,0,0,.58)}
+.meter-fill{height:100%;background:linear-gradient(90deg,color-mix(in srgb,var(--meter-color) 56%,#020713),var(--meter-color));box-shadow:0 0 12px color-mix(in srgb,var(--meter-color) 55%,transparent);transition:width .55s ease}
+.meter-foot{display:flex;justify-content:space-between;margin-top:4px;color:var(--muted);font-size:7px;text-transform:uppercase}
+.dominance.warning{--meter-color:var(--gold)}.dominance.critical{--meter-color:var(--danger)}
+.dominance.imminent{--meter-color:var(--danger)}.dominance.imminent .meter-track{border-color:rgba(255,92,122,.55);box-shadow:inset 0 0 9px rgba(0,0,0,.62),0 0 12px rgba(255,92,122,.13)}.dominance.imminent .meter-foot span:first-child{color:var(--danger)}
+.encounter-note{position:relative;z-index:3;display:flex;align-items:center;justify-content:center;gap:7px;margin-top:12px;color:var(--muted);font-size:8px;text-align:center;text-transform:uppercase}.encounter-note i{color:var(--cyan);font-size:12px}
+.threat-warning{position:relative;z-index:3;display:flex;align-items:center;justify-content:center;gap:7px;margin-top:10px;padding:8px;border:1px solid rgba(255,92,122,.28);border-radius:6px;background:rgba(255,92,122,.055);color:#ff9aaf;font-size:8px;text-align:center;text-transform:uppercase}.threat-warning i{font-size:13px;color:var(--danger)}
+.empty-state{position:relative;z-index:2;margin-top:28px;padding:28px 18px;border:1px solid rgba(65,230,164,.24);border-radius:8px;background:var(--surface);text-align:center}.empty-state i{font-size:38px;color:var(--green)}.empty-state h2{margin-top:10px;font-size:17px}.empty-state p{margin-top:7px;color:var(--muted);font-size:10px;line-height:1.5}
+.retreat-state{position:relative;z-index:2;margin-top:24px;padding:30px 18px 22px;border:1px solid rgba(255,92,122,.22);border-radius:8px;background:linear-gradient(160deg,rgba(34,22,39,.72),rgba(10,28,48,.68));text-align:center;box-shadow:0 18px 42px rgba(0,0,0,.28)}.retreat-signal{width:58px;height:58px;margin:0 auto;display:grid;place-items:center;border:1px solid rgba(255,92,122,.32);border-radius:50%;background:rgba(255,92,122,.06);color:var(--danger)}.retreat-signal i{font-size:27px}.retreat-kicker{margin-top:15px;color:var(--danger);font-size:8px;text-transform:uppercase;letter-spacing:.14em}.retreat-state h2{margin-top:5px;font-size:23px;text-transform:uppercase}.retreat-state>p{max-width:320px;margin:9px auto 0;color:var(--muted);font-size:10px;line-height:1.6}.retreat-record{display:grid;grid-template-columns:1fr 1fr;margin-top:18px;border:1px solid var(--border);border-radius:7px;overflow:hidden}.retreat-record div{padding:11px 8px;background:rgba(2,7,19,.32)}.retreat-record div+div{border-left:1px solid var(--border)}.retreat-record strong{display:block;color:var(--text);font-size:12px}.retreat-record span{display:block;margin-top:3px;color:var(--muted);font-size:7px;text-transform:uppercase}.rematch-status{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:13px;color:var(--gold);font-size:8px;text-transform:uppercase}.rematch-status i{font-size:13px}.rematch-action{width:100%;height:44px;margin-top:11px;border:1px solid rgba(53,244,230,.4);border-radius:7px;background:linear-gradient(90deg,rgba(47,157,255,.24),rgba(53,244,230,.22));color:var(--cyan);font-size:9px;font-weight:700;text-transform:uppercase;cursor:pointer}.rematch-action:disabled{border-color:rgba(111,142,163,.2);background:rgba(63,90,111,.1);color:var(--disabled);cursor:default}.retreat-review{width:100%;height:38px;margin-top:8px;border:0;background:transparent;color:var(--muted);font-size:8px;text-transform:uppercase;cursor:pointer}
+.sheet-overlay{position:fixed;z-index:80;inset:0;display:flex;align-items:flex-end;justify-content:center;padding-top:40px;background:rgba(2,7,19,.78);opacity:0;visibility:hidden;transition:opacity .2s ease,visibility .2s ease}
+.sheet-overlay.open{opacity:1;visibility:visible}
+.mission-sheet{width:min(100%,430px);max-height:88svh;overflow-y:auto;padding:8px 16px calc(20px + env(safe-area-inset-bottom,0px));border:1px solid color-mix(in srgb,var(--sheet-color,var(--cyan)) 38%,transparent);border-bottom:0;border-radius:10px 10px 0 0;background:linear-gradient(180deg,rgba(13,38,64,.99),#071326);transform:translateY(24px);transition:transform .25s ease;box-shadow:0 -20px 52px rgba(0,0,0,.44)}
+.sheet-overlay.open .mission-sheet{transform:translateY(0)}
+.sheet-handle{width:38px;height:3px;margin:0 auto 13px;border-radius:2px;background:rgba(167,199,217,.28)}
+.sheet-head{display:grid;grid-template-columns:38px minmax(0,1fr) 36px;align-items:start;gap:10px}
+.sheet-emblem{width:38px;height:38px;display:grid;place-items:center;border:1px solid color-mix(in srgb,var(--sheet-color,var(--cyan)) 45%,transparent);border-radius:7px;background:color-mix(in srgb,var(--sheet-color,var(--cyan)) 8%,transparent);color:var(--sheet-color,var(--cyan))}.sheet-emblem i{font-size:17px}
+.sheet-kicker{color:var(--sheet-color,var(--cyan));font-size:8px;text-transform:uppercase}.sheet-head h2{margin-top:4px;font-size:19px;line-height:1.1}.sheet-sub{margin-top:4px;color:var(--muted);font-size:9px;text-transform:uppercase}
+.sheet-close{width:36px;height:36px;display:grid;place-items:center;border:1px solid var(--border);border-radius:6px;background:rgba(2,7,19,.35);color:var(--muted);cursor:pointer}.sheet-close i{font-size:17px}
+.sheet-description{margin-top:15px;color:var(--soft);font-size:11px;line-height:1.55}
+.mission-block{margin-top:14px;padding:13px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.mission-block-label{color:var(--gold);font-size:8px;text-transform:uppercase}.mission-block h3{margin-top:4px;font-size:15px}.mission-block p{margin-top:7px;color:var(--muted);font-size:10px;line-height:1.55}
+.condition{display:flex;align-items:flex-start;gap:8px;margin-top:10px;color:var(--soft);font-size:10px;line-height:1.45}.condition i{margin-top:1px;color:var(--gold);font-size:13px}
+.mission-stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:13px;border:1px solid var(--border);border-radius:7px;overflow:hidden}.mission-stat{min-width:0;padding:10px 6px;text-align:center;background:rgba(2,7,19,.3)}.mission-stat+.mission-stat{border-left:1px solid var(--border)}.mission-stat strong{display:block;color:var(--text);font-size:11px;line-height:1.2}.mission-stat span{display:block;margin-top:3px;color:var(--muted);font-size:7px;text-transform:uppercase}
+.mission-controls{margin-top:13px}.mission-target-label{display:block;margin-bottom:6px;color:var(--soft);font-size:8px;text-transform:uppercase}.mission-target-input{width:100%;height:43px;padding:0 11px;border:1px solid var(--border);border-radius:7px;outline:none;background:rgba(2,7,19,.54);color:var(--text);font-size:11px}.mission-target-input:focus{border-color:rgba(53,244,230,.56);box-shadow:0 0 12px rgba(53,244,230,.08)}.mission-risk{display:flex;align-items:flex-start;gap:6px;margin-top:7px;color:var(--muted);font-size:8px;line-height:1.4}.mission-risk i{color:var(--danger);font-size:11px}
+.mission-action{width:100%;height:44px;margin-top:9px;border:1px solid rgba(53,244,230,.34);border-radius:7px;background:linear-gradient(90deg,rgba(47,157,255,.2),rgba(53,244,230,.18));color:var(--cyan);font-size:9px;font-weight:650;text-transform:uppercase;cursor:pointer}.mission-action i{margin-right:6px}.mission-action:disabled{border-color:rgba(111,142,163,.25);background:rgba(63,90,111,.12);color:var(--disabled);cursor:default}.mission-action.danger{border-color:rgba(255,92,122,.3);background:rgba(255,92,122,.07);color:var(--danger)}
+.active-mission{padding:11px;border:1px solid rgba(247,201,72,.25);border-radius:7px;background:rgba(247,201,72,.045)}.active-mission-label{color:var(--gold);font-size:8px;text-transform:uppercase}.active-mission-target{margin-top:5px;color:var(--text);font-size:12px;line-height:1.4}.mission-countdown{margin-top:9px;color:var(--gold);font-size:21px;font-weight:700;font-variant-numeric:tabular-nums}.mission-countdown span{margin-left:5px;color:var(--muted);font-size:8px;font-weight:500;text-transform:uppercase}.mission-action-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.mission-action-row .mission-action{margin-top:9px}
+.mission-confirmation{display:none;margin-top:10px;padding:12px;border:1px solid rgba(247,201,72,.28);border-radius:7px;background:rgba(2,7,19,.58)}.mission-confirmation.open{display:block}.mission-confirmation h4{font-size:12px;color:var(--text)}.mission-confirmation p{margin-top:6px;color:var(--muted);font-size:9px;line-height:1.5}.confirmation-actions{display:grid;grid-template-columns:1fr 1.25fr;gap:7px;margin-top:10px}.confirmation-actions button{height:38px;border-radius:6px;font-size:8px;text-transform:uppercase;cursor:pointer}.confirm-back{border:1px solid var(--border);background:transparent;color:var(--muted)}.confirm-execute{border:0;background:var(--gold);color:var(--void);font-weight:700}.confirm-execute.danger{background:var(--danger);color:#fff}
+.failure-review{position:relative;z-index:3;width:100%;height:40px;margin-top:10px;border:1px solid rgba(255,92,122,.25);border-radius:7px;background:rgba(255,92,122,.055);color:var(--danger);font-size:8px;text-transform:uppercase;cursor:pointer}.failure-review i{margin-right:6px}.failure-overlay{position:fixed;z-index:86;inset:0;display:flex;align-items:flex-end;justify-content:center;background:rgba(2,7,19,.8);opacity:0;visibility:hidden;transition:opacity .2s ease,visibility .2s ease}.failure-overlay.open{opacity:1;visibility:visible}.failure-panel{width:min(100%,430px);padding:18px 16px calc(20px + env(safe-area-inset-bottom,0px));border:1px solid rgba(255,92,122,.3);border-bottom:0;border-radius:10px 10px 0 0;background:linear-gradient(180deg,rgba(34,22,39,.99),var(--deep))}.failure-panel h2{font-size:18px}.failure-panel>p{margin-top:7px;color:var(--muted);font-size:10px;line-height:1.5}.failure-options{display:grid;gap:6px;margin-top:13px}.failure-option{min-height:40px;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:rgba(2,7,19,.42);color:var(--soft);font-size:9px;text-align:left;cursor:pointer}.failure-option:active{border-color:var(--danger)}.failure-skip{width:100%;height:38px;margin-top:9px;border:0;background:transparent;color:var(--muted);font-size:8px;text-transform:uppercase;cursor:pointer}
+.victory-overlay{position:fixed;z-index:90;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;max-width:430px;margin:0 auto;padding:24px;background:rgba(2,7,19,.97);text-align:center}.victory-overlay.show{display:flex}.victory-overlay i{font-size:52px;color:var(--gold)}.victory-overlay h2{margin-top:13px;color:var(--gold);font-size:20px;text-transform:uppercase}.victory-overlay p{margin-top:8px;color:var(--muted);font-size:11px;line-height:1.6}.victory-close{height:42px;margin-top:20px;padding:0 28px;border:0;border-radius:6px;background:var(--gold);color:var(--void);font-weight:650;text-transform:uppercase}
+.defeat-overlay{position:fixed;z-index:92;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;max-width:430px;margin:0 auto;padding:28px;background:radial-gradient(circle at 50% 38%,rgba(255,92,122,.1),transparent 36%),rgba(2,7,19,.98);text-align:center}.defeat-overlay.show{display:flex}.defeat-emblem{width:72px;height:72px;display:grid;place-items:center;border:1px solid rgba(255,92,122,.42);border-radius:50%;background:rgba(255,92,122,.065);color:var(--danger);box-shadow:0 0 36px rgba(255,92,122,.1)}.defeat-emblem i{font-size:34px}.defeat-label{margin-top:18px;color:var(--danger);font-size:8px;text-transform:uppercase;letter-spacing:.18em}.defeat-overlay h2{margin-top:6px;color:var(--text);font-size:24px;text-transform:uppercase}.defeat-overlay p{max-width:320px;margin-top:10px;color:var(--soft);font-size:11px;line-height:1.65}.defeat-preserve{display:flex;align-items:flex-start;gap:7px;margin-top:15px;padding:10px;border:1px solid rgba(141,239,255,.15);border-radius:7px;background:rgba(10,28,48,.44);color:var(--muted);font-size:9px;line-height:1.45;text-align:left}.defeat-preserve i{flex:0 0 auto;color:var(--cyan);font-size:14px}.defeat-close{height:43px;margin-top:20px;padding:0 28px;border:1px solid rgba(255,92,122,.42);border-radius:6px;background:rgba(255,92,122,.12);color:#ff9aaf;font-weight:650;text-transform:uppercase;cursor:pointer}
+@keyframes statusPulse{0%,100%{opacity:.45}50%{opacity:1}}
+@keyframes bossFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes leftArm{0%,100%{transform:rotate(0)}50%{transform:rotate(-1.8deg) translateY(-2px)}}
+@keyframes rightArm{0%,100%{transform:rotate(0)}50%{transform:rotate(1.8deg) translateY(2px)}}
+@keyframes corePulse{0%,100%{opacity:var(--light-low);transform:translate(-50%,-50%) scale(.92)}50%{opacity:var(--light-base);transform:translate(-50%,-50%) scale(1.08)}}
+@keyframes sensorPulse{0%,100%{opacity:var(--light-low)}50%{opacity:var(--light-base)}}
+@keyframes clawPulse{0%,100%{opacity:var(--claw-low)}50%{opacity:var(--claw-high)}}
+@keyframes targetSpin{to{transform:rotate(360deg)}}
+@media(max-width:350px){.app{padding-left:10px;padding-right:10px}.encounter-stage{width:calc(100% + 20px);margin-left:-10px;margin-right:-10px}.encounter-header{grid-template-columns:38px minmax(0,1fr)}.back-button{width:38px;height:38px}.status-chip{display:none}.boss-identity h2{font-size:31px}.weakpoint-callout{width:98px;padding:6px}.weakpoint-callout strong{font-size:8px}.combat-meters{margin-top:-5px}.mission-stats{grid-template-columns:1fr}.mission-stat+.mission-stat{border-left:0;border-top:1px solid var(--border)}.retreat-state{padding-left:13px;padding-right:13px}.defeat-overlay{padding-left:20px;padding-right:20px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.boss-rig,.boss-arm{transform:none!important}.boss-light{opacity:var(--light-base)!important}.boss-rig.sensor-broken .sensor-light,.boss-rig.core-broken .core-light,.boss-rig.claw-broken .claw-light{opacity:.06!important}.boss-rig.claw-broken .boss-arm-right{opacity:.45!important;filter:grayscale(.55) brightness(.58)!important}}
 </style>
 </head>
-<body>
+<body data-panel="boss">
 <div id="global-error-banner" style="display:none;position:fixed;top:0;left:0;right:0;background:#5a1010;color:#ffdede;padding:12px 14px;font-family:monospace;font-size:11px;z-index:99999;max-height:40vh;overflow-y:auto;white-space:pre-wrap;border-bottom:2px solid #ff4444"></div>
 <script>
-window.addEventListener('error', function(e){
-  var isOpaqueScriptError=e.message==='Script error.'&&(!e.filename)&&(!e.lineno)&&(!e.colno);
-  if(isOpaqueScriptError) return;
-  var banner=document.getElementById('global-error-banner');
-  if(banner){
-    banner.style.display='block';
-    banner.textContent += '[JS ERROR] '+e.message+'\n  at '+e.filename+':'+e.lineno+':'+e.colno+'\n\n';
-  }
+window.addEventListener("error",function(e){
+  var isOpaqueScriptError=e.message==="Script error."&&(!e.filename)&&(!e.lineno)&&(!e.colno);
+  if(isOpaqueScriptError)return;
+  var banner=document.getElementById("global-error-banner");
+  if(banner){banner.style.display="block";banner.textContent+="[JS ERROR] "+e.message+"\n  at "+e.filename+":"+e.lineno+":"+e.colno+"\n\n";}
 });
 </script>
 
-<div class="app" id="app">
-
+<main class="app panel-nav-shell" id="app">
   <div id="boss-content"></div>
-
-  <div class="victory-overlay" id="victory">
-    <div class="victory-icon"><i class="ti ti-trophy"></i></div>
-    <div class="victory-title" id="victory-title">Boss defeated</div>
-    <div class="victory-sub" id="victory-sub"></div>
-    <div class="victory-rewards" id="victory-rewards"></div>
-    <button class="victory-close" onclick="closeVictory()">Continue</button>
+  <div class="victory-overlay" id="victory" role="dialog" aria-modal="true" aria-labelledby="victory-title">
+    <i class="ti ti-trophy"></i>
+    <h2 id="victory-title">Boss defeated</h2>
+    <p id="victory-sub"></p>
+    <button class="victory-close" type="button" onclick="closeVictory()">Continue</button>
   </div>
+  <div class="defeat-overlay" id="defeat" role="dialog" aria-modal="true" aria-labelledby="defeat-title">
+    <div class="defeat-emblem"><i class="ti ti-alert-hexagon"></i></div>
+    <div class="defeat-label">Dominance critical</div>
+    <h2 id="defeat-title">Encounter Lost</h2>
+    <p id="defeat-copy"></p>
+    <div class="defeat-preserve"><i class="ti ti-shield-check"></i><span>Your character progress remains intact. Regain control and prepare for the next encounter.</span></div>
+    <button class="defeat-close" type="button" onclick="closeDefeat()">Acknowledge</button>
+  </div>
+</main>
 
+<div class="sheet-overlay" id="mission-sheet-overlay" aria-hidden="true" onclick="missionSheetBackdrop(event)">
+  <section class="mission-sheet" id="mission-sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <div class="sheet-handle" aria-hidden="true"></div>
+    <div class="sheet-head">
+      <div class="sheet-emblem"><i id="sheet-icon" class="ti ti-target-arrow"></i></div>
+      <div><div class="sheet-kicker" id="sheet-state">Weak point</div><h2 id="sheet-title"></h2><div class="sheet-sub" id="sheet-short-name"></div></div>
+      <button class="sheet-close" id="sheet-close" type="button" onclick="closeMissionSheet()" aria-label="Close mission preview"><i class="ti ti-x"></i></button>
+    </div>
+    <p class="sheet-description" id="sheet-description"></p>
+    <div class="mission-block">
+      <div class="mission-block-label">Boss mission</div>
+      <h3 id="sheet-mission-title"></h3>
+      <p id="sheet-mission-description"></p>
+      <div class="condition"><i class="ti ti-flag-3"></i><span id="sheet-condition"></span></div>
+    </div>
+    <div class="mission-stats">
+      <div class="mission-stat"><strong id="sheet-time"></strong><span>Time limit</span></div>
+      <div class="mission-stat"><strong id="sheet-damage"></strong><span>Integrity</span></div>
+      <div class="mission-stat"><strong id="sheet-dominance"></strong><span>Dominance</span></div>
+    </div>
+    <div class="mission-controls" id="mission-controls"></div>
+    <div class="mission-confirmation" id="mission-confirmation">
+      <h4 id="confirmation-title"></h4><p id="confirmation-copy"></p>
+      <div class="confirmation-actions"><button class="confirm-back" type="button" onclick="hideMissionConfirmation()">Back</button><button class="confirm-execute" id="confirmation-execute" type="button">Confirm</button></div>
+    </div>
+  </section>
 </div>
 
-<nav class="nav">
-  <a class="ni" href="quests.html"><i class="ti ti-list-check"></i><span>Quests</span></a>
-  <a class="ni" href="stats.html"><i class="ti ti-chart-bar"></i><span>Stats</span></a>
-  <a class="ni on" href="boss.html"><i class="ti ti-skull"></i><span>Boss</span></a>
-  <a class="ni" href="rewards.html"><i class="ti ti-gift"></i><span>Rewards</span></a>
-  <a class="ni" href="hero.html"><i class="ti ti-user"></i><span>Hero</span></a>
-</nav>
+<div class="failure-overlay" id="failure-overlay" aria-hidden="true" onclick="failureBackdrop(event)">
+  <section class="failure-panel" role="dialog" aria-modal="true" aria-labelledby="failure-title">
+    <h2 id="failure-title">Mission expired</h2>
+    <p id="failure-copy">What prevented this mission from being completed? This is feedback, not another penalty.</p>
+    <div class="failure-options">
+      <button class="failure-option" type="button" onclick="saveFailureReason('time_underestimated')">I underestimated the time</button>
+      <button class="failure-option" type="button" onclick="saveFailureReason('task_too_large')">The task was too large</button>
+      <button class="failure-option" type="button" onclick="saveFailureReason('forgot_or_lost_focus')">I forgot or lost focus</button>
+      <button class="failure-option" type="button" onclick="saveFailureReason('external_blocker')">An external blocker stopped me</button>
+      <button class="failure-option" type="button" onclick="saveFailureReason('wrong_mission')">This was the wrong mission</button>
+    </div>
+    <button class="failure-skip" type="button" onclick="closeFailurePrompt()">Skip for now</button>
+  </section>
+</div>
 
 <script src="data/seed-data.js"></script>
 <script src="js/gamestate.js"></script>
@@ -178,158 +207,396 @@ window.addEventListener('error', function(e){
 <script src="js/shield.js"></script>
 <script src="js/ranks.js"></script>
 <script src="js/gameloop.js"></script>
-<script src="js/attribute-icons.js"></script>
 <script>
-GameLoop.bootstrapDay();
+const bootstrapReport=GameLoop.bootstrapDay();
 let gs=GameState.get();
+const BOSS_SEEN_KEY="rpg_boss_last_seen_defeated_count";
+let activeWeakPointId=null;
+let lastWeakPointTrigger=null;
+let missionTimer=null;
 
-const ATTR_LABELS={intelligence:'Intelligence',strength:'Strength',charisma:'Charisma',willpower:'Willpower'};
-const ATTR_ICONS={intelligence:'ti-book',strength:'ti-run',charisma:'ti-messages',willpower:'ti-flame'};
-const TAG_LABELS={discipline:'Discipline',creativity:'Creativity'};
-const TAG_ICONS={discipline:'ti-clock',creativity:'ti-palette'};
-
-function renderDamageRules(bossDef){
-  return bossDef.damageRules.map(rule=>{
-    if(rule.matchType==='attribute'){
-      return `<div class="rule-card">
-        <div class="rule-icon">${AttributeIcons.markup(rule.match,ATTR_ICONS[rule.match]||'ti-bolt')}</div>
-        <div class="rule-text">${ATTR_LABELS[rule.match]||rule.match} quests deal damage</div>
-        <div class="rule-dmg">${rule.damagePerXp}× XP</div>
-      </div>`;
-    }
-    if(rule.matchType==='tag'){
-      return `<div class="rule-card">
-        <div class="rule-icon"><i class="ti ${TAG_ICONS[rule.match]||'ti-tag'}"></i></div>
-        <div class="rule-text">${TAG_LABELS[rule.match]||rule.match} quests deal damage</div>
-        <div class="rule-dmg">${rule.damagePerXp}ﾃ・XP</div>
-      </div>`;
-    }
-    return `<div class="rule-card">
-      <div class="rule-icon"><i class="ti ti-target"></i></div>
-      <div class="rule-text">Quests mentioning "${rule.match}"</div>
-      <div class="rule-dmg">+${rule.damage} dmg</div>
-    </div>`;
-  }).join('');
+function esc(value){
+  return String(value==null?"":value).replace(/[&<>'"]/g,function(char){return{"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[char];});
 }
 
-function renderRoster(state){
-  const roster=Bosses.getRoster(state);
-  return roster.map(b=>{
-    const titleEarned=state.bosses.titlesEarned&&b.status==='defeated'
-      ? state.bosses.titlesEarned.find(t=>t===b.rewards.title) : null;
-    return `<div class="roster-card ${b.status}">
-      <div class="roster-icon"><i class="ti ${b.icon||'ti-skull'}"></i></div>
-      <div class="roster-body">
-        <div class="roster-name">${b.name}</div>
-        <div class="roster-status">${b.status==='defeated'?'Defeated':b.status==='current'?'Current threat':'Locked'}</div>
-        ${titleEarned?`<div class="roster-title">"${titleEarned}" earned</div>`:''}
-      </div>
-      ${b.status!=='locked'?`<div style="font-size:10px;color:var(--txd)">+${b.rewards.xp} XP</div>`:'<i class="ti ti-lock" style="font-size:14px;color:var(--txd)"></i>'}
-    </div>`;
-  }).join('');
+function getThreatState(dominance){
+  if(dominance>=90)return{label:"Defeat imminent",className:"imminent",level:"imminent"};
+  if(dominance>=70)return{label:"Critical pressure",className:"critical",level:"critical"};
+  if(dominance>=40)return{label:"Dominance rising",className:"warning",level:"warning"};
+  return{label:"Threat suppressed",className:"suppressed",level:"suppressed"};
+}
+
+function getThreatVisuals(dominance){
+  const level=Math.max(0,Math.min(1,dominance/100));
+  const lightBase=.62+(level*.36);
+  const seconds=function(start,reduction){return Math.max(1.6,start-(level*reduction)).toFixed(2)+"s";};
+  return{
+    stageStyle:[
+      "--threat-level:"+level.toFixed(2),
+      "--stage-mix:"+(7+Math.round(level*8))+"%",
+      "--ring-mix:"+(10+Math.round(level*12))+"%",
+      "--ring-shadow-mix:"+(7+Math.round(level*9))+"%",
+      "--ring-blur:"+(46+Math.round(level*18))+"px"
+    ].join(";"),
+    rigStyle:[
+      "--boss-float-speed:"+seconds(5.8,2),
+      "--left-arm-speed:"+seconds(6.5,2.1),
+      "--right-arm-speed:"+seconds(6.9,2.3),
+      "--core-speed:"+seconds(2.8,1),
+      "--sensor-speed:"+seconds(3.4,1.1),
+      "--claw-speed:"+seconds(4,1.2),
+      "--light-base:"+lightBase.toFixed(2),
+      "--light-low:"+(lightBase*.72).toFixed(2),
+      "--claw-low:"+(lightBase*.62).toFixed(2),
+      "--claw-high:"+(lightBase*.92).toFixed(2),
+      "--light-boost:"+(1+(level*.65)).toFixed(2),
+      "--rig-glow:"+(3+Math.round(level*7))+"px"
+    ].join(";")
+  };
+}
+
+function getWeakPointState(progress,point){
+  if(typeof Bosses.getWeakPointStatus==="function")return Bosses.getWeakPointStatus(gs,progress.id,point.id);
+  const states=gs.bosses.weakPointStates&&gs.bosses.weakPointStates[progress.id];
+  if(states&&states[point.id]==="broken")return"broken";
+  const mission=gs.bosses.activeMission;
+  if(mission&&mission.status==="active")return mission.bossId===progress.id&&mission.weakPointId===point.id?"active":"unavailable";
+  return point.durationMinutes==null?"pending":"available";
+}
+
+function weakPointPath(point){
+  const target=point.target||{x:50,y:50};
+  const callout=point.callout||{x:4,y:10,side:"left"};
+  const endX=callout.side==="right"?callout.x:callout.x+27;
+  const endY=callout.y+5.5;
+  const controlX=(target.x+endX)/2+(callout.side==="right"?5:-5);
+  const controlY=(target.y+endY)/2;
+  return"M "+target.x+" "+target.y+" Q "+controlX+" "+controlY+" "+endX+" "+endY;
+}
+
+function renderWeakPointNetwork(progress){
+  const points=progress.weakPoints||[];
+  const paths=points.map(function(point){
+    const state=getWeakPointState(progress,point);
+    return`<path class="${state==="broken"?"broken":""}" style="--point-color:${esc(point.color||"#8DEFFF")}" d="${weakPointPath(point)}"></path>`;
+  }).join("");
+  const controls=points.map(function(point,index){
+    const target=point.target||{x:50,y:50};
+    const callout=point.callout||{x:4,y:10+(index*18),side:"left"};
+    const state=getWeakPointState(progress,point);
+    const stateLabel=state==="broken"?"Destroyed":state==="active"?"Mission active":state==="available"?"Mission available":state==="unavailable"?"Channel occupied":"Protocol pending";
+    const classes=state==="broken"?" broken":"";
+    return`<button class="weakpoint-target${classes}" type="button" style="left:${target.x}%;top:${target.y}%;--point-color:${esc(point.color||"#8DEFFF")}" onclick="openMissionSheet('${esc(point.id)}',this)" aria-label="Inspect ${esc(point.name)}"><i class="ti ${esc(point.icon||"ti-crosshair")}"></i></button>
+      <button class="weakpoint-callout${classes}" type="button" style="left:${callout.x}%;top:${callout.y}%;--point-color:${esc(point.color||"#8DEFFF")}" onclick="openMissionSheet('${esc(point.id)}',this)"><small>Weak point 0${index+1}</small><strong>${esc(point.name)}</strong><span class="callout-state">${stateLabel}</span></button>`;
+  }).join("");
+  return`<svg class="connection-map" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${paths}</svg>${controls}`;
+}
+
+function renderBossArtwork(progress,visuals){
+  if(progress.id!=="procrastination")return`<div class="fallback-boss"><i class="ti ${esc(progress.icon||"ti-skull")}"></i></div>`;
+  const pointStates=gs.bosses.weakPointStates&&gs.bosses.weakPointStates[progress.id]||{};
+  const damageClasses=[pointStates.focus_lens==="broken"?"sensor-broken":"",pointStates.delay_core==="broken"?"core-broken":"",pointStates.rear_leg==="broken"?"claw-broken":""].filter(Boolean).join(" ");
+  return`<div class="boss-rig ${damageClasses}" style="${visuals.rigStyle}">
+    <img class="boss-layer boss-base" src="assets/bosses/procrastination-v2-base.png" alt="Procrastination, a floating mechanized boss with a red energy core">
+    <img class="boss-layer boss-arm boss-arm-left" src="assets/bosses/procrastination-v2-left.png" alt="" aria-hidden="true">
+    <img class="boss-layer boss-arm boss-arm-right" src="assets/bosses/procrastination-v2-right.png" alt="" aria-hidden="true">
+    <span class="boss-light core-light" aria-hidden="true"></span><span class="boss-light sensor-light" aria-hidden="true"></span><span class="boss-light claw-light" aria-hidden="true"></span>
+    <span class="part-damage sensor-damage" aria-hidden="true"><i class="ti ti-bolt-off"></i></span><span class="part-damage core-damage" aria-hidden="true"><i class="ti ti-bolt-off"></i></span><span class="part-damage claw-damage" aria-hidden="true"><i class="ti ti-bolt-off"></i></span>
+  </div>`;
+}
+
+function getLatestEncounterLoss(bossId){
+  const losses=(gs.bosses.encounterLosses||[]).filter(function(loss){return loss&&loss.bossId===bossId;});
+  return losses.length?losses[losses.length-1]:null;
+}
+
+function renderRetreatedScreen(progress){
+  clearInterval(missionTimer);missionTimer=null;
+  const loss=getLatestEncounterLoss(progress.id);
+  const rematchReady=typeof Bosses.isRematchAvailable==="function"&&Bosses.isRematchAvailable(gs);
+  const integrity=loss?Math.round(loss.integrityAtDefeat):Math.round(progress.hp);
+  const attempt=loss?loss.attempt:(Number(gs.bosses.encounterAttempt)||1);
+  document.getElementById("boss-content").innerHTML=`
+    <header class="encounter-header panel-nav-header" style="--panel-progress:60%"><a class="back-button" href="index.html" aria-label="Return to command center"><i class="ti ti-home"></i></a><div class="header-copy"><span>Panel 03</span><h1>Boss</h1></div><div class="status-chip">Threat withdrawn</div></header>
+    <section class="retreat-state">
+      <div class="retreat-signal"><i class="ti ti-radar-off"></i></div>
+      <div class="retreat-kicker">Encounter inactive</div>
+      <h2>${esc(progress.name)} Retreated</h2>
+      <p>The boss has withdrawn for now. It saw where your defense failed and will return at full Integrity.</p>
+      <div class="retreat-record"><div><strong>${integrity} / ${progress.maxHp}</strong><span>Integrity at defeat</span></div><div><strong>Attempt ${attempt}</strong><span>Encounter record</span></div></div>
+      <div class="rematch-status"><i class="ti ${rematchReady?'ti-swords':'ti-clock-hour-4'}"></i><span>${rematchReady?'Rematch available':'Available '+esc(gs.bosses.rematchAvailableDate||'next local day')}</span></div>
+      <button class="rematch-action" type="button" onclick="beginBossRematch()" ${rematchReady?'':'disabled'}><i class="ti ti-swords"></i> Begin Rematch</button>
+      ${gs.bosses.pendingFailureReasonMissionId?'<button class="retreat-review" type="button" onclick="openFailurePrompt()">Review expired mission</button>':''}
+    </section>`;
+  if(!rematchReady){
+    missionTimer=setInterval(function(){
+      gs=GameState.get();
+      if(gs.bosses.encounterStatus!=="retreated"||(typeof Bosses.isRematchAvailable==="function"&&Bosses.isRematchAvailable(gs))){
+        clearInterval(missionTimer);missionTimer=null;renderBossScreen();
+      }
+    },30000);
+  }
 }
 
 function renderBossScreen(){
   const progress=Bosses.getBossProgress(gs);
-
   if(!progress){
-    document.getElementById('boss-content').innerHTML=`
-      <div class="sec-title" style="padding:16px 16px 8px">Campaign complete</div>
-      <div class="empty-state">
-        <i class="ti ti-crown"></i>
-        <div class="empty-title">All bosses defeated</div>
-        <div class="empty-sub">You've cleared every threat in this campaign. New bosses will arrive in future seasons.</div>
-      </div>
-      <div class="objectives-bar"><span class="sec-title">Campaign roster</span></div>
-      <div class="roster-list">${renderRoster(gs)}</div>`;
+    clearInterval(missionTimer);missionTimer=null;
+    document.getElementById("boss-content").innerHTML=`<header class="encounter-header panel-nav-header" style="--panel-progress:60%"><a class="back-button" href="index.html" aria-label="Return to command center"><i class="ti ti-home"></i></a><div class="header-copy"><span>Panel 03</span><h1>Boss</h1></div></header><section class="empty-state"><i class="ti ti-crown"></i><h2>All threats defeated</h2><p>Every current encounter has been cleared.</p></section>`;
+    return;
+  }
+  if(progress.encounterStatus==="retreated"){
+    renderRetreatedScreen(progress);
+    return;
+  }
+  const dominance=Math.max(0,Math.min(100,Number(progress.dominance)||0));
+  const threat=getThreatState(dominance);
+  const visuals=getThreatVisuals(dominance);
+  document.getElementById("boss-content").innerHTML=`
+      <header class="encounter-header panel-nav-header" style="--panel-progress:60%"><a class="back-button" href="index.html" aria-label="Return to command center"><i class="ti ti-home"></i></a><div class="header-copy"><span>Panel 03</span><h1>Boss</h1></div><div class="status-chip ${threat.className}">${threat.label}</div></header>
+    <section class="boss-identity"><div class="unit-label">Unit ${String(gs.bosses.defeated.length+1).padStart(2,"0")}</div><h2>${esc(progress.name)}</h2><p>${esc(progress.description)}</p></section>
+    <section class="encounter-stage threat-${threat.level}" style="${visuals.stageStyle}" aria-label="${esc(progress.name)} weak-point map">${renderBossArtwork(progress,visuals)}${renderWeakPointNetwork(progress)}</section>
+    <section class="combat-meters" aria-label="Encounter status">
+      <div class="meter integrity"><div class="meter-head"><div class="meter-label"><i class="ti ti-shield-half"></i>Integrity</div><div class="meter-value">${Math.round(progress.hp)} <span>/ ${progress.maxHp}</span></div></div><div class="meter-track"><div class="meter-fill" style="width:${progress.pct}%"></div></div><div class="meter-foot"><span>Structural integrity</span><span>${progress.pct}%</span></div></div>
+      <div class="meter dominance ${threat.className}"><div class="meter-head"><div class="meter-label"><i class="ti ti-wave-sine"></i>Dominance</div><div class="meter-value">${Math.round(dominance)} <span>/ 100</span></div></div><div class="meter-track"><div class="meter-fill" style="width:${dominance}%"></div></div><div class="meter-foot"><span>${threat.label}</span><span>Control pressure</span></div></div>
+    </section>
+    ${dominance>=90?'<div class="threat-warning"><i class="ti ti-alert-triangle"></i><span>Dominance critical. Encounter defeat is imminent.</span></div>':''}
+    <div class="encounter-note"><i class="ti ti-current-location"></i><span>Select a weak point to inspect its mission</span></div>
+    ${gs.bosses.pendingFailureReasonMissionId?'<button class="failure-review" type="button" onclick="openFailurePrompt()"><i class="ti ti-message-report"></i> Review expired mission</button>':''}`;
+  startMissionTimer();
+}
+
+function openMissionSheet(weakPointId,trigger){
+  const progress=Bosses.getBossProgress(gs);
+  const point=progress&&(progress.weakPoints||[]).find(function(item){return item.id===weakPointId;});
+  if(!point)return;
+  activeWeakPointId=weakPointId;lastWeakPointTrigger=trigger||null;
+  const state=getWeakPointState(progress,point);
+  const overlay=document.getElementById("mission-sheet-overlay");
+  const sheet=document.getElementById("mission-sheet");
+  sheet.style.setProperty("--sheet-color",point.color||"#8DEFFF");
+  document.getElementById("sheet-icon").className="ti "+(point.icon||"ti-target-arrow");
+  document.getElementById("sheet-state").textContent=state==="broken"?"Weak point destroyed":state==="active"?"Mission active":"Weak point analysis";
+  document.getElementById("sheet-title").textContent=point.name;
+  document.getElementById("sheet-short-name").textContent=point.shortName||"Boss component";
+  document.getElementById("sheet-description").textContent=point.description||"No analysis available.";
+  document.getElementById("sheet-mission-title").textContent=point.missionTitle||"Mission protocol pending";
+  document.getElementById("sheet-mission-description").textContent=point.missionDescription||"Mission parameters have not been configured yet.";
+  document.getElementById("sheet-condition").textContent=point.completionCondition||"Completion condition pending.";
+  document.getElementById("sheet-time").textContent=point.durationMinutes==null?"Pending":formatDuration(point.durationMinutes);
+  document.getElementById("sheet-damage").textContent="-"+Math.round((point.breakDamagePct||0)*100)+"%";
+  document.getElementById("sheet-dominance").textContent="-"+(Number(point.dominanceReduction)||0);
+  renderMissionControls(progress,point,state);
+  hideMissionConfirmation();
+  overlay.classList.add("open");overlay.setAttribute("aria-hidden","false");
+  document.body.style.overflow="hidden";
+  document.getElementById("sheet-close").focus();
+}
+
+function renderMissionControls(progress,point,state){
+  const controls=document.getElementById("mission-controls");
+  const lifecycleReady=typeof Bosses.acceptMission==="function"&&typeof Bosses.completeActiveMission==="function"&&typeof Bosses.cancelActiveMission==="function";
+  if(!lifecycleReady&&state!=="pending"&&state!=="broken"){
+    controls.innerHTML='<button class="mission-action" type="button" disabled><i class="ti ti-refresh"></i> Updating mission protocol</button>';
+    return;
+  }
+  if(state==="broken"){
+    controls.innerHTML='<button class="mission-action" type="button" disabled><i class="ti ti-check"></i> Weak point destroyed</button>';
+    return;
+  }
+  if(state==="pending"){
+    controls.innerHTML='<button class="mission-action" type="button" disabled><i class="ti ti-lock"></i> Protocol pending</button>';
+    return;
+  }
+  if(state==="unavailable"){
+    controls.innerHTML='<button class="mission-action" type="button" disabled><i class="ti ti-lock"></i> Another mission is active</button>';
+    return;
+  }
+  if(state==="available"){
+    const bossDef=SEED_DATA.bosses[progress.id];
+    controls.innerHTML=`<label class="mission-target-label" for="mission-target">Mission target</label><input class="mission-target-input" id="mission-target" maxlength="160" autocomplete="off" placeholder="${esc(point.contractPlaceholder||"Name the real-life target")}"><div class="mission-risk"><i class="ti ti-alert-triangle"></i><span>The timer continues while the app is closed. Expiration adds +${Number(bossDef.expirationDominancePenalty)||0} Dominance.</span></div><button class="mission-action" type="button" onclick="acceptBossMission()"><i class="ti ti-player-play"></i> Accept mission</button>`;
     return;
   }
 
-  document.getElementById('boss-content').innerHTML=`
-    <div class="top-banner">
-      <div class="scan-line"></div>
-      <div class="threat-label"><i class="ti ti-alert-triangle"></i>Active threat</div>
-      <div class="boss-portrait-wrap">
-        <div class="boss-ring r2"></div><div class="boss-ring r3"></div>
-        <div class="boss-portrait"><i class="ti ${progress.icon||'ti-skull'}"></i></div>
-      </div>
-      <div class="boss-name">${progress.name}</div>
-      <div class="boss-desc">${progress.description}</div>
-    </div>
-
-    <div class="lore-card">
-      <div class="lore-label"><i class="ti ti-book-2"></i>Lore</div>
-      <div class="lore-text">${progress.lore}</div>
-      <div class="ability-row">
-        <div class="ability-icon"><i class="ti ti-bolt"></i></div>
-        <div class="ability-text"><strong style="color:var(--tx)">Ability:</strong> ${progress.ability}</div>
-      </div>
-    </div>
-
-    <div class="hp-section" id="hp-section">
-      <div class="hp-top"><span class="hp-lbl">Boss health</span><span class="hp-val" id="hp-val">${progress.pct}%</span></div>
-      <div class="hp-track"><div class="hp-fill" id="hp-fill" style="width:${progress.pct}%"></div></div>
-    </div>
-
-    <div class="objectives-bar"><span class="sec-title">Weak points</span></div>
-    <div class="dmg-rules-list">${renderDamageRules(SEED_DATA.bosses[progress.id])}</div>
-
-    <div class="reward-section">
-      <div class="reward-glow"></div>
-      <div class="reward-title"><i class="ti ti-gift"></i>Victory rewards</div>
-      <div class="reward-grid">
-        <div class="reward-item"><div class="reward-val">+${progress.rewards.xp} XP</div><div class="reward-lbl">All attributes</div></div>
-        <div class="reward-item"><div class="reward-val">Title</div><div class="reward-lbl">${progress.rewards.title}</div></div>
-      </div>
-    </div>
-
-    <div class="objectives-bar"><span class="sec-title">Campaign roster</span></div>
-    <div class="roster-list">${renderRoster(gs)}</div>
-  `;
+  const mission=gs.bosses.activeMission;
+  controls.innerHTML=`<div class="active-mission"><div class="active-mission-label">Active target</div><div class="active-mission-target">${esc(mission.userTarget)}</div><div class="mission-countdown" id="mission-countdown">--:--:-- <span>remaining</span></div></div><div class="mission-action-row"><button class="mission-action" type="button" onclick="showMissionConfirmation('complete')"><i class="ti ti-check"></i> Complete</button><button class="mission-action danger" type="button" onclick="showMissionConfirmation('cancel')"><i class="ti ti-x"></i> Cancel</button></div>`;
+  updateMissionCountdown();
 }
+
+function acceptBossMission(){
+  if(typeof Bosses.acceptMission!=="function")return;
+  const progress=Bosses.getBossProgress(gs);
+  const point=progress&&(progress.weakPoints||[]).find(function(item){return item.id===activeWeakPointId;});
+  const input=document.getElementById("mission-target");
+  if(!point||!input)return;
+  const target=input.value.trim();
+  if(!target){input.focus();return;}
+  let outcome=null;
+  gs=GameState.set(function(state){outcome=Bosses.acceptMission(state,progress.id,point.id,target);});
+  if(!outcome||!outcome.accepted){renderMissionControls(progress,point,getWeakPointState(progress,point));return;}
+  renderBossScreen();
+  openMissionSheet(point.id,null);
+}
+
+function showMissionConfirmation(type){
+  const panel=document.getElementById("mission-confirmation");
+  const execute=document.getElementById("confirmation-execute");
+  const bossDef=SEED_DATA.bosses[gs.bosses.currentBossId];
+  if(type==="complete"){
+    document.getElementById("confirmation-title").textContent="Complete this mission?";
+    document.getElementById("confirmation-copy").textContent="Completion is final. Integrity damage and Dominance reduction will be applied immediately.";
+    execute.textContent="Complete mission";execute.className="confirm-execute";execute.onclick=completeBossMission;
+  }else{
+    document.getElementById("confirmation-title").textContent="Cancel this mission?";
+    document.getElementById("confirmation-copy").textContent="Progress will be lost and Dominance will increase by "+(Number(bossDef&&bossDef.cancellationDominancePenalty)||0)+".";
+    execute.textContent="Cancel mission";execute.className="confirm-execute danger";execute.onclick=cancelBossMission;
+  }
+  panel.classList.add("open");
+}
+
+function hideMissionConfirmation(){document.getElementById("mission-confirmation").classList.remove("open");}
+
+function completeBossMission(){
+  if(typeof Bosses.completeActiveMission!=="function")return;
+  const defeatedBossDef=SEED_DATA.bosses[gs.bosses.currentBossId];
+  let outcome=null;
+  gs=GameState.set(function(state){outcome=Bosses.completeActiveMission(state);});
+  lastWeakPointTrigger=null;closeMissionSheet();renderBossScreen();
+  if(outcome&&outcome.encounterDefeated){checkForPendingDefeat();return;}
+  if(outcome&&outcome.expired){openFailurePrompt();return;}
+  if(outcome&&outcome.defeated)showVictory(defeatedBossDef);
+}
+
+function cancelBossMission(){
+  if(typeof Bosses.cancelActiveMission!=="function")return;
+  let outcome=null;
+  gs=GameState.set(function(state){outcome=Bosses.cancelActiveMission(state);});
+  lastWeakPointTrigger=null;closeMissionSheet();renderBossScreen();
+  if(outcome&&outcome.encounterDefeated){checkForPendingDefeat();return;}
+  if(outcome&&outcome.expired)openFailurePrompt();
+}
+
+function formatRemaining(milliseconds){
+  const totalSeconds=Math.max(0,Math.ceil(milliseconds/1000));
+  const days=Math.floor(totalSeconds/86400);
+  const hours=Math.floor((totalSeconds%86400)/3600);
+  const minutes=Math.floor((totalSeconds%3600)/60);
+  const seconds=totalSeconds%60;
+  const clock=[hours,minutes,seconds].map(function(value){return String(value).padStart(2,"0");}).join(":");
+  return days>0?days+"d "+clock:clock;
+}
+
+function updateMissionCountdown(){
+  const mission=gs.bosses.activeMission;
+  const countdown=document.getElementById("mission-countdown");
+  if(mission&&countdown)countdown.innerHTML=formatRemaining(mission.deadlineAt-Date.now())+' <span>remaining</span>';
+}
+
+function startMissionTimer(){
+  clearInterval(missionTimer);missionTimer=null;
+  if(!gs.bosses.activeMission)return;
+  updateMissionCountdown();
+  missionTimer=setInterval(function(){
+    const mission=gs.bosses.activeMission;
+    if(!mission){clearInterval(missionTimer);missionTimer=null;return;}
+    if(Date.now()>=mission.deadlineAt){
+      if(typeof Bosses.processMissionExpiration!=="function")return;
+      let expiration=null;
+      gs=GameState.set(function(state){expiration=Bosses.processMissionExpiration(state);});
+      if(expiration&&expiration.expired){
+        lastWeakPointTrigger=null;closeMissionSheet();renderBossScreen();
+        if(expiration.encounterDefeated)checkForPendingDefeat();
+        else openFailurePrompt();
+      }
+      return;
+    }
+    updateMissionCountdown();
+  },1000);
+}
+
+function openFailurePrompt(){
+  const missionId=gs.bosses.pendingFailureReasonMissionId;
+  const mission=(gs.bosses.missionHistory||[]).find(function(item){return item.id===missionId;});
+  if(!mission)return;
+  if(document.getElementById("mission-sheet-overlay").classList.contains("open")){lastWeakPointTrigger=null;closeMissionSheet();}
+  document.getElementById("failure-copy").textContent='"'+mission.userTarget+'" expired. What got in the way? This feedback adds no extra penalty.';
+  const overlay=document.getElementById("failure-overlay");overlay.classList.add("open");overlay.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";
+  overlay.querySelector(".failure-option").focus();
+}
+
+function closeFailurePrompt(){const overlay=document.getElementById("failure-overlay");overlay.classList.remove("open");overlay.setAttribute("aria-hidden","true");document.body.style.overflow="";}
+function failureBackdrop(event){if(event.target===document.getElementById("failure-overlay"))closeFailurePrompt();}
+function saveFailureReason(reason){
+  if(typeof Bosses.setMissionFailureReason!=="function")return;
+  const missionId=gs.bosses.pendingFailureReasonMissionId;
+  let saved=false;gs=GameState.set(function(state){saved=Bosses.setMissionFailureReason(state,missionId,reason);});
+  if(saved){closeFailurePrompt();renderBossScreen();}
+}
+
+function formatDuration(minutes){
+  if(minutes%1440===0)return(minutes/1440)+" day"+(minutes===1440?"":"s");
+  if(minutes%60===0)return(minutes/60)+" hour"+(minutes===60?"":"s");
+  return minutes+" min";
+}
+
+function closeMissionSheet(){
+  const overlay=document.getElementById("mission-sheet-overlay");
+  hideMissionConfirmation();overlay.classList.remove("open");overlay.setAttribute("aria-hidden","true");document.body.style.overflow="";activeWeakPointId=null;
+  if(lastWeakPointTrigger){lastWeakPointTrigger.focus();lastWeakPointTrigger=null;}
+}
+function missionSheetBackdrop(event){if(event.target===document.getElementById("mission-sheet-overlay"))closeMissionSheet();}
+document.addEventListener("keydown",function(event){
+  if(event.key!=="Escape")return;
+  if(document.getElementById("failure-overlay").classList.contains("open")){closeFailurePrompt();return;}
+  if(document.getElementById("mission-sheet-overlay").classList.contains("open"))closeMissionSheet();
+});
 
 function checkForRecentVictory(){
-  // Compares the defeated list against what THIS page last saw (tracked
-  // via a small marker in localStorage, separate from GameState, purely
-  // for this page's own "have I already celebrated this defeat" memory).
-  const seenKey="rpg_boss_last_seen_defeated_count";
-  const lastSeenCount=parseInt(localStorage.getItem(seenKey)||"0",10);
+  const lastSeenCount=parseInt(localStorage.getItem(BOSS_SEEN_KEY)||"0",10);
   const currentCount=gs.bosses.defeated.length;
-
   if(currentCount>lastSeenCount){
-    const justDefeatedId=gs.bosses.defeated[currentCount-1];
-    const justDefeatedDef=SEED_DATA.bosses[justDefeatedId];
-    if(justDefeatedDef) showVictory(justDefeatedDef);
+    const def=SEED_DATA.bosses[gs.bosses.defeated[currentCount-1]];
+    if(def)showVictory(def);
   }
-  localStorage.setItem(seenKey,String(currentCount));
+  localStorage.setItem(BOSS_SEEN_KEY,String(currentCount));
+}
+function showVictory(bossDef){document.getElementById("victory-title").textContent=bossDef.name+" defeated";document.getElementById("victory-sub").textContent=bossDef.name+" has fallen. Title earned: "+bossDef.rewards.title+".";document.getElementById("victory").classList.add("show");}
+function closeVictory(){document.getElementById("victory").classList.remove("show");renderBossScreen();}
+
+function checkForPendingDefeat(){
+  const defeatId=gs.bosses.pendingDefeatNoticeId;
+  if(!defeatId)return false;
+  const loss=(gs.bosses.encounterLosses||[]).find(function(item){return item&&item.id===defeatId;});
+  const bossDef=loss&&SEED_DATA.bosses[loss.bossId];
+  if(!loss||!bossDef)return false;
+  document.getElementById("defeat-copy").textContent=bossDef.name+" withdraws for now. It has seen the gap in your defense and will return prepared.";
+  document.getElementById("defeat").classList.add("show");
+  return true;
 }
 
-function vibrate(pattern){
-  if(navigator.vibrate){
-    try{ navigator.vibrate(pattern); }catch(e){ /* unsupported, fail silently */ }
+function closeDefeat(){
+  const defeatId=gs.bosses.pendingDefeatNoticeId;
+  if(defeatId&&typeof Bosses.acknowledgeDefeat==="function"){
+    gs=GameState.set(function(state){Bosses.acknowledgeDefeat(state,defeatId);});
   }
-}
-
-function showVictory(bossDef){
-  vibrate([0,60,80,60,80,120]);
-  document.getElementById('victory-title').textContent=bossDef.name+' defeated';
-  document.getElementById('victory-sub').innerHTML=bossDef.name+' has fallen.<br>You earned the title "'+bossDef.rewards.title+'".';
-  const nextDef=bossDef.nextBossId?SEED_DATA.bosses[bossDef.nextBossId]:null;
-  document.getElementById('victory-rewards').innerHTML=`
-    <div class="victory-pill"><div class="victory-pill-val">+${bossDef.rewards.xp}</div><div class="victory-pill-lbl">XP</div></div>
-    <div class="victory-pill"><div class="victory-pill-val">${nextDef?nextDef.name:'—'}</div><div class="victory-pill-lbl">Next threat</div></div>
-  `;
-  document.getElementById('victory').classList.add('show');
-}
-
-function closeVictory(){
-  document.getElementById('victory').classList.remove('show');
+  document.getElementById("defeat").classList.remove("show");
   renderBossScreen();
 }
 
+function beginBossRematch(){
+  if(typeof Bosses.beginRematch!=="function")return;
+  let outcome=null;
+  gs=GameState.set(function(state){outcome=Bosses.beginRematch(state);});
+  if(outcome&&outcome.started)renderBossScreen();
+}
+
 renderBossScreen();
-checkForRecentVictory();
+const defeatShown=checkForPendingDefeat();
+if(!defeatShown)checkForRecentVictory();
+if(!defeatShown&&bootstrapReport.missionExpiration&&bootstrapReport.missionExpiration.expired)setTimeout(openFailurePrompt,80);
 </script>
+<script src="js/panel-navigation.js"></script>
+<script src="js/app-version.js"></script>
 <script src="js/sw-register.js"></script>
 </body>
 </html>

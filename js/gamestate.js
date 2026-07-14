@@ -3,6 +3,9 @@ const GameState = (function () {
   const CORRUPT_BACKUP_PREFIX = STORAGE_KEY + "_corrupt_backup_";
   const ATTRIBUTE_SCHEMA_VERSION = 2;
   let subscribers = [];
+  let volatileState = null;
+  let persistenceUnavailable = false;
+  let storageFailureReported = false;
 
   const LEGACY_ATTRIBUTE_MAP = {
     discipline: { target: "willpower", tag: "discipline" },
@@ -17,6 +20,9 @@ const GameState = (function () {
     const fresh = deepClone(SEED_DATA.defaultState);
     const firstBoss = SEED_DATA.bosses[fresh.bosses.currentBossId];
     fresh.bosses.currentHp = firstBoss ? firstBoss.maxHp : 0;
+    fresh.bosses.dominance = firstBoss ? firstBoss.startingDominance : 0;
+    fresh.bosses.lastDominanceUpdatedAt = Date.now();
+    fresh.bosses.encounterStartedAt = Date.now();
     return fresh;
   }
 
@@ -99,8 +105,51 @@ const GameState = (function () {
     if (state.planning.tomorrowTargetXp === undefined) state.planning.tomorrowTargetXp = null;
     if (state.planning.tomorrowTargetAttribute === undefined) state.planning.tomorrowTargetAttribute = null;
     if (!state.shieldRitual) state.shieldRitual = deepClone(SEED_DATA.defaultState.shieldRitual);
+    if (!state.bosses) state.bosses = deepClone(SEED_DATA.defaultState.bosses);
     if (!state.bosses.titlesEarned) state.bosses.titlesEarned = [];
     if (!state.bosses.damageHistory) state.bosses.damageHistory = {};
+    if (!state.bosses.contracts || typeof state.bosses.contracts !== "object") state.bosses.contracts = {};
+    if (!Array.isArray(state.bosses.missionHistory)) state.bosses.missionHistory = [];
+    if (!state.bosses.weakPointStates || typeof state.bosses.weakPointStates !== "object") state.bosses.weakPointStates = {};
+    if (state.bosses.activeMission === undefined) state.bosses.activeMission = null;
+    if (state.bosses.encounterStatus !== "active" && state.bosses.encounterStatus !== "retreated") state.bosses.encounterStatus = "active";
+    if (!Number.isInteger(state.bosses.encounterAttempt) || state.bosses.encounterAttempt < 1) state.bosses.encounterAttempt = 1;
+    if (!Number.isFinite(Number(state.bosses.encounterStartedAt))) state.bosses.encounterStartedAt = Date.now();
+    if (!Array.isArray(state.bosses.encounterLosses)) state.bosses.encounterLosses = [];
+    if (state.bosses.encounterDefeatedAt === undefined) state.bosses.encounterDefeatedAt = null;
+    if (state.bosses.retreatedAt === undefined) state.bosses.retreatedAt = null;
+    if (state.bosses.rematchAvailableDate === undefined) state.bosses.rematchAvailableDate = null;
+    const pendingDefeatExists = state.bosses.encounterLosses.some(loss => loss && loss.id === state.bosses.pendingDefeatNoticeId);
+    if (!pendingDefeatExists) state.bosses.pendingDefeatNoticeId = null;
+    if (state.bosses.activeMission) {
+      const mission = state.bosses.activeMission;
+      const isValidActiveMission = typeof mission === "object"
+        && mission.status === "active"
+        && typeof mission.id === "string"
+        && typeof mission.bossId === "string"
+        && typeof mission.weakPointId === "string"
+        && Number.isFinite(Number(mission.deadlineAt));
+      if (!isValidActiveMission) state.bosses.activeMission = null;
+    }
+    const unresolvedExpiredMission = state.bosses.missionHistory.find(mission => mission && mission.status === "expired" && !mission.failureReason);
+    const savedPendingFailure = state.bosses.missionHistory.find(mission => mission && mission.id === state.bosses.pendingFailureReasonMissionId && mission.status === "expired" && !mission.failureReason);
+    state.bosses.pendingFailureReasonMissionId = savedPendingFailure
+      ? savedPendingFailure.id
+      : (unresolvedExpiredMission ? unresolvedExpiredMission.id : null);
+
+    // Preserve completed legacy Boss Contracts as broken weak points. The
+    // old contract data remains untouched for compatibility and history.
+    if (state.bosses.legacyContractsMigrated !== true) {
+      Object.entries(state.bosses.contracts).forEach(([bossId, contracts]) => {
+        if (!contracts || typeof contracts !== "object") return;
+        Object.entries(contracts).forEach(([weakPointId, contract]) => {
+          if (!contract || !contract.completed) return;
+          if (!state.bosses.weakPointStates[bossId]) state.bosses.weakPointStates[bossId] = {};
+          state.bosses.weakPointStates[bossId][weakPointId] = "broken";
+        });
+      });
+      state.bosses.legacyContractsMigrated = true;
+    }
     if (state.rewards && typeof state.rewards.totalXpSpent !== "number") state.rewards.totalXpSpent = 0;
     if (!state.milestoneTitlesEarned) state.milestoneTitlesEarned = [];
     if (!state.skills) state.skills = deepClone(SEED_DATA.defaultState.skills);
@@ -133,11 +182,42 @@ const GameState = (function () {
       state.bosses.currentHp = SEED_DATA.bosses[healedId].maxHp;
     }
 
+    const currentBossDef = SEED_DATA.bosses[state.bosses.currentBossId] || null;
+    const savedBossHp = Number(state.bosses.currentHp);
+    if (!currentBossDef) {
+      state.bosses.currentHp = 0;
+    } else if (state.bosses.currentHp === null || !Number.isFinite(savedBossHp)) {
+      state.bosses.currentHp = currentBossDef.maxHp;
+    } else {
+      state.bosses.currentHp = Math.max(0, Math.min(currentBossDef.maxHp, savedBossHp));
+    }
+    const savedDominance = Number(state.bosses.dominance);
+    if (state.bosses.dominance === null || !Number.isFinite(savedDominance)) {
+      state.bosses.dominance = currentBossDef ? currentBossDef.startingDominance : 0;
+    } else {
+      state.bosses.dominance = Math.max(0, Math.min(100, savedDominance));
+    }
+    if (state.bosses.lastDominanceUpdatedAt === null || !Number.isFinite(Number(state.bosses.lastDominanceUpdatedAt))) {
+      // Existing saves begin tracking from migration time so installing
+      // this feature never creates a retroactive inactivity penalty.
+      state.bosses.lastDominanceUpdatedAt = Date.now();
+    }
+
     return state;
   }
 
   function readRaw() {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    if (persistenceUnavailable && volatileState) return deepClone(volatileState);
+
+    let raw;
+    try {
+      raw = localStorage.getItem(STORAGE_KEY);
+    } catch (e) {
+      persistenceUnavailable = true;
+      reportStorageFailure("read", e);
+      return volatileState ? deepClone(volatileState) : null;
+    }
+
     if (raw === null) return null;
     try {
       return JSON.parse(raw);
@@ -146,6 +226,15 @@ const GameState = (function () {
       preserveCorruptRaw(raw);
       return null;
     }
+  }
+
+  function reportStorageFailure(operation, error) {
+    if (storageFailureReported) return;
+    storageFailureReported = true;
+    console.error(
+      "GameState: localStorage " + operation + " failed; progress will remain available only for this session.",
+      error
+    );
   }
 
   function preserveCorruptRaw(raw) {
@@ -166,7 +255,19 @@ const GameState = (function () {
   }
 
   function writeRaw(state) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const serialized = JSON.stringify(state);
+    volatileState = JSON.parse(serialized);
+
+    try {
+      localStorage.setItem(STORAGE_KEY, serialized);
+      persistenceUnavailable = false;
+      storageFailureReported = false;
+      return true;
+    } catch (e) {
+      persistenceUnavailable = true;
+      reportStorageFailure("write", e);
+      return false;
+    }
   }
 
   function notify(state) {

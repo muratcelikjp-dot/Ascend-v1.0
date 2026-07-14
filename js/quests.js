@@ -176,6 +176,8 @@ const Quests = (function () {
         playerLeveledUp: false,
         attributeResult: null,
         newAchievements: [],
+        bossDominanceReduced: 0,
+        bossEncounterDefeated: false,
         bossDamageDealt: 0,
         bossDefeated: null,
         bonusXpFromSkills: 0,
@@ -195,6 +197,8 @@ const Quests = (function () {
       playerLeveledUp: false,
       attributeResult: null,
       newAchievements: [],
+      bossDominanceReduced: 0,
+      bossEncounterDefeated: false,
       bossDamageDealt: 0,
       bossDefeated: null,
       bonusXpFromSkills: 0,
@@ -250,13 +254,20 @@ const Quests = (function () {
       // 5. Boss damage — uses a synthetic quest object carrying the
       // boosted XP, so a skill bonus also makes you hit harder against
       // bosses, consistent with it being a real mechanical effect.
+      // A completed normal quest pushes back Dominance once. This runs
+      // before damage so a defeating blow cannot affect the next boss.
+      const dominanceOutcome = Bosses.applyNormalQuestDominanceReduction(state);
+      result.bossDominanceReduced = dominanceOutcome.reducedBy;
+      result.bossEncounterDefeated = !!dominanceOutcome.encounterDefeated;
+
       const bossOutcome = Bosses.applyQuestDamage(state, { ...quest, xp: effectiveXp });
       result.bossDamageDealt = bossOutcome.damageDealt;
       result.bossDefeated = bossOutcome.defeated ? bossOutcome.bossId : null;
+      result.playerLeveledUp = result.playerLeveledUp || !!bossOutcome.playerLeveledUp;
 
       // 6. Achievement check (runs last so it can see all the updated counters)
-      result.newAchievements = Achievements.checkAll(state);
-      result.newMilestoneTitles = Ranks.checkMilestoneTitles(state);
+      result.newAchievements = [...(bossOutcome.newAchievements || []), ...Achievements.checkAll(state)];
+      result.newMilestoneTitles = [...(bossOutcome.newMilestoneTitles || []), ...Ranks.checkMilestoneTitles(state)];
 
       // Record every growth event into today's log, so the end-of-day
       // report (built by ensureDailyReset) can summarize the full
