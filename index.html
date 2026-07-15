@@ -213,12 +213,11 @@ window.addEventListener('error', function(e){
       <span class="identity-reticle reticle-a"></span>
       <span class="identity-reticle reticle-b"></span>
       <span class="identity-scan"></span>
-      <svg class="identity-helmet" viewBox="0 0 40 40" focusable="false">
-        <path class="helmet-shell" d="M20 2l11 6 3 10-3 12-7 7-2-10h-4l-2 10-7-7-3-12L9 8z"/>
-        <path class="helmet-face" d="M10 14l6-5h8l6 5-3 9-7 4-7-4z"/>
-        <path class="helmet-visor" d="M11 15l7-3h4l7 3-4 6H15z"/>
-        <path d="M20 12v15M13 23l5 4M27 23l-5 4M14 28l4 7M26 28l-4 7"/>
-        <path d="M5 13v10M2 16v5M35 13v10M38 16v5"/>
+      <svg class="identity-helmet" viewBox="0 0 64 64" focusable="false">
+        <path class="helmet-shell" d="M32 5 47 12 53 26 49 45 40 56 35 40h-6l-5 16-9-11-4-19 6-14Z"/>
+        <path class="helmet-visor" d="m17 24 10-7h10l10 7-5 10-8 5h-4l-8-5Z"/>
+        <path class="helmet-ridge" d="M32 10v29M18 38l7 5M46 38l-7 5"/>
+        <path class="helmet-plate" d="m14 19-5 7 3 13M50 19l5 7-3 13"/>
       </svg>
     </div>
 
@@ -229,20 +228,37 @@ window.addEventListener('error', function(e){
     </div>
 
     <div class="onboarding-form-fields">
-      <label class="onboarding-field">
+      <label class="onboarding-field onboarding-name-field">
         <span>Call sign</span>
         <div class="onboarding-input-shell">
-          <i class="ti ti-user-hexagon"></i>
-          <input id="onboarding-name" type="text" maxlength="32" autocomplete="name" placeholder="Enter your name" required>
+          <i class="ti ti-code"></i>
+          <span class="onboarding-terminal-prefix" aria-hidden="true">&gt;</span>
+          <input id="onboarding-name" type="text" maxlength="32" autocomplete="name" placeholder="ENTER_NAME" required>
+          <span class="onboarding-block-caret" aria-hidden="true"></span>
           <b>01</b>
         </div>
       </label>
       <label class="onboarding-field">
-        <span>Birth signature</span>
-        <div class="onboarding-input-shell">
-          <i class="ti ti-calendar-event"></i>
-          <input id="onboarding-birth" type="date" min="1900-01-01" required>
-          <b>02</b>
+        <span id="birth-counter-label">Birth signature</span>
+        <div class="birth-counter" id="birth-counter" role="group" aria-labelledby="birth-counter-label">
+          <div class="birth-counter-unit" data-date-unit="day">
+            <button type="button" class="birth-counter-step" data-date-part="day" data-date-direction="1" aria-label="Increase day"><i class="ti ti-chevron-up"></i></button>
+            <div class="birth-counter-display"><strong id="birth-day">DD</strong><small>DAY</small></div>
+            <button type="button" class="birth-counter-step" data-date-part="day" data-date-direction="-1" aria-label="Decrease day"><i class="ti ti-chevron-down"></i></button>
+          </div>
+          <span class="birth-counter-divider" aria-hidden="true">/</span>
+          <div class="birth-counter-unit" data-date-unit="month">
+            <button type="button" class="birth-counter-step" data-date-part="month" data-date-direction="1" aria-label="Increase month"><i class="ti ti-chevron-up"></i></button>
+            <div class="birth-counter-display"><strong id="birth-month">MM</strong><small>MONTH</small></div>
+            <button type="button" class="birth-counter-step" data-date-part="month" data-date-direction="-1" aria-label="Decrease month"><i class="ti ti-chevron-down"></i></button>
+          </div>
+          <span class="birth-counter-divider" aria-hidden="true">/</span>
+          <div class="birth-counter-unit birth-counter-year" data-date-unit="year">
+            <button type="button" class="birth-counter-step" data-date-part="year" data-date-direction="1" aria-label="Increase year"><i class="ti ti-chevron-up"></i></button>
+            <div class="birth-counter-display"><strong id="birth-year">YYYY</strong><small>YEAR</small></div>
+            <button type="button" class="birth-counter-step" data-date-part="year" data-date-direction="-1" aria-label="Decrease year"><i class="ti ti-chevron-down"></i></button>
+          </div>
+          <input id="onboarding-birth" type="hidden">
         </div>
       </label>
 
@@ -254,6 +270,12 @@ window.addEventListener('error', function(e){
       <button class="onboarding-save" id="onboarding-save" type="submit">
         <span>Initialize identity</span><i class="ti ti-arrow-up-right"></i>
       </button>
+    </div>
+
+    <div class="onboarding-welcome" id="onboarding-welcome" aria-live="polite" aria-hidden="true">
+      <span>Welcome</span>
+      <strong id="onboarding-welcome-name"></strong>
+      <i aria-hidden="true"></i>
     </div>
 
     <div class="onboarding-footer"><span></span>PROFILE DATA REMAINS ON THIS DEVICE<span></span></div>
@@ -278,6 +300,7 @@ window.addEventListener('error', function(e){
 <script src="js/index-effects.js"></script>
 <script src="js/index-ui.js"></script>
 <script src="js/index.js"></script>
+<script src="js/terminal-caret.js"></script>
 <script src="js/profile-onboarding.js"></script>
 <script src="js/sw-register.js"></script>
 <script src="js/app-version.js"></script>

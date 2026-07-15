@@ -1752,6 +1752,7 @@ body::after{
 .protocol-state i{width:5px;height:5px;border-radius:50%;background:var(--abyss-green);box-shadow:0 0 9px rgba(65,230,164,.72)}
 
 .identity-core{position:relative;width:146px;height:146px;margin:22px auto 7px;display:grid;place-items:center;opacity:0;transform:scale(.78)}
+.identity-core::before{content:"";position:absolute;inset:31px;border:1px solid rgba(141,239,255,.2);background:rgba(2,13,24,.92);clip-path:polygon(50% 0,89% 22%,89% 74%,50% 100%,11% 74%,11% 22%);box-shadow:inset 0 0 22px rgba(47,157,255,.08);z-index:1}
 .profile-onboarding.open .identity-core{animation:identityCoreBoot .72s cubic-bezier(.2,.8,.2,1) .18s forwards}
 .identity-orbit,.identity-reticle,.identity-scan{position:absolute;pointer-events:none}
 .identity-orbit{border-radius:50%;border:1px solid rgba(53,244,230,.34)}
@@ -1762,10 +1763,11 @@ body::after{
 .reticle-b{right:0;bottom:18px;border-right:1px solid;border-bottom:1px solid}
 .identity-scan{left:28px;right:28px;height:1px;top:24px;z-index:4;background:linear-gradient(90deg,transparent,var(--abyss-cyan),transparent);box-shadow:0 0 10px rgba(141,239,255,.68);opacity:0}
 .profile-onboarding.open .identity-scan{animation:identityFaceScan 1.7s ease-in-out .5s infinite}
-.identity-helmet{width:78px;height:78px;z-index:2;fill:none;stroke:rgba(141,239,255,.82);stroke-width:1.35;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 9px rgba(47,157,255,.46))}
-.identity-helmet .helmet-shell{fill:rgba(47,157,255,.09);stroke:#8defff}
-.identity-helmet .helmet-face{fill:rgba(53,244,230,.035)}
-.identity-helmet .helmet-visor{fill:rgba(53,244,230,.22);stroke:#c4fbff}
+.identity-helmet{width:76px;height:76px;z-index:2;fill:none;stroke:rgba(141,239,255,.88);stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 8px rgba(47,157,255,.4))}
+.identity-helmet .helmet-shell{fill:rgba(47,157,255,.1);stroke:#8defff}
+.identity-helmet .helmet-visor{fill:rgba(53,244,230,.18);stroke:#d5fdff;stroke-width:1.85}
+.identity-helmet .helmet-ridge{stroke:rgba(53,244,230,.68);stroke-width:1.25}
+.identity-helmet .helmet-plate{stroke:rgba(141,239,255,.52);stroke-width:1.35}
 .profile-onboarding.ready .identity-helmet{animation:identityHelmetBreathe 3.2s ease-in-out infinite}
 
 .identity-readout{text-align:center;opacity:0;transform:translateY(7px)}
@@ -1773,7 +1775,7 @@ body::after{
 .onboarding-kicker{font-size:8px;color:var(--abyss-aqua);text-transform:uppercase;letter-spacing:.16em}
 .onboarding-title{margin-top:4px;font-size:19px;line-height:1.15;color:#eefbff;text-transform:uppercase;letter-spacing:.09em}
 .onboarding-callsign{min-height:15px;margin-top:6px;color:rgba(141,239,255,.48);font-size:9px;letter-spacing:.16em;text-transform:uppercase;transition:color .2s,text-shadow .2s}
-.onboarding-callsign.linked{color:var(--abyss-cyan);text-shadow:0 0 10px rgba(141,239,255,.32)}
+.onboarding-callsign.linked{color:#54f5d1;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;text-shadow:0 0 10px rgba(53,244,230,.4)}
 
 .onboarding-form-fields{width:100%;margin-top:18px;padding-top:14px;border-top:1px solid rgba(141,239,255,.16);opacity:0;transform:translateY(18px);pointer-events:none}
 .profile-onboarding.ready .onboarding-form-fields{animation:onboardingFormReveal .48s ease-out forwards;pointer-events:auto}
@@ -1785,6 +1787,32 @@ body::after{
 .onboarding-input-shell>b{width:31px;color:rgba(111,142,163,.42);font-size:8px;font-weight:500;letter-spacing:.08em}
 .onboarding-field input{width:100%;min-width:0;height:100%;padding:0;border:0;outline:0;background:transparent;color:#e4f9ff;color-scheme:dark;font:13px/1 var(--abyss-font);letter-spacing:.02em}
 .onboarding-field input::placeholder{color:rgba(111,142,163,.58)}
+.onboarding-name-field{width:min(100%,330px);margin-left:auto;margin-right:auto;text-align:center}
+.onboarding-name-field>span{text-align:center;margin-left:0}
+.onboarding-name-field .onboarding-input-shell{height:50px;border-left-color:transparent;border-right-color:transparent;background:rgba(3,17,31,.48)}
+.onboarding-name-field .onboarding-input-shell>i{position:absolute;left:10px}
+.onboarding-name-field .onboarding-input-shell>b{position:absolute;right:8px}
+.onboarding-terminal-prefix{position:absolute;left:40px;color:#54f5d1;font:700 15px/1 ui-monospace,SFMono-Regular,Consolas,monospace;text-shadow:0 0 9px rgba(53,244,230,.65)}
+.onboarding-name-field input{padding:0 42px 0 58px;text-align:center;font:600 15px/1 ui-monospace,SFMono-Regular,Consolas,monospace;color:#54f5d1;caret-color:transparent;text-shadow:0 0 9px rgba(53,244,230,.5);text-transform:uppercase}
+.onboarding-name-field input::placeholder{text-align:center}
+.onboarding-block-caret{position:absolute;left:var(--terminal-caret-left,50%);top:50%;width:8px;height:15px;z-index:2;background:#75ffe5;box-shadow:0 0 8px rgba(53,244,230,.82);opacity:0;transform:translateY(-50%);pointer-events:none}
+.onboarding-name-field .onboarding-input-shell:focus-within .onboarding-block-caret{animation:onboardingBlockCaret .9s steps(1,end) infinite}
+.onboarding-name-field .onboarding-input-shell::after{content:"";position:absolute;left:14%;right:14%;bottom:-1px;height:1px;background:linear-gradient(90deg,transparent,#54f5d1,transparent);opacity:0;transform:scaleX(.2)}
+.onboarding-name-field .onboarding-input-shell.terminal-keyed::after{animation:onboardingCodePulse .3s ease-out}
+
+.birth-counter{position:relative;min-height:112px;display:grid;grid-template-columns:minmax(70px,1fr) 12px minmax(70px,1fr) 12px minmax(94px,1.2fr);align-items:center;border:1px solid rgba(141,239,255,.2);border-radius:5px;background:rgba(3,17,31,.82);box-shadow:inset 0 0 28px rgba(47,157,255,.035);overflow:hidden}
+.birth-counter::before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(180deg,transparent 0,transparent 5px,rgba(141,239,255,.018) 6px);mix-blend-mode:screen}
+.birth-counter-unit{position:relative;z-index:1;height:100%;display:grid;grid-template-rows:28px 1fr 28px;align-items:center;text-align:center}
+.birth-counter-step{width:100%;height:28px;border:0;background:transparent;color:rgba(141,239,255,.42);cursor:pointer;transition:color .16s,background .16s}
+.birth-counter-step:active{color:#d8ffff;background:rgba(53,244,230,.08)}
+.birth-counter-step i{font-size:15px}
+.birth-counter-display{position:relative;min-width:0;align-self:stretch;display:flex;flex-direction:column;align-items:center;justify-content:center;border-top:1px solid rgba(141,239,255,.08);border-bottom:1px solid rgba(141,239,255,.08);background:linear-gradient(180deg,rgba(47,157,255,.035),rgba(53,244,230,.06),rgba(47,157,255,.035));overflow:hidden}
+.birth-counter-display strong{color:#65f7dc;font:700 20px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em;text-shadow:0 0 10px rgba(53,244,230,.52)}
+.birth-counter-year .birth-counter-display strong{font-size:18px}
+.birth-counter-display small{margin-top:5px;color:rgba(141,239,255,.4);font:7px/1 var(--abyss-font);letter-spacing:.12em}
+.birth-counter-divider{position:relative;z-index:2;color:rgba(141,239,255,.28);font:20px/1 ui-monospace,SFMono-Regular,Consolas,monospace;text-align:center}
+.birth-counter-unit.roll-up .birth-counter-display strong{animation:birthCounterUp .22s ease-out}
+.birth-counter-unit.roll-down .birth-counter-display strong{animation:birthCounterDown .22s ease-out}
 .onboarding-data-row{min-height:20px;margin-top:9px;display:flex;align-items:center;justify-content:space-between;color:rgba(141,239,255,.45);font-size:8px;letter-spacing:.1em;text-transform:uppercase}
 .onboarding-data-row span:last-child{display:flex;align-items:center;gap:5px}
 .onboarding-data-row i{font-size:11px}
@@ -1797,11 +1825,18 @@ body::after{
 .onboarding-footer span{height:1px;flex:1;background:linear-gradient(90deg,transparent,rgba(141,239,255,.15))}
 .onboarding-footer span:last-child{transform:scaleX(-1)}
 
+.onboarding-welcome{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;opacity:0;visibility:hidden;pointer-events:none;text-align:center}
+.onboarding-welcome span{color:rgba(141,239,255,.64);font-size:10px;letter-spacing:.34em;text-indent:.34em;text-transform:uppercase}
+.onboarding-welcome strong{max-width:90%;overflow-wrap:anywhere;color:#f3feff;font:700 30px/1.15 var(--abyss-font);letter-spacing:.08em;text-transform:uppercase;text-shadow:0 0 8px rgba(141,239,255,.9),0 0 28px rgba(47,157,255,.7)}
+.onboarding-welcome i{width:116px;height:1px;background:linear-gradient(90deg,transparent,var(--abyss-cyan),transparent);box-shadow:0 0 12px rgba(141,239,255,.75)}
+
 .profile-onboarding.invalid .onboarding-form-fields{animation:onboardingReject .34s ease}
-.profile-onboarding.completing .onboarding-form-fields{opacity:.25;pointer-events:none;transition:opacity .2s}
-.profile-onboarding.completing .identity-core{animation:identityComplete .72s ease-out forwards}
+.profile-onboarding.completing .onboarding-protocol,.profile-onboarding.completing .identity-readout,.profile-onboarding.completing .onboarding-form-fields,.profile-onboarding.completing .onboarding-footer{animation:none;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .24s ease,visibility .24s ease}
+.profile-onboarding.completing .identity-core{animation:identityComplete .58s ease-out forwards}
 .profile-onboarding.completing .onboarding-network{filter:brightness(1.65);transition:filter .3s}
 .profile-onboarding.completing::after{animation:onboardingCompletionFlash .72s ease-out forwards}
+.profile-onboarding.completing .onboarding-welcome{visibility:visible;animation:onboardingWelcome 1.8s cubic-bezier(.2,.8,.2,1) .2s forwards}
+.profile-onboarding.completing .onboarding-welcome strong{animation:onboardingNameGlow 1.8s ease-out .2s both}
 
 @keyframes onboardingGlobalScan{0%{top:0;opacity:0}12%{opacity:.6}88%{opacity:.18}100%{top:100%;opacity:0}}
 @keyframes onboardingNetworkDraw{from{stroke-dashoffset:1;opacity:.12}to{stroke-dashoffset:0;opacity:1}}
@@ -1815,6 +1850,12 @@ body::after{
 @keyframes onboardingReject{0%,100%{transform:translateX(0)}30%{transform:translateX(-5px)}65%{transform:translateX(5px)}}
 @keyframes identityComplete{0%{opacity:1;transform:scale(1)}42%{opacity:1;transform:scale(1.15);filter:brightness(1.8)}100%{opacity:0;transform:scale(2);filter:brightness(2.2)}}
 @keyframes onboardingCompletionFlash{0%{top:50%;opacity:0;transform:scaleY(1)}35%{opacity:1}100%{top:50%;opacity:0;transform:scaleY(180)}}
+@keyframes onboardingWelcome{0%{opacity:0;transform:scale(.94)}22%,82%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.035)}}
+@keyframes onboardingNameGlow{0%{opacity:0;filter:blur(7px);letter-spacing:.22em}38%{opacity:1;filter:blur(0);letter-spacing:.08em}70%{text-shadow:0 0 12px #fff,0 0 34px rgba(53,244,230,.9),0 0 58px rgba(47,157,255,.7)}100%{text-shadow:0 0 7px rgba(141,239,255,.7),0 0 24px rgba(47,157,255,.55)}}
+@keyframes onboardingCodePulse{0%{opacity:0;transform:scaleX(.2)}42%{opacity:1}100%{opacity:0;transform:scaleX(1)}}
+@keyframes onboardingBlockCaret{0%,48%{opacity:1}49%,100%{opacity:0}}
+@keyframes birthCounterUp{0%{opacity:.2;transform:translateY(11px);filter:blur(3px)}100%{opacity:1;transform:translateY(0);filter:blur(0)}}
+@keyframes birthCounterDown{0%{opacity:.2;transform:translateY(-11px);filter:blur(3px)}100%{opacity:1;transform:translateY(0);filter:blur(0)}}
 
 @media(max-width:350px){
   .onboarding-stage{padding-left:17px;padding-right:17px}
@@ -1831,6 +1872,9 @@ body::after{
   .onboarding-form-fields{margin-top:10px;padding-top:9px}
   .onboarding-field{margin-top:7px}
   .onboarding-input-shell{height:41px}
+  .birth-counter{min-height:96px}
+  .birth-counter-unit{grid-template-rows:23px 1fr 23px}
+  .birth-counter-step{height:23px}
   .onboarding-footer{padding-top:8px}
 }
 
@@ -1839,4 +1883,7 @@ body::after{
   .profile-onboarding.open::after,.profile-onboarding.open .onboarding-network-main path,.profile-onboarding.open .onboarding-network-branches path,.profile-onboarding.ready .onboarding-network-nodes,.profile-onboarding.open .identity-core,.profile-onboarding.open .identity-scan,.profile-onboarding.ready .identity-helmet{animation:none}
   .profile-onboarding.open .identity-core,.profile-onboarding.open .identity-readout,.profile-onboarding.ready .onboarding-form-fields{opacity:1;transform:none}
   .onboarding-network-main path,.onboarding-network-branches path{stroke-dashoffset:0}
+  .profile-onboarding.completing .onboarding-welcome,.profile-onboarding.completing .onboarding-welcome strong{animation:none;opacity:1;transform:none;filter:none}
+  .onboarding-name-field .onboarding-input-shell.terminal-keyed::after,.birth-counter-unit.roll-up .birth-counter-display strong,.birth-counter-unit.roll-down .birth-counter-display strong{animation:none}
+  .onboarding-name-field .onboarding-input-shell:focus-within .onboarding-block-caret{animation:none;opacity:1}
 }

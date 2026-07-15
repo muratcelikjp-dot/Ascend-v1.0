@@ -9,7 +9,7 @@
 //
 // CACHE_VERSION must be bumped on any meaningful app-shell file change.
 const CACHE_PREFIX = "rpg-app-";
-const CACHE_VERSION = "v88";
+const CACHE_VERSION = "v92";
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
 
 const PRECACHE_URLS = [
@@ -50,6 +50,7 @@ const PRECACHE_URLS = [
   "js/index-effects.js",
   "js/index-ui.js",
   "js/index.js",
+  "js/terminal-caret.js",
   "js/attribute-icons.js",
   "js/plan-modal.js",
   "js/panel-navigation.js",

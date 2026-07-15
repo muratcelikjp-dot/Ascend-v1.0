@@ -51,7 +51,7 @@ const PlanModal = (function () {
             <div class="plan-composer">
               <div class="plan-composer-section">
                 <div class="plan-step-head"><span>01</span><strong>Directive</strong></div>
-                <div class="plan-input-shell" id="pm-goal-shell"><i class="ti ti-pencil-bolt"></i><input class="plan-input" id="pm-goal" placeholder="What will move you forward?" oninput="PlanModal.clearGoalError()"></div>
+                <div class="plan-input-shell" id="pm-goal-shell"><i class="ti ti-code"></i><span class="plan-terminal-prefix" aria-hidden="true">&gt;</span><input class="plan-input" id="pm-goal" placeholder="ENTER_TOMORROW_DIRECTIVE" oninput="PlanModal.clearGoalError()"><span class="plan-block-caret" aria-hidden="true"></span><b class="plan-line-id">T.01</b></div>
                 <div class="plan-input-error" id="pm-goal-error">Enter a quest directive</div>
               </div>
               <div class="plan-composer-section">
@@ -100,6 +100,7 @@ const PlanModal = (function () {
     dialog.addEventListener("click", event => { if (event.target === dialog) close(); });
     dialog.addEventListener("close", () => document.body.classList.remove("plan-modal-open"));
     document.body.appendChild(dialog);
+    if (window.TerminalCaret) TerminalCaret.bind(document.getElementById("pm-goal"));
     document.getElementById("pm-time-picker").addEventListener("click", event => { if (event.target.id === "pm-time-picker") closeTimePicker(); });
   }
 
