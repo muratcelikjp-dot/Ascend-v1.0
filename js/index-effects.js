@@ -45,38 +45,101 @@ function spawnDamagePopup(damage,tapX,tapY){
   setTimeout(()=>p.remove(),750);
 }
 
-function spawnCrack(seedAngleBase,length){
-  const svg=document.querySelector('#shield-body svg');
-  const cx=100,cy=104;
-  const baseAngle=seedAngleBase+(Math.random()-0.5)*40;
-  const rad=baseAngle*Math.PI/180;
-  const startR=8+Math.random()*22;
-  const sx=cx+Math.cos(rad)*startR,sy=cy+Math.sin(rad)*startR;
-  const segments=3+Math.floor(Math.random()*2);
-  let path='M '+sx.toFixed(1)+' '+sy.toFixed(1);
-  let curR=startR,curAngle=baseAngle;
-  for(let i=0;i<segments;i++){
-    curR+=length/segments;
-    curAngle+=(Math.random()-0.5)*30;
-    const r2=curAngle*Math.PI/180;
-    const nx=cx+Math.cos(r2)*curR,ny=cy+Math.sin(r2)*curR;
-    path+=' L '+nx.toFixed(1)+' '+ny.toFixed(1);
+function getShieldImpact(event,sequence){
+  const shield=document.getElementById('shield-body');
+  const rect=shield.getBoundingClientRect();
+  const hasPointer=event&&Number.isFinite(event.clientX)&&Number.isFinite(event.clientY)&&
+    event.clientX>=rect.left&&event.clientX<=rect.right&&event.clientY>=rect.top&&event.clientY<=rect.bottom;
+  let dx,dy,rawX,rawY;
+
+  if(hasPointer){
+    rawX=(event.clientX-rect.left)/rect.width*200;
+    rawY=(event.clientY-rect.top)/rect.height*200;
+    dx=Math.max(-1,Math.min(1,(rawX-100)/100));
+    dy=Math.max(-1,Math.min(1,(rawY-100)/100));
+  }else{
+    const fallbackAngles=[-35,35,145,-145,-90,90];
+    const angle=fallbackAngles[(Math.max(1,sequence)-1)%fallbackAngles.length]*Math.PI/180;
+    dx=Math.cos(angle)*.56;
+    dy=Math.sin(angle)*.56;
+    rawX=100+dx*74;
+    rawY=100+dy*78;
   }
-  const g=document.createElementNS('http://www.w3.org/2000/svg','g');
-  const glow=document.createElementNS('http://www.w3.org/2000/svg','path');
-  glow.setAttribute('d',path);glow.setAttribute('fill','none');
-  glow.setAttribute('stroke','rgba(0,229,255,0.35)');glow.setAttribute('stroke-width','4');
-  glow.setAttribute('stroke-linecap','round');glow.setAttribute('opacity','0');
+
+  const y=Math.max(18,Math.min(180,rawY));
+  let halfWidth;
+  if(y<44) halfWidth=20+Math.max(0,(y-14)/30)*54;
+  else if(y<=104) halfWidth=74;
+  else halfWidth=Math.max(8,74-((y-104)/82)*66);
+  const x=Math.max(100-halfWidth+4,Math.min(100+halfWidth-4,rawX));
+
+  return {x,y,dx,dy,magnitude:Math.min(1,Math.hypot(dx,dy))};
+}
+
+function createFracturePath(startX,startY,angle,length,segments){
+  const points=[{x:startX,y:startY}];
+  let x=startX,y=startY,currentAngle=angle;
+  for(let index=0;index<segments;index++){
+    const step=length/segments*(.84+Math.random()*.32);
+    currentAngle+=(Math.random()-.5)*22;
+    const radians=currentAngle*Math.PI/180;
+    x+=Math.cos(radians)*step;
+    y+=Math.sin(radians)*step;
+    points.push({x,y});
+  }
+  return {
+    d:points.map((point,index)=>(index?'L ':'M ')+point.x.toFixed(1)+' '+point.y.toFixed(1)).join(' '),
+    points,
+    angle:currentAngle
+  };
+}
+
+function appendFracturePath(group,path,className,delay){
   const line=document.createElementNS('http://www.w3.org/2000/svg','path');
-  line.setAttribute('d',path);line.setAttribute('fill','none');
-  line.setAttribute('stroke','#CFF6FF');line.setAttribute('stroke-width','1.4');
-  line.setAttribute('stroke-linecap','round');line.setAttribute('opacity','0');
-  g.appendChild(glow);g.appendChild(line);
-  document.getElementById('crack-layer').appendChild(g);
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{
-    glow.style.transition='opacity .25s';line.style.transition='opacity .2s';
-    glow.setAttribute('opacity','1');line.setAttribute('opacity','1');
-  }));
+  line.setAttribute('d',path);
+  line.setAttribute('pathLength','1');
+  line.setAttribute('class',className);
+  line.style.setProperty('--fracture-delay',delay+'ms');
+  group.appendChild(line);
+}
+
+function spawnImpactBloom(impact){
+  const layer=document.getElementById('crack-layer');
+  if(!layer||!impact) return;
+  const group=document.createElementNS('http://www.w3.org/2000/svg','g');
+  group.setAttribute('class','shield-impact-bloom');
+  const ring=document.createElementNS('http://www.w3.org/2000/svg','circle');
+  ring.setAttribute('class','impact-bloom-ring');
+  ring.setAttribute('cx',impact.x.toFixed(1));ring.setAttribute('cy',impact.y.toFixed(1));ring.setAttribute('r','3');
+  const core=document.createElementNS('http://www.w3.org/2000/svg','circle');
+  core.setAttribute('class','impact-bloom-core');
+  core.setAttribute('cx',impact.x.toFixed(1));core.setAttribute('cy',impact.y.toFixed(1));core.setAttribute('r','2.2');
+  group.appendChild(ring);group.appendChild(core);layer.appendChild(group);
+  setTimeout(()=>group.remove(),720);
+}
+
+function spawnCrack(impact,length,branchIndex,totalBranches){
+  const layer=document.getElementById('crack-layer');
+  if(!layer||!impact) return;
+  const branches=Math.max(1,totalBranches||1);
+  const towardCenter=Math.atan2(104-impact.y,100-impact.x)*180/Math.PI;
+  const fanOffset=(branchIndex-(branches-1)/2)*30+(Math.random()-.5)*8;
+  const fracture=createFracturePath(impact.x,impact.y,towardCenter+fanOffset,length,4);
+  const group=document.createElementNS('http://www.w3.org/2000/svg','g');
+  group.setAttribute('class','shield-fracture');
+  const delay=branchIndex*34;
+
+  appendFracturePath(group,fracture.d,'fracture-path fracture-glow',delay);
+  appendFracturePath(group,fracture.d,'fracture-path fracture-core',delay+16);
+  appendFracturePath(group,fracture.d,'fracture-path fracture-hairline',delay+24);
+
+  const joint=fracture.points[Math.min(2,fracture.points.length-1)];
+  const branchDirection=fracture.angle+(branchIndex%2===0?52:-52)+(Math.random()-.5)*14;
+  const offshoot=createFracturePath(joint.x,joint.y,branchDirection,length*.36,2);
+  appendFracturePath(group,offshoot.d,'fracture-path fracture-glow fracture-offshoot',delay+86);
+  appendFracturePath(group,offshoot.d,'fracture-path fracture-core fracture-offshoot',delay+96);
+
+  layer.appendChild(group);
 }
 
 function tintShield(damagePct){
@@ -88,14 +151,28 @@ function tintShield(damagePct){
   outer.setAttribute('stroke','rgba(0,229,255,'+(0.55+t*0.4).toFixed(2)+')');
 }
 
-function shakeShieldOnly(power){
+let shieldRecoilTimer=null;
+function shakeShieldOnly(power,impact){
   const sb=document.getElementById('shield-body');
-  sb.style.transition='transform .06s';
-  sb.style.transform='translate('+Math.round((Math.random()-.5)*power)+'px,'+Math.round((Math.random()-.5)*power*0.6)+'px) scale('+(1-power*0.004)+')';
-  setTimeout(()=>{
-    sb.style.transform='translate(0,0) scale(1)';
-    setTimeout(()=>{sb.style.transition='transform .08s ease'},60);
-  },70);
+  const direction=impact||{dx:0,dy:0};
+  const travel=4+Math.min(16,power)*.28;
+  const hitX=direction.dx*travel;
+  const hitY=direction.dy*travel*.72;
+  const rotateX=-direction.dy*(5+power*.32);
+  const rotateY=direction.dx*(6+power*.38);
+  sb.style.setProperty('--hit-x',hitX.toFixed(2)+'px');
+  sb.style.setProperty('--hit-y',hitY.toFixed(2)+'px');
+  sb.style.setProperty('--hit-rx',rotateX.toFixed(2)+'deg');
+  sb.style.setProperty('--hit-ry',rotateY.toFixed(2)+'deg');
+  sb.style.setProperty('--rebound-x',(-hitX*.18).toFixed(2)+'px');
+  sb.style.setProperty('--rebound-y',(-hitY*.18).toFixed(2)+'px');
+  sb.style.setProperty('--rebound-rx',(-rotateX*.14).toFixed(2)+'deg');
+  sb.style.setProperty('--rebound-ry',(-rotateY*.14).toFixed(2)+'deg');
+  sb.classList.remove('directional-hit');
+  void sb.offsetWidth;
+  sb.classList.add('directional-hit');
+  clearTimeout(shieldRecoilTimer);
+  shieldRecoilTimer=setTimeout(()=>sb.classList.remove('directional-hit'),430);
 }
 
 function spawnShards(count){
@@ -136,13 +213,13 @@ function spawnShards(count){
   }
 }
 
-function spawnSparks(count){
+function spawnSparks(count,impact){
   const wrap=document.getElementById('screen-wrap');
   const shield=document.getElementById('shield-wrap');
   const wrapRect=wrap.getBoundingClientRect();
   const shieldRect=shield.getBoundingClientRect();
-  const originX=shieldRect.left-wrapRect.left+shieldRect.width/2;
-  const originY=shieldRect.top-wrapRect.top+shieldRect.height/2;
+  const originX=shieldRect.left-wrapRect.left+shieldRect.width*(impact?impact.x/200:.5);
+  const originY=shieldRect.top-wrapRect.top+shieldRect.height*(impact?impact.y/200:.5);
   for(let i=0;i<count;i++){
     const sp=document.createElement('div');sp.className='spark';
     const size=2+Math.random()*3;

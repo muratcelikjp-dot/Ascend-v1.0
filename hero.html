@@ -506,39 +506,10 @@ window.addEventListener('error', function(e){
   <div class="activity-row" id="activity-row"></div>
 </section>
 
-<details class="legacy-drawer">
-  <summary>
-    <i class="ti ti-infinity legacy-main-icon"></i>
-    <span>Legacy records</span>
-    <span class="legacy-count">Bosses · Achievements · Prestige</span>
-    <i class="ti ti-chevron-down legacy-chevron"></i>
-  </summary>
-  <div class="legacy-body">
-    <div class="boss-summary-card" id="boss-summary-card" onclick="window.location.href='boss.html'"></div>
-    <div class="summary-row">
-      <div class="sum-cell" onclick="window.location.href='achievements.html'"><div class="sum-num" id="s-achievements">0</div><div class="sum-lbl">Achievements</div></div>
-      <div class="sum-cell"><div class="sum-num" id="s-bosses">0</div><div class="sum-lbl">Bosses defeated</div></div>
-      <div class="sum-cell"><div class="sum-num" id="s-skills">0</div><div class="sum-lbl">Skills unlocked</div></div>
-    </div>
-    <div id="prestige-card"></div>
-  </div>
-</details>
-
 </div>
 
 <div class="detail-overlay" id="detail-overlay" onclick="bgCloseDetail(event)">
   <div class="detail-sheet" id="detail-sheet"></div>
-</div>
-
-<div class="confirm-overlay" id="prestige-confirm">
-  <div class="confirm-card">
-    <div class="confirm-title">Confirm Prestige</div>
-    <div class="confirm-body" id="prestige-confirm-body"></div>
-    <div class="confirm-acts">
-      <button class="confirm-cancel" onclick="closePrestigeConfirm()">Cancel</button>
-      <button class="confirm-ok" onclick="doPrestigeConfirmed()">Ascend</button>
-    </div>
-  </div>
 </div>
 
 <div class="ach-popup-overlay" id="ach-popup">
@@ -901,7 +872,7 @@ function switchAttr(id){
 
 function refreshAll(){
   gs=GameState.get();
-  renderHeader();renderSummary();renderPrestigeCard();renderRecentActivity();renderBossSummary();renderTabs();renderAttrBar();renderSkills();
+  renderHeader();renderRecentActivity();renderTabs();renderAttrBar();renderSkills();
 }
 
 const lastSeenUnlocked={};

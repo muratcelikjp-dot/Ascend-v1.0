@@ -78,6 +78,7 @@ window.addEventListener('error', function(e){
       </svg>
 
       <a class="constellation-node gated-node node-hero" href="hero.html" aria-label="Hero" aria-disabled="true" tabindex="-1" data-wake-delay="420">
+        <span class="node-label node-label-top" aria-hidden="true">Hero</span>
         <span class="node-frame" aria-hidden="true">
           <svg class="node-glyph node-glyph-hero" viewBox="0 0 40 40" focusable="false">
             <path class="helmet-shell" d="M20 2l11 6 3 10-3 12-7 7-2-10h-4l-2 10-7-7-3-12L9 8z"/>
@@ -90,6 +91,7 @@ window.addEventListener('error', function(e){
       </a>
 
       <a class="constellation-node gated-node node-quests" href="quests.html" aria-label="Quests" aria-disabled="true" tabindex="-1" data-wake-delay="260">
+        <span class="node-label node-label-top" aria-hidden="true">Quests</span>
         <span class="node-frame" aria-hidden="true">
           <svg class="node-glyph node-glyph-quests" viewBox="0 0 40 40" focusable="false">
             <path class="glyph-fill" d="M4 8c6-2 11-.5 16 4 5-4.5 10-6 16-4v25c-6-2-11-.5-16 4-5-4.5-10-6-16-4z"/>
@@ -101,6 +103,7 @@ window.addEventListener('error', function(e){
       </a>
 
       <button class="constellation-node node-skill" type="button" aria-label="Skill Tree unavailable" aria-disabled="true" tabindex="-1" disabled>
+        <span class="node-label node-label-top" aria-hidden="true">Skill Tree</span>
         <span class="node-frame node-frame-preview" aria-hidden="true">
           <svg class="node-glyph node-glyph-skill" viewBox="0 0 40 40" focusable="false">
             <circle cx="20" cy="7" r="3"/>
@@ -115,6 +118,7 @@ window.addEventListener('error', function(e){
       </button>
 
       <a class="constellation-node gated-node node-rewards" href="rewards.html" aria-label="Rewards" aria-disabled="true" tabindex="-1" data-wake-delay="380">
+        <span class="node-label node-label-bottom" aria-hidden="true">Rewards</span>
         <span class="node-frame" aria-hidden="true">
           <svg class="node-glyph node-glyph-rewards" viewBox="0 0 40 40" focusable="false">
             <path d="M5 16h30v19H5zM5 16l6-10h18l6 10M20 16v19"/>
@@ -124,6 +128,7 @@ window.addEventListener('error', function(e){
       </a>
 
       <a class="constellation-node gated-node node-boss" href="boss.html" aria-label="Boss" aria-disabled="true" tabindex="-1" data-wake-delay="400">
+        <span class="node-label node-label-bottom" aria-hidden="true">Boss</span>
         <span class="node-frame" aria-hidden="true">
           <svg class="node-glyph node-glyph-boss" viewBox="0 0 40 40" focusable="false">
             <path d="M12 33L33 12M28 8l5 5M8 28l5 5"/>
@@ -134,6 +139,7 @@ window.addEventListener('error', function(e){
       </a>
 
       <a class="constellation-node gated-node node-stats" href="stats.html" aria-label="Stats" aria-disabled="true" tabindex="-1" data-wake-delay="380">
+        <span class="node-label node-label-bottom" aria-hidden="true">Stats</span>
         <span class="node-frame" aria-hidden="true">
           <svg class="node-glyph node-glyph-stats" viewBox="0 0 40 40" focusable="false">
             <path d="M5 35h30M9 31V21h6v10M17 31V13h6v18M25 31V6h6v25"/>
@@ -151,13 +157,18 @@ window.addEventListener('error', function(e){
             <svg viewBox="0 0 200 200" role="img">
               <title>Daily shield</title>
               <desc>Break the daily shield to activate navigation</desc>
+              <defs>
+                <clipPath id="shield-surface-clip">
+                  <path d="M100 14 L174 44 L174 104 Q174 158 100 186 Q26 158 26 104 L26 44 Z"/>
+                </clipPath>
+              </defs>
               <path id="shield-outer" d="M100 14 L174 44 L174 104 Q174 158 100 186 Q26 158 26 104 L26 44 Z" fill="#071326" stroke="rgba(53,244,230,0.72)" stroke-width="1.5"/>
               <path d="M100 30 L161 56 L161 104 Q161 149 100 169 Q39 149 39 104 L39 56 Z" fill="none" stroke="rgba(141,239,255,0.28)" stroke-width="1"/>
               <path id="shield-inner" d="M100 46 L148 67 L148 103 Q148 140 100 157 Q52 140 52 103 L52 67 Z" fill="#020713"/>
               <circle cx="100" cy="103" r="18" fill="rgba(53,244,230,0.08)" stroke="rgba(53,244,230,0.72)" stroke-width="1"/>
               <path d="M100 82 L112 103 L100 124 L88 103 Z" fill="rgba(141,239,255,0.72)"/>
               <path d="M100 14 L174 44 L174 104 Q174 158 100 186 Q26 158 26 104 L26 44 Z" fill="none" stroke="rgba(141,239,255,0.18)" stroke-width="0.5"/>
-              <g id="crack-layer"></g>
+              <g id="crack-layer" clip-path="url(#shield-surface-clip)"></g>
             </svg>
           </div>
           <div class="energy-core" aria-hidden="true">

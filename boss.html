@@ -353,7 +353,7 @@ function renderBossScreen(){
   const threat=getThreatState(dominance);
   const visuals=getThreatVisuals(dominance);
   document.getElementById("boss-content").innerHTML=`
-      <header class="encounter-header panel-nav-header" style="--panel-progress:60%"><a class="back-button" href="index.html" aria-label="Return to command center"><i class="ti ti-home"></i></a><div class="header-copy"><span>Panel 03</span><h1>Boss</h1></div><div class="status-chip ${threat.className}">${threat.label}</div></header>
+      <header class="encounter-header panel-nav-header" style="--panel-progress:60%"><a class="back-button" href="index.html" aria-label="Return to command center"><i class="ti ti-home"></i></a><div class="header-copy"><span>Panel 03</span><h1>Boss</h1></div></header>
     <section class="boss-identity"><div class="unit-label">Unit ${String(gs.bosses.defeated.length+1).padStart(2,"0")}</div><h2>${esc(progress.name)}</h2><p>${esc(progress.description)}</p></section>
     <section class="encounter-stage threat-${threat.level}" style="${visuals.stageStyle}" aria-label="${esc(progress.name)} weak-point map">${renderBossArtwork(progress,visuals)}${renderWeakPointNetwork(progress)}</section>
     <section class="combat-meters" aria-label="Encounter status">

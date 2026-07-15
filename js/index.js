@@ -14,18 +14,19 @@ function hitShield(evt){
   let hitResult;
   gs=GameState.set(state=>{ hitResult=Shield.applyHit(state,hitCount); });
 
+  const impact=getShieldImpact(evt,hitCount);
   updateHpBar(gs);
-  shakeShieldOnly(6+hitCount*2);
+  shakeShieldOnly(6+hitCount*2,impact);
   shakeScreen(Math.min(hitCount,6));
   fireImpactRing();
-  spawnSparks(4+Math.min(hitCount,6)*2);
+  spawnImpactBloom(impact);
+  spawnSparks(4+Math.min(hitCount,6)*2,impact);
   vibrate(hitResult.broken?[0,40,30,40,30,80]:30);
 
   const damagePct=100-Shield.getHpPercent(gs);
-  const crackCount=Math.min(2+Math.floor(hitCount/1.5),5);
-  const baseAngles=[-90,0,90,180,45,-45,135,-135];
+  const crackCount=Math.min(2+Math.floor(hitCount/2),4);
   for(let i=0;i<crackCount;i++){
-    spawnCrack(baseAngles[(hitCount*2+i)%baseAngles.length],14+damagePct*0.5);
+    spawnCrack(impact,16+damagePct*.38,i,crackCount);
   }
   tintShield(damagePct);
 
