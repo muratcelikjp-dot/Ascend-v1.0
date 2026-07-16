@@ -156,6 +156,10 @@ const GameState = (function () {
       state.activeEffects = deepClone(SEED_DATA.defaultState.activeEffects);
     }
     if (!Array.isArray(state.activeEffects.active)) state.activeEffects.active = [];
+    if (!state.proofs || typeof state.proofs !== "object" || Array.isArray(state.proofs)) {
+      state.proofs = deepClone(SEED_DATA.defaultState.proofs);
+    }
+    if (!Array.isArray(state.proofs.records)) state.proofs.records = [];
     if (!state.goals || typeof state.goals !== "object") state.goals = deepClone(SEED_DATA.defaultState.goals);
     if (!Array.isArray(state.goals.selected)) state.goals.selected = [];
     if (!state.goals.details || typeof state.goals.details !== "object" || Array.isArray(state.goals.details)) state.goals.details = {};

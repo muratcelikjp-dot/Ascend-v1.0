@@ -57,7 +57,7 @@ const SEED_DATA = {
 
   // Default state for a brand new player with no save file yet.
   defaultState: {
-    version: 11,
+    version: 12,
     level: 1,
     xp: 0,
     lifetimeXp: 0,
@@ -78,6 +78,10 @@ const SEED_DATA = {
 
     activeEffects: {
       active: []
+    },
+
+    proofs: {
+      records: []
     },
 
     attributes: {

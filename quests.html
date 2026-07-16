@@ -229,6 +229,8 @@ body.modal-active{overflow:hidden}.modal-overlay{z-index:45;padding-top:calc(12p
 .forge-output{position:relative;z-index:1;display:grid;grid-template-columns:36px minmax(0,1fr) auto;align-items:center;gap:10px;margin-top:15px;padding:10px 11px;border:1px solid rgba(141,239,255,.16);border-radius:7px;background:linear-gradient(90deg,rgba(10,28,48,.62),rgba(7,19,38,.46));overflow:hidden}.forge-output::before{content:"";position:absolute;left:0;top:7px;bottom:7px;width:2px;background:var(--preview-color,var(--abyss-aqua));box-shadow:0 0 8px var(--preview-color,var(--abyss-aqua))}.forge-output-icon{width:34px;height:34px;display:grid;place-items:center;border:1px solid color-mix(in srgb,var(--preview-color) 38%,transparent);border-radius:6px;background:color-mix(in srgb,var(--preview-color) 7%,transparent);color:var(--preview-color)}.forge-output-icon .attribute-icon{width:20px;height:20px}.forge-output-kicker{color:var(--abyss-muted);font-size:7px;text-transform:uppercase;letter-spacing:.11em}.forge-output-name{margin-top:3px;color:var(--abyss-soft);font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}.forge-output-xp{text-align:right;color:var(--xp-color,var(--preview-color));font-size:15px;font-weight:650}.forge-output-xp small{display:block;margin-top:2px;color:var(--abyss-muted);font-size:6px;font-weight:500;text-transform:uppercase;letter-spacing:.1em}
 .quest-forge .m-acts{position:relative;z-index:1;display:grid;grid-template-columns:.8fr 1.4fr;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(141,239,255,.11)}.quest-forge .m-cancel,.quest-forge .m-ok{min-height:44px;padding:8px 10px;display:flex;align-items:center;justify-content:center;gap:7px;border-radius:7px;font-size:9px;font-weight:650;text-transform:uppercase;letter-spacing:.07em;cursor:pointer}.quest-forge .m-cancel{border:1px solid rgba(141,239,255,.16);background:rgba(2,7,19,.32);color:var(--abyss-muted)}.quest-forge .m-ok{border:1px solid rgba(141,239,255,.52);background:linear-gradient(90deg,rgba(47,157,255,.92),rgba(53,244,230,.9));color:var(--abyss-black);box-shadow:0 8px 24px rgba(47,157,255,.12)}.quest-forge .m-ok i{font-size:14px}.quest-forge .m-ok:active,.quest-forge .m-cancel:active{transform:scale(.98)}.modal-overlay.open .forge-header,.modal-overlay.open .forge-section,.modal-overlay.open .forge-output,.modal-overlay.open .m-acts{animation:forgeReveal .32s cubic-bezier(.2,.75,.2,1) both}.modal-overlay.open .forge-section:nth-of-type(1){animation-delay:.08s}.modal-overlay.open .forge-section:nth-of-type(2){animation-delay:.12s}.modal-overlay.open .forge-section:nth-of-type(3){animation-delay:.16s}.modal-overlay.open .forge-output{animation-delay:.2s}.modal-overlay.open .m-acts{animation-delay:.23s}
 @keyframes forgeSweep{0%{top:0;opacity:0}20%{opacity:.65}100%{top:100%;opacity:0}}@keyframes forgeReveal{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@keyframes forgeReject{0%,100%{transform:translateX(0)}30%{transform:translateX(-5px)}70%{transform:translateX(5px)}}@keyframes forgeTerminalPulse{0%{opacity:0;transform:scaleX(.2)}42%{opacity:1}100%{opacity:0;transform:scaleX(1)}}@keyframes forgeBlockCaret{0%,48%{opacity:1}49%,100%{opacity:0}}
+.qc-wrap.proof-ready .qc{border-radius:8px 8px 0 0}.proof-action{width:100%;min-height:34px;padding:7px 11px;display:flex;align-items:center;gap:7px;border:1px solid var(--abyss-border);border-top:0;border-radius:0 0 8px 8px;background:rgba(7,19,38,.72);color:var(--abyss-muted);font-size:8px;text-transform:uppercase;letter-spacing:.07em;cursor:pointer}.proof-action i{font-size:13px;color:var(--abyss-purple)}.proof-action span{font-weight:650}.proof-action small{margin-left:auto;color:var(--abyss-muted);font-size:7px;letter-spacing:.06em}.proof-action.logged{border-color:rgba(65,230,164,.22);background:rgba(65,230,164,.045);color:var(--abyss-green)}.proof-action.logged i{color:var(--abyss-green);filter:drop-shadow(0 0 5px rgba(65,230,164,.3))}
+.proof-overlay{position:fixed;inset:0;z-index:52;display:flex;align-items:flex-end;justify-content:center;padding-top:env(safe-area-inset-top,0px);background:rgba(2,7,19,.78);opacity:0;pointer-events:none;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:opacity .22s}.proof-overlay.open{opacity:1;pointer-events:auto}.proof-sheet{width:min(430px,100%);padding:10px 16px calc(20px + env(safe-area-inset-bottom,0px));border:1px solid rgba(139,92,246,.3);border-bottom:0;border-radius:12px 12px 0 0;background:linear-gradient(180deg,rgba(13,38,64,.99),rgba(2,7,19,.998));box-shadow:0 -22px 70px rgba(0,0,0,.5),0 0 28px rgba(139,92,246,.08);transform:translateY(calc(100% + 18px));transition:transform .3s cubic-bezier(.2,.78,.2,1)}.proof-overlay.open .proof-sheet{transform:translateY(0)}.proof-grip{width:38px;height:3px;margin:0 auto 12px;border-radius:3px;background:rgba(141,239,255,.2)}.proof-header{display:grid;grid-template-columns:38px minmax(0,1fr) 34px;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid rgba(141,239,255,.12)}.proof-emblem{width:38px;height:38px;display:grid;place-items:center;border:1px solid rgba(139,92,246,.38);border-radius:7px;background:rgba(139,92,246,.08);color:#b8a4ff}.proof-emblem i{font-size:18px;filter:drop-shadow(0 0 5px rgba(139,92,246,.4))}.proof-kicker{color:#b8a4ff;font-size:8px;text-transform:uppercase;letter-spacing:.15em}.proof-title{margin-top:3px;color:var(--abyss-text);font-size:17px;font-weight:650}.proof-close{width:34px;height:34px;display:grid;place-items:center;border:1px solid rgba(141,239,255,.15);border-radius:6px;background:rgba(2,7,19,.35);color:var(--abyss-muted);cursor:pointer}.proof-quest{margin-top:12px;padding:9px 10px;border-left:2px solid #b8a4ff;background:rgba(139,92,246,.045);overflow:hidden;color:var(--abyss-soft);font-size:10px;font-weight:600;text-overflow:ellipsis;white-space:nowrap}.proof-field{margin-top:12px}.proof-field label{display:block;margin-bottom:6px;color:var(--abyss-soft);font-size:8px;text-transform:uppercase;letter-spacing:.1em}.proof-note{width:100%;min-height:104px;resize:none;padding:11px;border:1px solid rgba(141,239,255,.2);border-radius:7px;outline:0;background:rgba(2,7,19,.64);color:#dff7fc;font:500 11px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;caret-color:#b8a4ff}.proof-note:focus{border-color:rgba(184,164,255,.62);box-shadow:0 0 0 2px rgba(139,92,246,.06)}.proof-note::placeholder{color:rgba(111,142,163,.65)}.proof-field-meta{display:flex;justify-content:space-between;gap:10px;min-height:18px;margin-top:5px;color:var(--abyss-muted);font-size:7px;letter-spacing:.06em}.proof-status.error{color:var(--abyss-coral)}.proof-actions{display:grid;grid-template-columns:.8fr 1.4fr;gap:8px;margin-top:11px;padding-top:11px;border-top:1px solid rgba(141,239,255,.1)}.proof-actions button{min-height:42px;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:7px;font-size:8px;font-weight:650;text-transform:uppercase;letter-spacing:.07em;cursor:pointer}.proof-remove{border:1px solid rgba(255,92,122,.2);background:rgba(255,92,122,.04);color:var(--abyss-coral)}.proof-remove[hidden]{display:none}.proof-remove[hidden]+.proof-save{grid-column:1/-1}.proof-save{border:1px solid rgba(184,164,255,.48);background:linear-gradient(90deg,rgba(139,92,246,.8),rgba(47,157,255,.82));color:#f3f0ff}
 @media(max-width:350px){.quest-board-shell{padding-left:12px;padding-right:12px}.mission-heading h1{font-size:19px}.status-pill{padding-left:7px;padding-right:7px}.fb{height:42px;min-height:42px}.fb span,.fb.on span{display:none}.quest-actions{grid-template-columns:1fr}.operation-meta{font-size:7px}.mission-section-count{display:none}.completed-visibility{padding-left:7px;padding-right:7px}.boss-mission-card{padding:11px}.boss-mission-clock strong{font-size:11px}.boss-mission-effects{grid-template-columns:1fr}.boss-mission-actions{grid-template-columns:1fr 1.45fr}.quest-forge{padding-left:12px;padding-right:12px}.forge-header{grid-template-columns:38px minmax(0,1fr) 34px;gap:9px}.forge-emblem{width:38px;height:38px}.forge-title{font-size:17px}.quest-forge .do{height:58px}.quest-forge .co{height:44px;padding-left:7px;padding-right:7px}.quest-forge .co>span{font-size:7px}.forge-section{margin-top:12px}.forge-output{margin-top:12px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.main-clear-feedback.show{animation:none!important;opacity:1;visibility:visible}.qc.main-clearing{animation:none!important}}
 </style>
@@ -429,6 +431,27 @@ window.addEventListener('error', function(e){
   </div>
 </div>
 
+<div class="proof-overlay" id="proof-modal" onclick="backgroundCloseProof(event)">
+  <section class="proof-sheet" role="dialog" aria-modal="true" aria-labelledby="proof-title">
+    <div class="proof-grip" aria-hidden="true"></div>
+    <header class="proof-header">
+      <div class="proof-emblem"><i class="ti ti-fingerprint"></i></div>
+      <div><div class="proof-kicker">Evidence Log</div><div class="proof-title" id="proof-title">Completion Record</div></div>
+      <button class="proof-close" type="button" onclick="closeProofModal()" aria-label="Close evidence log"><i class="ti ti-x"></i></button>
+    </header>
+    <div class="proof-quest" id="proof-quest-title"></div>
+    <div class="proof-field">
+      <label for="proof-note">Completion note</label>
+      <textarea class="proof-note" id="proof-note" maxlength="240" placeholder="What confirms this mission was completed?" oninput="updateProofCounter()"></textarea>
+      <div class="proof-field-meta"><span class="proof-status" id="proof-status"></span><span id="proof-counter">0 / 240</span></div>
+    </div>
+    <div class="proof-actions">
+      <button class="proof-remove" id="proof-remove" type="button" onclick="removeProofRecord()"><i class="ti ti-trash"></i><span>Remove</span></button>
+      <button class="proof-save" type="button" onclick="saveProofRecord()"><i class="ti ti-device-floppy"></i><span>Save record</span></button>
+    </div>
+  </section>
+</div>
+
 <div class="boss-confirm-overlay" id="boss-mission-confirm" onclick="closeBossMissionConfirm(event)">
   <div class="boss-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="boss-confirm-title">
     <div class="boss-confirm-kicker" id="boss-confirm-kicker">Boss mission</div>
@@ -456,6 +479,7 @@ window.addEventListener('error', function(e){
 <script src="js/bosses.js"></script>
 <script src="js/streak.js"></script>
 <script src="js/quests.js"></script>
+<script src="js/proof.js"></script>
 <script src="js/rewards.js"></script>
 <script src="js/shield.js"></script>
 <script src="js/ranks.js"></script>
@@ -486,6 +510,7 @@ let bossMissionAction=null;
 let bossMissionExpiryBusy=false;
 let goalSuggestionDrafts=[];
 let mainQuestClearTimer=null;
+let proofQuestId=null;
 
 const DAILY_CAPACITY_LABELS={low:'Low capacity',steady:'Steady capacity',strong:'Strong capacity'};
 
@@ -1034,6 +1059,17 @@ function renderQuests(){
       ${bossMatch?`<div class="boss-target-signal" style="--boss-color:${bossStyle.color};--boss-rgb:${bossStyle.rgb}"><i class="ti ti-crosshair"></i><span>${bossMatch.matchType==='tag'?escapeQuestUi(bossMatch.match):'Weak point locked'}</span><strong>${bossDamage.totalDamage} DMG</strong></div>`:''}`;
     if(!t.done) c.onclick=()=>toggle(t.id,c);
     wrap.appendChild(c);
+    if(t.done){
+      const proof=Proof.getQuestProof(t);
+      const proofAction=document.createElement('button');
+      wrap.classList.add('proof-ready');
+      proofAction.type='button';
+      proofAction.className='proof-action'+(proof?' logged':'');
+      proofAction.setAttribute('aria-label',(proof?'Edit':'Add')+' proof for '+t.title);
+      proofAction.innerHTML='<i class="ti '+(proof?'ti-shield-check':'ti-fingerprint')+'"></i><span>'+(proof?'Proof logged':'Add proof')+'</span><small>'+(proof?'Edit record':'Optional')+'</small>';
+      proofAction.onclick=event=>{event.stopPropagation();openProofModal(t.id)};
+      wrap.appendChild(proofAction);
+    }
     list.appendChild(wrap);
     if(!t.done) attachSwipeHandlers(c,t.id);
   });
@@ -1051,6 +1087,66 @@ function vibrate(pattern){
   if(navigator.vibrate){
     try{ navigator.vibrate(pattern); }catch(e){ /* unsupported, fail silently */ }
   }
+}
+
+function updateProofCounter(){
+  const note=document.getElementById('proof-note');
+  document.getElementById('proof-counter').textContent=note.value.length+' / '+Proof.MAX_NOTE_LENGTH;
+  document.getElementById('proof-status').textContent='';
+  document.getElementById('proof-status').classList.remove('error');
+}
+
+function openProofModal(questId){
+  const quest=gs.quests.active.find(item=>item.id===questId);
+  if(!quest||!quest.done)return;
+  const proof=Proof.getQuestProof(quest);
+  proofQuestId=questId;
+  document.getElementById('proof-quest-title').textContent=quest.title;
+  document.getElementById('proof-note').value=proof?proof.note:'';
+  document.getElementById('proof-remove').hidden=!proof;
+  updateProofCounter();
+  document.body.classList.add('modal-active');
+  document.getElementById('proof-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('proof-note').focus(),260);
+}
+
+function closeProofModal(){
+  document.getElementById('proof-modal').classList.remove('open');
+  document.body.classList.remove('modal-active');
+  proofQuestId=null;
+}
+
+function backgroundCloseProof(event){
+  if(event.target===document.getElementById('proof-modal'))closeProofModal();
+}
+
+function saveProofRecord(){
+  const note=document.getElementById('proof-note').value;
+  const status=document.getElementById('proof-status');
+  if(!note.trim()){
+    status.textContent='Enter a completion note.';
+    status.classList.add('error');
+    document.getElementById('proof-note').focus();
+    return;
+  }
+  let outcome=null;
+  gs=GameState.set(state=>{outcome=Proof.setQuestProof(state,proofQuestId,note)});
+  if(!outcome||!outcome.saved){
+    status.textContent='Record could not be saved.';
+    status.classList.add('error');
+    return;
+  }
+  closeProofModal();
+  renderQuests();
+  showBoardNotice('Proof logged','Completion record attached.',2400);
+}
+
+function removeProofRecord(){
+  let outcome=null;
+  gs=GameState.set(state=>{outcome=Proof.removeQuestProof(state,proofQuestId)});
+  closeProofModal();
+  renderQuests();
+  if(outcome&&outcome.removed)showBoardNotice('Proof removed','Quest progression remains unchanged.',2400);
 }
 
 function showMainQuestCompletion(quest){

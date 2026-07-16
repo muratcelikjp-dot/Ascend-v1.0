@@ -14,11 +14,13 @@ const skillsSource = fs.readFileSync(path.join(ROOT, "js", "skills.js"), "utf8")
 const achievementsSource = fs.readFileSync(path.join(ROOT, "js", "achievements.js"), "utf8");
 const activeEffectsSource = fs.readFileSync(path.join(ROOT, "js", "active-effects.js"), "utf8");
 const weeklyRecapSource = fs.readFileSync(path.join(ROOT, "js", "weekly-recap.js"), "utf8");
+const progressiveUnlocksSource = fs.readFileSync(path.join(ROOT, "js", "progressive-unlocks.js"), "utf8");
 const journeyTimelineSource = fs.readFileSync(path.join(ROOT, "js", "journey-timeline.js"), "utf8");
 const bossesSource = fs.readFileSync(path.join(ROOT, "js", "bosses.js"), "utf8");
 const ranksSource = fs.readFileSync(path.join(ROOT, "js", "ranks.js"), "utf8");
 const dailyStateSource = fs.readFileSync(path.join(ROOT, "js", "daily-state.js"), "utf8");
 const questsSource = fs.readFileSync(path.join(ROOT, "js", "quests.js"), "utf8");
+const proofSource = fs.readFileSync(path.join(ROOT, "js", "proof.js"), "utf8");
 const profileSource = fs.readFileSync(path.join(ROOT, "js", "profile.js"), "utf8");
 const saveVaultSource = fs.readFileSync(path.join(ROOT, "js", "save-vault.js"), "utf8");
 
@@ -82,6 +84,8 @@ function createRuntime(storage) {
   vm.runInContext(achievementsSource + ";globalThis.Achievements=Achievements;", context);
   vm.runInContext(activeEffectsSource, context);
   vm.runInContext(weeklyRecapSource, context);
+  vm.runInContext(progressiveUnlocksSource, context);
+  vm.runInContext(proofSource, context);
   vm.runInContext(journeyTimelineSource, context);
   vm.runInContext(bossesSource + ";globalThis.Bosses=Bosses;", context);
   vm.runInContext(ranksSource + ";globalThis.Ranks=Ranks;", context);
@@ -95,9 +99,11 @@ function createRuntime(storage) {
     DateUtils: context.DateUtils,
     ActiveEffects: context.ActiveEffects,
     WeeklyRecap: context.WeeklyRecap,
+    ProgressiveUnlocks: context.ProgressiveUnlocks,
     JourneyTimeline: context.JourneyTimeline,
     DailyState: context.DailyState,
     Quests: context.Quests,
+    Proof: context.Proof,
     UserProfile: context.UserProfile,
     SaveVault: context.SaveVault,
     SEED_DATA: context.SEED_DATA,
@@ -517,6 +523,22 @@ test("older saves gain an empty active effects collection without losing progres
   assert.equal(migrated.version, runtime.SEED_DATA.defaultState.version);
 });
 
+test("version 11 saves gain an empty proof archive without losing progress", () => {
+  const bootstrap = createRuntime(new MemoryStorage());
+  const legacy = clone(bootstrap.SEED_DATA.defaultState);
+  legacy.version = 11;
+  legacy.xp = 720;
+  delete legacy.proofs;
+
+  const storage = new MemoryStorage({ rpg_state: JSON.stringify(legacy) });
+  const runtime = createRuntime(storage);
+  const migrated = runtime.GameState.get();
+
+  assert.equal(migrated.xp, 720);
+  assert.deepEqual([...migrated.proofs.records], []);
+  assert.equal(migrated.version, runtime.SEED_DATA.defaultState.version);
+});
+
 test("completing the main quest activates one Momentum effect for the local day", () => {
   const runtime = createRuntime(new MemoryStorage());
   let main;
@@ -658,6 +680,32 @@ test("journey timeline stays empty until meaningful progress exists", () => {
   assert.deepEqual([...runtime.JourneyTimeline.build(runtime.GameState.get())], []);
 });
 
+test("journey timeline unlocks after the first completed quest", () => {
+  const runtime = createRuntime(new MemoryStorage());
+  const locked = runtime.ProgressiveUnlocks.getStatus(runtime.GameState.get(), "journey_timeline");
+
+  assert.equal(locked.unlocked, false);
+  assert.equal(locked.current, 0);
+  assert.equal(locked.required, 1);
+  assert.equal(locked.remaining, 1);
+  assert.equal(locked.progress, 0);
+
+  runtime.GameState.set(state => {
+    state.quests.totalCompletedEver = 1;
+  });
+
+  const unlocked = runtime.ProgressiveUnlocks.getStatus(runtime.GameState.get(), "journey_timeline");
+  assert.equal(unlocked.unlocked, true);
+  assert.equal(unlocked.current, 1);
+  assert.equal(unlocked.remaining, 0);
+  assert.equal(unlocked.progress, 1);
+});
+
+test("unknown progressive unlock ids fail safely", () => {
+  const runtime = createRuntime(new MemoryStorage());
+  assert.equal(runtime.ProgressiveUnlocks.getStatus(runtime.GameState.get(), "unknown"), null);
+});
+
 test("journey timeline merges reports and growth events in reverse date order", () => {
   const runtime = createRuntime(new MemoryStorage());
   const today = runtime.DateUtils.getLocalDateKey();
@@ -704,4 +752,176 @@ test("journey timeline includes report-only missed Main Quests and respects its 
   assert.equal(entries[1].title, "Priority 1");
   assert.equal(entries[1].tone, "missed");
   assert.equal(entries[1].xp, 0);
+});
+
+test("journey timeline includes proof-only dates", () => {
+  const runtime = createRuntime(new MemoryStorage());
+  const today = runtime.DateUtils.getLocalDateKey();
+  runtime.GameState.set(state => {
+    const quest = runtime.Quests.addQuest(state, {
+      title: "Submit the portfolio",
+      attribute: "charisma",
+      difficulty: "normal",
+      xp: 100
+    });
+    quest.done = true;
+    quest.dateAssigned = today;
+    runtime.Proof.setQuestProof(state, quest.id, "Portfolio link sent to the reviewer.");
+  });
+
+  const entries = runtime.JourneyTimeline.build(runtime.GameState.get());
+  assert.equal(entries.length, 1);
+  assert.equal(entries[0].dateKey, today);
+  assert.equal(entries[0].title, "Submit the portfolio");
+  assert.equal(entries[0].tone, "proof");
+  assert.equal(entries[0].proofs.length, 1);
+  assert.equal(entries[0].proofs[0].note, "Portfolio link sent to the reviewer.");
+});
+
+test("journey timeline merges proof with existing daily progress", () => {
+  const runtime = createRuntime(new MemoryStorage());
+  const today = runtime.DateUtils.getLocalDateKey();
+  runtime.GameState.set(state => {
+    if (!state.dailyLog) state.dailyLog = {};
+    state.dailyLog[today] = { xp: 200, questsCompleted: 1, growthEvents: [] };
+    state.planning.dayReports[today] = {
+      mainQuest: { title: "Finish the key project", completed: true }
+    };
+    const quest = runtime.Quests.addQuest(state, {
+      title: "Finish the key project",
+      attribute: "willpower",
+      difficulty: "hard",
+      xp: 200
+    });
+    quest.done = true;
+    quest.dateAssigned = today;
+    runtime.Proof.setQuestProof(state, quest.id, "Final build deployed.");
+  });
+
+  const entry = runtime.JourneyTimeline.build(runtime.GameState.get())[0];
+  assert.equal(entry.title, "Finish the key project");
+  assert.equal(entry.tone, "secured");
+  assert.equal(entry.xp, 200);
+  assert.equal(entry.proofs.length, 1);
+});
+
+test("proof records can only be attached to completed quests", () => {
+  const runtime = createRuntime(new MemoryStorage());
+  let quest;
+  runtime.GameState.set(state => {
+    quest = runtime.Quests.addQuest(state, {
+      title: "Finish the report",
+      attribute: "intelligence",
+      difficulty: "easy",
+      xp: 50
+    });
+  });
+
+  let outcome;
+  runtime.GameState.set(state => {
+    outcome = runtime.Proof.setQuestProof(state, quest.id, "Report submitted.");
+  });
+
+  assert.equal(outcome.saved, false);
+  assert.equal(outcome.reason, "quest-incomplete");
+  assert.equal(runtime.Proof.getQuestProof(runtime.GameState.get().quests.active[0]), null);
+});
+
+test("proof records persist, update and remove without changing progression", () => {
+  const runtime = createRuntime(new MemoryStorage());
+  let questId;
+  runtime.GameState.set(state => {
+    const quest = runtime.Quests.addQuest(state, {
+      title: "Complete the workout",
+      attribute: "strength",
+      difficulty: "normal",
+      xp: 100
+    });
+    quest.done = true;
+    questId = quest.id;
+  });
+  const before = runtime.GameState.get();
+  const progressionBefore = {
+    xp: before.xp,
+    lifetimeXp: before.lifetimeXp,
+    completedToday: before.quests.completedToday,
+    totalCompletedEver: before.quests.totalCompletedEver
+  };
+
+  runtime.GameState.set(state => {
+    runtime.Proof.setQuestProof(state, questId, "  Session logged in training journal.  ");
+  });
+  let proof = runtime.Proof.getQuestProof(runtime.GameState.get().quests.active[0]);
+  let archive = runtime.Proof.getArchive(runtime.GameState.get());
+  assert.equal(proof.note, "Session logged in training journal.");
+  assert.equal(archive.length, 1);
+  assert.equal(archive[0].questTitle, "Complete the workout");
+  assert.equal(archive[0].note, proof.note);
+  const createdAt = proof.createdAt;
+
+  runtime.GameState.set(state => {
+    runtime.Proof.setQuestProof(state, questId, "Updated completion record.");
+  });
+  proof = runtime.Proof.getQuestProof(runtime.GameState.get().quests.active[0]);
+  archive = runtime.Proof.getArchive(runtime.GameState.get());
+  assert.equal(proof.note, "Updated completion record.");
+  assert.equal(proof.createdAt, createdAt);
+  assert.equal(archive.length, 1);
+  assert.equal(archive[0].note, "Updated completion record.");
+
+  const afterUpdate = runtime.GameState.get();
+  assert.deepEqual({
+    xp: afterUpdate.xp,
+    lifetimeXp: afterUpdate.lifetimeXp,
+    completedToday: afterUpdate.quests.completedToday,
+    totalCompletedEver: afterUpdate.quests.totalCompletedEver
+  }, progressionBefore);
+
+  runtime.GameState.set(state => {
+    runtime.Proof.removeQuestProof(state, questId);
+  });
+  assert.equal(runtime.Proof.getQuestProof(runtime.GameState.get().quests.active[0]), null);
+  assert.deepEqual([...runtime.Proof.getArchive(runtime.GameState.get())], []);
+});
+
+test("proof archive survives the daily quest reset and a new runtime", () => {
+  const storage = new MemoryStorage();
+  const runtime = createRuntime(storage);
+  const today = runtime.DateUtils.getLocalDateKey();
+  const yesterday = runtime.DateUtils.getLocalDateKey(runtime.DateUtils.addDaysLocal(today, -1));
+  let questId;
+
+  runtime.GameState.set(state => {
+    state.quests.lastResetDate = yesterday;
+    const quest = runtime.Quests.addQuest(state, {
+      title: "Ship the delayed project",
+      attribute: "willpower",
+      difficulty: "hard",
+      xp: 200
+    });
+    quest.dateAssigned = yesterday;
+    quest.done = true;
+    questId = quest.id;
+    runtime.Proof.setQuestProof(state, quest.id, "Final build delivered.");
+  });
+
+  runtime.GameState.set(state => {
+    runtime.Quests.ensureDailyReset(state);
+  });
+
+  const reloaded = createRuntime(storage);
+  const state = reloaded.GameState.get();
+  const archive = reloaded.Proof.getArchive(state);
+  assert.equal(state.quests.active.some(quest => quest.id === questId), false);
+  assert.equal(archive.length, 1);
+  assert.equal(archive[0].questId, questId);
+  assert.equal(archive[0].dateKey, yesterday);
+  assert.equal(archive[0].note, "Final build delivered.");
+
+  let removal;
+  reloaded.GameState.set(current => {
+    removal = reloaded.Proof.removeQuestProof(current, questId);
+  });
+  assert.equal(removal.removed, true);
+  assert.deepEqual([...reloaded.Proof.getArchive(reloaded.GameState.get())], []);
 });

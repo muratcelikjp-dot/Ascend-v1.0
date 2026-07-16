@@ -348,6 +348,8 @@ body{
 .legacy-chevron{font-size:14px;color:var(--txd);transition:transform .2s ease}
 .legacy-drawer[open] .legacy-chevron{transform:rotate(180deg)}
 .journey-drawer{margin:16px 14px 0;border-top:1px solid rgba(0,180,216,.16);border-bottom:1px solid rgba(0,180,216,.12)}.journey-drawer>summary{height:48px;display:flex;align-items:center;gap:9px;list-style:none;color:var(--txm);cursor:pointer;-webkit-tap-highlight-color:transparent}.journey-drawer>summary::-webkit-details-marker{display:none}.journey-drawer>summary .journey-main-icon{font-size:15px;color:var(--neon)}.journey-drawer>summary>span{font-size:9px;text-transform:uppercase;letter-spacing:.13em}.journey-count{margin-left:auto;color:var(--txd);font-size:8px;letter-spacing:.07em}.journey-chevron{font-size:14px;color:var(--txd);transition:transform .2s ease}.journey-drawer[open] .journey-chevron{transform:rotate(180deg)}.journey-list{position:relative;padding:1px 0 13px 19px}.journey-list::before{content:"";position:absolute;top:8px;bottom:18px;left:5px;width:1px;background:linear-gradient(var(--neon),rgba(0,180,216,.08))}.journey-entry{--journey-color:var(--neon);position:relative;padding:9px 10px 10px;border-bottom:1px solid rgba(0,180,216,.09)}.journey-entry:last-child{border-bottom:0}.journey-entry::before{content:"";position:absolute;top:14px;left:-17px;width:7px;height:7px;border:1px solid var(--journey-color);border-radius:50%;background:#020d18;box-shadow:0 0 7px color-mix(in srgb,var(--journey-color) 45%,transparent)}.journey-entry.secured{--journey-color:var(--gr)}.journey-entry.missed{--journey-color:#ff8894}.journey-entry.growth{--journey-color:var(--am)}.journey-date{color:var(--journey-color);font-size:7px;text-transform:uppercase;letter-spacing:.1em}.journey-title{margin-top:3px;overflow:hidden;color:#dff7fc;font-size:10px;font-weight:620;text-overflow:ellipsis;white-space:nowrap}.journey-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px;color:var(--txd);font-size:7px;text-transform:uppercase;letter-spacing:.06em}.journey-meta span{display:inline-flex;align-items:center;gap:3px}.journey-meta i{font-size:10px;color:var(--journey-color)}.journey-events{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}.journey-event{max-width:100%;padding:3px 5px;border:1px solid rgba(239,159,39,.18);border-radius:3px;background:rgba(239,159,39,.045);overflow:hidden;color:#d9bc82;font-size:7px;text-overflow:ellipsis;white-space:nowrap}.journey-empty{padding:4px 8px 15px;color:var(--txd);font-size:9px;line-height:1.5}
+.journey-drawer.locked{border-color:rgba(111,142,163,.13)}.journey-drawer.locked>summary{color:var(--txd)}.journey-drawer.locked>summary .journey-main-icon{color:var(--txd);filter:none}.journey-drawer.locked .journey-count{color:#8da6b5}.journey-drawer.locked .journey-list::before{background:rgba(111,142,163,.13)}
+.journey-entry.proof{--journey-color:#b8a4ff}.journey-proofs{margin-top:7px;display:grid;gap:6px}.journey-proof{min-width:0;padding:6px 7px;display:grid;grid-template-columns:18px minmax(0,1fr);gap:7px;border-left:2px solid rgba(184,164,255,.45);background:rgba(139,92,246,.045)}.journey-proof>i{margin-top:1px;color:#b8a4ff;font-size:13px;filter:drop-shadow(0 0 4px rgba(139,92,246,.3))}.journey-proof-copy{min-width:0}.journey-proof-copy strong{display:block;overflow:hidden;color:#d9d2ff;font-size:8px;font-weight:650;text-overflow:ellipsis;white-space:nowrap}.journey-proof-copy span{display:-webkit-box;margin-top:2px;overflow:hidden;color:#7696a8;font-size:7px;line-height:1.4;-webkit-box-orient:vertical;-webkit-line-clamp:2}.journey-proof-more{color:#8f82ca;font-size:7px;text-transform:uppercase;letter-spacing:.07em}
 .legacy-body{padding:0 0 12px}
 .legacy-body .boss-summary-card{margin:0}
 .legacy-body .summary-row{margin:7px 0 0}
@@ -552,7 +554,7 @@ window.addEventListener('error', function(e){
 </section>
 
 <details class="journey-drawer" id="journey-drawer">
-  <summary><i class="ti ti-route journey-main-icon" aria-hidden="true"></i><span>Journey Timeline</span><span class="journey-count" id="journey-count">0 records</span><i class="ti ti-chevron-down journey-chevron" aria-hidden="true"></i></summary>
+  <summary><i class="ti ti-route journey-main-icon" id="journey-main-icon" aria-hidden="true"></i><span>Journey Timeline</span><span class="journey-count" id="journey-count">0 records</span><i class="ti ti-chevron-down journey-chevron" aria-hidden="true"></i></summary>
   <div class="journey-list" id="journey-list"></div>
 </details>
 
@@ -633,6 +635,8 @@ window.addEventListener('error', function(e){
 <script src="js/skills.js"></script>
 <script src="js/achievements.js"></script>
 <script src="js/date-utils.js"></script>
+<script src="js/proof.js"></script>
+<script src="js/progressive-unlocks.js"></script>
 <script src="js/journey-timeline.js"></script>
 <script src="js/active-effects.js"></script>
 <script src="js/profile.js"></script>
@@ -876,8 +880,22 @@ function renderActiveEffects(){
 }
 
 function renderJourneyTimeline(){
+  const unlock=ProgressiveUnlocks.getStatus(gs,'journey_timeline');
   const entries=JourneyTimeline.build(gs,14);
+  const drawer=document.getElementById('journey-drawer');
   const list=document.getElementById('journey-list');
+  drawer.classList.toggle('locked',!unlock.unlocked);
+  drawer.querySelector('summary').setAttribute('aria-label',unlock.unlocked?'Open Journey Timeline':'Journey Timeline locked; complete one quest');
+  document.getElementById('journey-main-icon').className='ti '+(unlock.unlocked?'ti-route':'ti-lock')+' journey-main-icon';
+  if(!unlock.unlocked){
+    document.getElementById('journey-count').textContent=unlock.current+' / '+unlock.required+' quest';
+    list.innerHTML='';
+    const locked=document.createElement('div');
+    locked.className='journey-empty';
+    locked.textContent='Complete your first quest to unlock your permanent journey record.';
+    list.appendChild(locked);
+    return;
+  }
   document.getElementById('journey-count').textContent=entries.length+' record'+(entries.length===1?'':'s');
   list.innerHTML='';
   if(!entries.length){
@@ -899,7 +917,13 @@ function renderJourneyTimeline(){
     title.textContent=entry.title;
     const meta=document.createElement('div');
     meta.className='journey-meta';
-    const questStatus=entry.mainQuest?(entry.mainQuest.completed?'Main Quest secured':'Main Quest missed'):entry.questsCompleted+' quest'+(entry.questsCompleted===1?'':'s');
+    const questStatus=entry.mainQuest
+      ? (entry.mainQuest.completed?'Main Quest secured':'Main Quest missed')
+      : entry.questsCompleted>0
+        ? entry.questsCompleted+' quest'+(entry.questsCompleted===1?'':'s')
+        : entry.growthEvents.length>0
+          ? 'Character growth recorded'
+          : 'Proof recorded';
     meta.innerHTML='<span><i class="ti '+(entry.tone==='missed'?'ti-alert-triangle':'ti-check')+'"></i></span>';
     meta.firstElementChild.appendChild(document.createTextNode(questStatus));
     if(entry.xp>0){
@@ -907,6 +931,12 @@ function renderJourneyTimeline(){
       xp.innerHTML='<i class="ti ti-sparkles"></i>';
       xp.appendChild(document.createTextNode(entry.xp+' XP'));
       meta.appendChild(xp);
+    }
+    if(entry.proofs.length){
+      const proofCount=document.createElement('span');
+      proofCount.innerHTML='<i class="ti ti-fingerprint"></i>';
+      proofCount.appendChild(document.createTextNode(entry.proofs.length+' proof'+(entry.proofs.length===1?'':'s')));
+      meta.appendChild(proofCount);
     }
     article.append(date,title,meta);
     if(entry.growthEvents.length){
@@ -919,6 +949,32 @@ function renderJourneyTimeline(){
         events.appendChild(badge);
       });
       article.appendChild(events);
+    }
+    if(entry.proofs.length){
+      const proofs=document.createElement('div');
+      proofs.className='journey-proofs';
+      entry.proofs.slice(0,2).forEach(record=>{
+        const row=document.createElement('div');
+        row.className='journey-proof';
+        const icon=document.createElement('i');
+        icon.className='ti ti-fingerprint';
+        const copy=document.createElement('div');
+        copy.className='journey-proof-copy';
+        const proofTitle=document.createElement('strong');
+        proofTitle.textContent=record.questTitle;
+        const note=document.createElement('span');
+        note.textContent=record.note;
+        copy.append(proofTitle,note);
+        row.append(icon,copy);
+        proofs.appendChild(row);
+      });
+      if(entry.proofs.length>2){
+        const more=document.createElement('div');
+        more.className='journey-proof-more';
+        more.textContent='+'+(entry.proofs.length-2)+' more proof record'+(entry.proofs.length-2===1?'':'s');
+        proofs.appendChild(more);
+      }
+      article.appendChild(proofs);
     }
     list.appendChild(article);
   });

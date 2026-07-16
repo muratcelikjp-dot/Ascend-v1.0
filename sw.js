@@ -9,7 +9,7 @@
 //
 // CACHE_VERSION must be bumped on any meaningful app-shell file change.
 const CACHE_PREFIX = "rpg-app-";
-const CACHE_VERSION = "v123";
+const CACHE_VERSION = "v127";
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
 
 const PRECACHE_URLS = [
@@ -38,6 +38,7 @@ const PRECACHE_URLS = [
   "js/skills.js",
   "js/achievements.js",
   "js/date-utils.js",
+  "js/progressive-unlocks.js",
   "js/journey-timeline.js",
   "js/active-effects.js",
   "js/daily-state.js",
@@ -47,6 +48,7 @@ const PRECACHE_URLS = [
   "js/bosses.js",
   "js/streak.js",
   "js/quests.js",
+  "js/proof.js",
   "js/rewards.js",
   "js/weekly-recap.js",
   "js/shield.js",
