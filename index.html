@@ -227,7 +227,7 @@ window.addEventListener('error', function(e){
       <div class="onboarding-callsign" id="onboarding-callsign">PLAYER // UNLINKED</div>
     </div>
 
-    <div class="onboarding-form-fields">
+    <div class="onboarding-form-fields onboarding-identity-step" id="onboarding-identity-step">
       <label class="onboarding-field onboarding-name-field">
         <span>Call sign</span>
         <div class="onboarding-input-shell">
@@ -272,6 +272,18 @@ window.addEventListener('error', function(e){
       </button>
     </div>
 
+    <div class="onboarding-goals-step" id="onboarding-goals-step" hidden>
+      <div class="onboarding-goal-head">
+        <span>Primary directives</span>
+        <strong id="onboarding-goal-count">0 / 3</strong>
+      </div>
+      <div class="onboarding-goal-grid" id="onboarding-goal-grid"></div>
+      <div class="onboarding-goal-status" id="onboarding-goal-status" aria-live="polite">Select up to three directives</div>
+      <button class="onboarding-save onboarding-goal-save" id="onboarding-goal-save" type="button" disabled>
+        <span>Link directives</span><i class="ti ti-route"></i>
+      </button>
+    </div>
+
     <div class="onboarding-welcome" id="onboarding-welcome" aria-live="polite" aria-hidden="true">
       <span>Welcome</span>
       <strong id="onboarding-welcome-name"></strong>
@@ -284,11 +296,13 @@ window.addEventListener('error', function(e){
 
 <script src="data/seed-data.js"></script>
 <script src="js/gamestate.js"></script>
+<script src="js/goals.js"></script>
 <script src="js/leveling.js"></script>
 <script src="js/attributes.js"></script>
 <script src="js/skills.js"></script>
 <script src="js/achievements.js"></script>
 <script src="js/date-utils.js"></script>
+<script src="js/active-effects.js"></script>
 <script src="js/profile.js"></script>
 <script src="js/bosses.js"></script>
 <script src="js/streak.js"></script>

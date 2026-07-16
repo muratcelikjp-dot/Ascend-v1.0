@@ -223,6 +223,7 @@ body{
 .screen-title{font-size:18px;line-height:1.1;color:#e8f9ff;font-weight:650;text-transform:uppercase;letter-spacing:.08em}
 .system-state{display:flex;align-items:center;gap:6px;font-size:8px;color:var(--gr);text-transform:uppercase;letter-spacing:.12em}
 .system-state::before{content:"";width:5px;height:5px;border-radius:50%;background:#50e3b2;box-shadow:0 0 8px rgba(80,227,178,.72)}
+.system-state.buff-active{color:var(--am)}.system-state.buff-active::before{background:var(--am);box-shadow:0 0 9px rgba(239,159,39,.72)}
 
 .identity-panel{
   margin:0 14px;
@@ -288,6 +289,7 @@ body{
 .xp-lbl{font-size:9px;letter-spacing:.1em}
 .xp-track{height:5px;border:1px solid rgba(0,180,216,.14);background:#03101d;overflow:hidden}
 .xp-fill{box-shadow:0 0 10px rgba(0,229,255,.5)}
+.active-effect-strip{margin:9px 14px 0;padding:9px 11px;display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;gap:9px;border:1px solid rgba(239,159,39,.24);border-radius:5px;background:linear-gradient(90deg,rgba(239,159,39,.07),rgba(4,25,46,.54));color:var(--am)}.active-effect-strip[hidden]{display:none}.active-effect-icon{width:28px;height:28px;display:grid;place-items:center;border:1px solid rgba(239,159,39,.3);border-radius:4px;background:rgba(239,159,39,.06)}.active-effect-icon i{font-size:15px;filter:drop-shadow(0 0 5px rgba(239,159,39,.4))}.active-effect-copy{min-width:0}.active-effect-copy strong{display:block;color:#f6d693;font-size:9px;text-transform:uppercase;letter-spacing:.1em}.active-effect-copy span{display:block;margin-top:2px;color:var(--txd);font-size:8px}.active-effect-duration{color:var(--txd);font-size:7px;text-transform:uppercase;letter-spacing:.08em}
 
 .section-heading{display:flex;align-items:center;gap:9px;margin:22px 16px 9px;color:var(--txm)}
 .section-heading::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,rgba(0,180,216,.3),transparent)}
@@ -345,6 +347,7 @@ body{
 .legacy-drawer>summary .legacy-count{margin-left:auto;color:var(--txd);font-size:8px;letter-spacing:.07em}
 .legacy-chevron{font-size:14px;color:var(--txd);transition:transform .2s ease}
 .legacy-drawer[open] .legacy-chevron{transform:rotate(180deg)}
+.journey-drawer{margin:16px 14px 0;border-top:1px solid rgba(0,180,216,.16);border-bottom:1px solid rgba(0,180,216,.12)}.journey-drawer>summary{height:48px;display:flex;align-items:center;gap:9px;list-style:none;color:var(--txm);cursor:pointer;-webkit-tap-highlight-color:transparent}.journey-drawer>summary::-webkit-details-marker{display:none}.journey-drawer>summary .journey-main-icon{font-size:15px;color:var(--neon)}.journey-drawer>summary>span{font-size:9px;text-transform:uppercase;letter-spacing:.13em}.journey-count{margin-left:auto;color:var(--txd);font-size:8px;letter-spacing:.07em}.journey-chevron{font-size:14px;color:var(--txd);transition:transform .2s ease}.journey-drawer[open] .journey-chevron{transform:rotate(180deg)}.journey-list{position:relative;padding:1px 0 13px 19px}.journey-list::before{content:"";position:absolute;top:8px;bottom:18px;left:5px;width:1px;background:linear-gradient(var(--neon),rgba(0,180,216,.08))}.journey-entry{--journey-color:var(--neon);position:relative;padding:9px 10px 10px;border-bottom:1px solid rgba(0,180,216,.09)}.journey-entry:last-child{border-bottom:0}.journey-entry::before{content:"";position:absolute;top:14px;left:-17px;width:7px;height:7px;border:1px solid var(--journey-color);border-radius:50%;background:#020d18;box-shadow:0 0 7px color-mix(in srgb,var(--journey-color) 45%,transparent)}.journey-entry.secured{--journey-color:var(--gr)}.journey-entry.missed{--journey-color:#ff8894}.journey-entry.growth{--journey-color:var(--am)}.journey-date{color:var(--journey-color);font-size:7px;text-transform:uppercase;letter-spacing:.1em}.journey-title{margin-top:3px;overflow:hidden;color:#dff7fc;font-size:10px;font-weight:620;text-overflow:ellipsis;white-space:nowrap}.journey-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px;color:var(--txd);font-size:7px;text-transform:uppercase;letter-spacing:.06em}.journey-meta span{display:inline-flex;align-items:center;gap:3px}.journey-meta i{font-size:10px;color:var(--journey-color)}.journey-events{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}.journey-event{max-width:100%;padding:3px 5px;border:1px solid rgba(239,159,39,.18);border-radius:3px;background:rgba(239,159,39,.045);overflow:hidden;color:#d9bc82;font-size:7px;text-overflow:ellipsis;white-space:nowrap}.journey-empty{padding:4px 8px 15px;color:var(--txd);font-size:9px;line-height:1.5}
 .legacy-body{padding:0 0 12px}
 .legacy-body .boss-summary-card{margin:0}
 .legacy-body .summary-row{margin:7px 0 0}
@@ -403,6 +406,32 @@ body{
 .profile-actions button{height:40px;border-radius:5px;text-transform:uppercase;letter-spacing:.08em;font-size:9px;cursor:pointer}
 .profile-cancel{border:1px solid rgba(0,180,216,.22);background:transparent;color:var(--txm)}
 .profile-save{border:1px solid var(--neon);background:rgba(0,229,255,.12);color:var(--neon);font-weight:650}
+.device-vault{margin-top:15px;padding-top:13px;border-top:1px solid rgba(0,180,216,.14)}
+.device-vault-head{display:flex;align-items:center;gap:7px;margin-bottom:8px;color:var(--txm);font-size:9px;text-transform:uppercase;letter-spacing:.1em}
+.device-vault-head i{font-size:15px;color:var(--neon)}
+.device-vault-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.vault-action{min-width:0;height:38px;display:flex;align-items:center;justify-content:center;gap:6px;border:1px solid rgba(0,229,255,.24);border-radius:5px;background:rgba(0,229,255,.045);color:#a9d2dc;font-size:8px;text-transform:uppercase;letter-spacing:.07em;cursor:pointer}
+.vault-action i{font-size:14px;color:var(--neon)}
+.vault-action:active{transform:scale(.98)}
+.vault-recovery{grid-column:1/-1;border-color:rgba(255,193,7,.28);background:rgba(255,193,7,.04)}
+.vault-recovery i{color:#ffc247}
+.vault-recovery[hidden]{display:none}
+.vault-status{min-height:14px;margin-top:7px;color:var(--txd);font-size:8px;line-height:1.4}
+.vault-status.error{color:#ff8894}.vault-status.success{color:#65e7bd}
+.vault-file{display:none}
+.goal-module{margin:12px 14px 0;padding:10px 0;border-top:1px solid rgba(0,180,216,.14);border-bottom:1px solid rgba(0,180,216,.1)}
+.goal-module-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.goal-module-title{display:flex;align-items:center;gap:7px;color:var(--txm);font-size:8px;text-transform:uppercase;letter-spacing:.13em}.goal-module-title i{font-size:14px;color:var(--neon)}
+.goal-edit{width:30px;height:28px;display:grid;place-items:center;flex:0 0 auto;border:1px solid rgba(0,229,255,.24);border-radius:5px;background:rgba(0,229,255,.045);color:var(--neon);cursor:pointer}.goal-edit i{font-size:14px}
+.goal-chip-list{display:flex;flex-wrap:wrap;gap:6px}
+.goal-chip{--goal-color:var(--neon);min-width:0;display:inline-flex;align-items:center;gap:6px;padding:7px 9px;border:1px solid color-mix(in srgb,var(--goal-color) 30%,transparent);border-radius:5px;background:color-mix(in srgb,var(--goal-color) 6%,transparent);color:var(--goal-color);font-size:8px;font-weight:600;letter-spacing:.045em;text-transform:uppercase}.goal-chip i{font-size:13px}.goal-chip span{color:#cce8ef}
+.goal-empty{color:var(--txd);font-size:9px}
+.goal-card{max-height:calc(100svh - 32px);overflow-y:auto}
+.goal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.goal-option{--goal-color:var(--neon);min-width:0;min-height:58px;padding:9px;display:grid;grid-template-columns:30px minmax(0,1fr);align-items:center;gap:8px;text-align:left;border:1px solid rgba(0,180,216,.17);border-radius:6px;background:rgba(2,15,29,.72);color:var(--txm);cursor:pointer;transition:border-color .16s,background .16s,transform .16s}.goal-option:active{transform:scale(.98)}.goal-option.selected{border-color:color-mix(in srgb,var(--goal-color) 62%,transparent);background:color-mix(in srgb,var(--goal-color) 8%,rgba(2,15,29,.78));box-shadow:inset 0 0 18px color-mix(in srgb,var(--goal-color) 5%,transparent)}
+.goal-option-icon{width:30px;height:30px;display:grid;place-items:center;border:1px solid color-mix(in srgb,var(--goal-color) 35%,transparent);border-radius:5px;color:var(--goal-color);background:color-mix(in srgb,var(--goal-color) 6%,transparent)}.goal-option-icon i{font-size:15px}
+.goal-option-copy{min-width:0}.goal-option-copy strong{display:block;color:#dff7fc;font-size:9px;line-height:1.25}.goal-option-copy span{display:block;margin-top:3px;color:var(--txd);font-size:7px;letter-spacing:.055em;text-transform:uppercase}
+.goal-editor-status{min-height:16px;margin-top:9px;color:var(--txd);font-size:8px;letter-spacing:.06em}.goal-editor-status.error{color:#ff8894}
 
 @media(max-width:350px){
   .hero-topbar{grid-template-columns:36px 1fr auto;padding-left:10px;padding-right:10px}
@@ -418,6 +447,8 @@ body{
   .legacy-count{display:none}
   .a-tab{height:63px;font-size:6.8px}
   .a-tab .attribute-glyph{width:22px;height:22px}
+  .goal-module{margin-left:10px;margin-right:10px}
+  .goal-grid{grid-template-columns:1fr}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
@@ -446,7 +477,7 @@ window.addEventListener('error', function(e){
     <div class="screen-kicker">Panel 05</div>
     <h1 class="screen-title">Hero</h1>
   </div>
-  <div class="system-state">Active</div>
+  <div class="system-state" id="hero-system-state">Active</div>
 </header>
 
 <section class="identity-panel">
@@ -489,6 +520,20 @@ window.addEventListener('error', function(e){
   </div>
 </section>
 
+<section class="active-effect-strip" id="hero-active-effect" aria-live="polite" hidden>
+  <div class="active-effect-icon"><i class="ti ti-bolt" aria-hidden="true"></i></div>
+  <div class="active-effect-copy"><strong id="hero-effect-name">Momentum</strong><span id="hero-effect-description">Next Side Quest grants +10% XP</span></div>
+  <div class="active-effect-duration">1 charge</div>
+</section>
+
+<section class="goal-module" aria-labelledby="hero-goal-title">
+  <div class="goal-module-head">
+    <div class="goal-module-title" id="hero-goal-title"><i class="ti ti-route" aria-hidden="true"></i><span>Active directives</span></div>
+    <button class="goal-edit" type="button" onclick="openGoalEditor()" aria-label="Edit goals" title="Edit goals"><i class="ti ti-adjustments" aria-hidden="true"></i></button>
+  </div>
+  <div class="goal-chip-list" id="hero-goal-list"></div>
+</section>
+
 <section class="attribute-module">
   <div class="section-heading"><i class="ti ti-circuit-switch-open"></i><span>Attribute matrix</span></div>
   <div class="attr-tabs" id="attr-tabs"></div>
@@ -501,11 +546,34 @@ window.addEventListener('error', function(e){
   <div class="skill-tree-wrap" id="skill-tree-wrap" aria-hidden="true"></div>
 </section>
 
-<section class="recent-growth">
+<section class="recent-growth" hidden aria-hidden="true">
   <div class="section-heading"><i class="ti ti-sparkles"></i><span>Recent growth</span></div>
   <div class="activity-row" id="activity-row"></div>
 </section>
 
+<details class="journey-drawer" id="journey-drawer">
+  <summary><i class="ti ti-route journey-main-icon" aria-hidden="true"></i><span>Journey Timeline</span><span class="journey-count" id="journey-count">0 records</span><i class="ti ti-chevron-down journey-chevron" aria-hidden="true"></i></summary>
+  <div class="journey-list" id="journey-list"></div>
+</details>
+
+</div>
+
+<div class="profile-overlay" id="goal-overlay" onclick="backgroundCloseGoals(event)" role="dialog" aria-modal="true" aria-labelledby="goal-editor-title" aria-hidden="true">
+  <div class="profile-card goal-card">
+    <div class="profile-card-head">
+      <div class="profile-card-icon"><i class="ti ti-route" aria-hidden="true"></i></div>
+      <div>
+        <div class="profile-card-title" id="goal-editor-title">Active directives</div>
+        <div class="profile-card-sub">Select up to three goals</div>
+      </div>
+    </div>
+    <div class="goal-grid" id="hero-goal-grid"></div>
+    <div class="goal-editor-status" id="hero-goal-status" role="status"></div>
+    <div class="profile-actions">
+      <button class="profile-cancel" type="button" onclick="closeGoalEditor()">Cancel</button>
+      <button class="profile-save" id="hero-goal-save" type="button" onclick="saveGoals()">Save directives</button>
+    </div>
+  </div>
 </div>
 
 <div class="detail-overlay" id="detail-overlay" onclick="bgCloseDetail(event)">
@@ -539,6 +607,16 @@ window.addEventListener('error', function(e){
       <span>Birth date</span>
       <input class="profile-input" id="profile-birth" type="date" min="1900-01-01" required>
     </label>
+    <section class="device-vault" aria-labelledby="device-vault-title">
+      <div class="device-vault-head" id="device-vault-title"><i class="ti ti-database-shield" aria-hidden="true"></i>Device vault</div>
+      <div class="device-vault-actions">
+        <button class="vault-action" type="button" onclick="exportSaveBackup()"><i class="ti ti-download" aria-hidden="true"></i>Export save</button>
+        <button class="vault-action" type="button" onclick="chooseSaveBackup()"><i class="ti ti-upload" aria-hidden="true"></i>Restore save</button>
+        <button class="vault-action vault-recovery" id="vault-recovery" type="button" onclick="restoreRecoveryBackup()" hidden><i class="ti ti-history" aria-hidden="true"></i>Undo last restore</button>
+      </div>
+      <input class="vault-file" id="vault-file" type="file" accept="application/json,.json" onchange="readSaveBackup(event)">
+      <div class="vault-status" id="vault-status" role="status" aria-live="polite"></div>
+    </section>
     <div class="profile-error" id="profile-error" role="alert"></div>
     <div class="profile-actions">
       <button class="profile-cancel" type="button" onclick="closeProfileEditor()">Later</button>
@@ -549,12 +627,16 @@ window.addEventListener('error', function(e){
 
 <script src="data/seed-data.js"></script>
 <script src="js/gamestate.js"></script>
+<script src="js/goals.js"></script>
 <script src="js/leveling.js"></script>
 <script src="js/attributes.js"></script>
 <script src="js/skills.js"></script>
 <script src="js/achievements.js"></script>
 <script src="js/date-utils.js"></script>
+<script src="js/journey-timeline.js"></script>
+<script src="js/active-effects.js"></script>
 <script src="js/profile.js"></script>
+<script src="js/save-vault.js"></script>
 <script src="js/bosses.js"></script>
 <script src="js/streak.js"></script>
 <script src="js/quests.js"></script>
@@ -575,6 +657,87 @@ const ATTR_META=[
 GameLoop.bootstrapDay();
 let gs=GameState.get();
 let activeAttr='intelligence';
+let goalEditorSelection=[];
+
+function goalColor(goalId){
+  return {
+    fitness:'#41e6a4',
+    education:'#35f4e6',
+    career:'#3d9dff',
+    social:'#ff5ca8',
+    discipline:'#ff6b72',
+    'personal-project':'#efb82f'
+  }[goalId]||'#35f4e6';
+}
+
+function renderGoals(){
+  const selected=Goals.normalizeSelection(gs.goals&&gs.goals.selected);
+  const definitions=Goals.definitions();
+  const list=document.getElementById('hero-goal-list');
+  list.innerHTML=selected.map(goalId=>{
+    const goal=definitions.find(item=>item.id===goalId);
+    if(!goal)return '';
+    return `<div class="goal-chip" style="--goal-color:${goalColor(goal.id)}"><i class="ti ${goal.icon}" aria-hidden="true"></i><span>${goal.label}</span></div>`;
+  }).join('')||'<div class="goal-empty">No active directives</div>';
+}
+
+function renderGoalEditor(){
+  document.getElementById('hero-goal-grid').innerHTML=Goals.definitions().map(goal=>{
+    const selected=goalEditorSelection.includes(goal.id);
+    const description=goal.description||goal.attributes.map(attribute=>attribute.toUpperCase()).join(' + ');
+    return `<button class="goal-option${selected?' selected':''}" type="button" data-goal-id="${goal.id}" onclick="toggleGoalEditorSelection('${goal.id}')" aria-pressed="${selected}" style="--goal-color:${goalColor(goal.id)}">
+      <span class="goal-option-icon"><i class="ti ${goal.icon}" aria-hidden="true"></i></span>
+      <span class="goal-option-copy"><strong>${goal.label}</strong><span>${description}</span></span>
+    </button>`;
+  }).join('');
+  document.getElementById('hero-goal-status').textContent=goalEditorSelection.length+' / '+Goals.maxSelected+' selected';
+  document.getElementById('hero-goal-status').classList.remove('error');
+  document.getElementById('hero-goal-save').disabled=goalEditorSelection.length===0;
+}
+
+function openGoalEditor(){
+  goalEditorSelection=Goals.normalizeSelection(gs.goals&&gs.goals.selected);
+  renderGoalEditor();
+  const overlay=document.getElementById('goal-overlay');
+  overlay.classList.add('open');
+  overlay.setAttribute('aria-hidden','false');
+  setTimeout(()=>document.querySelector('.goal-option')?.focus(),220);
+}
+
+function closeGoalEditor(){
+  const overlay=document.getElementById('goal-overlay');
+  overlay.classList.remove('open');
+  overlay.setAttribute('aria-hidden','true');
+}
+
+function backgroundCloseGoals(event){
+  if(event.target===document.getElementById('goal-overlay'))closeGoalEditor();
+}
+
+function toggleGoalEditorSelection(goalId){
+  if(goalEditorSelection.includes(goalId)){
+    goalEditorSelection=goalEditorSelection.filter(id=>id!==goalId);
+  }else if(goalEditorSelection.length<Goals.maxSelected){
+    goalEditorSelection.push(goalId);
+  }else{
+    const status=document.getElementById('hero-goal-status');
+    status.textContent='Maximum three directives';
+    status.classList.add('error');
+    return;
+  }
+  renderGoalEditor();
+}
+
+function saveGoals(){
+  const next=Goals.normalizeSelection(goalEditorSelection);
+  const current=Goals.normalizeSelection(gs.goals&&gs.goals.selected);
+  if(!next.length)return;
+  if(next.join('|')!==current.join('|')){
+    gs=GameState.set(state=>Goals.setSelection(state,next,state.goals.details));
+    renderGoals();
+  }
+  closeGoalEditor();
+}
 
 function renderProfile(){
   const profile=UserProfile.get();
@@ -590,6 +753,9 @@ function openProfileEditor(){
   document.getElementById('profile-birth').value=profile?profile.birthDate:'';
   document.getElementById('profile-birth').max=UserProfile.getTodayKey();
   document.getElementById('profile-error').textContent='';
+  setVaultStatus('','');
+  document.getElementById('vault-file').value='';
+  document.getElementById('vault-recovery').hidden=!SaveVault.hasRecoveryBackup();
   document.getElementById('profile-overlay').classList.add('open');
   setTimeout(()=>document.getElementById('profile-name').focus(),220);
 }
@@ -616,6 +782,68 @@ function saveProfile(event){
   closeProfileEditor();
 }
 
+function setVaultStatus(message,type){
+  const status=document.getElementById('vault-status');
+  status.textContent=message;
+  status.className='vault-status'+(type?' '+type:'');
+}
+
+function exportSaveBackup(){
+  try{
+    SaveVault.downloadBackup();
+    setVaultStatus('Save file created.','success');
+  }catch(error){
+    console.error('Save export failed.',error);
+    setVaultStatus('Save file could not be created.','error');
+  }
+}
+
+function chooseSaveBackup(){
+  document.getElementById('vault-file').click();
+}
+
+function readSaveBackup(event){
+  const input=event.target;
+  const file=input.files&&input.files[0];
+  if(!file)return;
+
+  const reader=new FileReader();
+  reader.onerror=()=>setVaultStatus('The selected file could not be read.','error');
+  reader.onload=()=>{
+    const raw=String(reader.result||'');
+    const validation=SaveVault.parseBackup(raw);
+    if(!validation.ok){
+      setVaultStatus(validation.error,'error');
+      input.value='';
+      return;
+    }
+    if(!window.confirm('Restore this save? Your current data will be kept as a recovery copy.')){
+      input.value='';
+      return;
+    }
+    const result=SaveVault.restoreBackup(raw);
+    if(!result.ok){
+      setVaultStatus(result.error,'error');
+      input.value='';
+      return;
+    }
+    setVaultStatus('Save restored. Reloading...','success');
+    setTimeout(()=>window.location.reload(),450);
+  };
+  reader.readAsText(file);
+}
+
+function restoreRecoveryBackup(){
+  if(!window.confirm('Undo the last restore and return to the previous device save?'))return;
+  const result=SaveVault.restoreLatestRecovery();
+  if(!result.ok){
+    setVaultStatus(result.error,'error');
+    return;
+  }
+  setVaultStatus('Previous save restored. Reloading...','success');
+  setTimeout(()=>window.location.reload(),450);
+}
+
 function renderHeader(){
   const progress=Leveling.progressWithinLevel(gs.xp);
   const pct=Math.round((progress.xpIntoLevel/Math.max(1,progress.xpNeededForLevel))*100);
@@ -632,6 +860,68 @@ function renderHeader(){
   const circumference=201;
   const ringFill=document.getElementById('avatar-ring-fill');
   ringFill.style.strokeDashoffset=String(circumference-(pct/100)*circumference);
+}
+
+function renderActiveEffects(){
+  const momentum=ActiveEffects.getActive(gs).find(effect=>effect.id==='momentum')||null;
+  const strip=document.getElementById('hero-active-effect');
+  const systemState=document.getElementById('hero-system-state');
+  strip.hidden=!momentum;
+  systemState.textContent=momentum?'Momentum':'Active';
+  systemState.classList.toggle('buff-active',!!momentum);
+  if(momentum){
+    document.getElementById('hero-effect-name').textContent=momentum.label;
+    document.getElementById('hero-effect-description').textContent=momentum.description;
+  }
+}
+
+function renderJourneyTimeline(){
+  const entries=JourneyTimeline.build(gs,14);
+  const list=document.getElementById('journey-list');
+  document.getElementById('journey-count').textContent=entries.length+' record'+(entries.length===1?'':'s');
+  list.innerHTML='';
+  if(!entries.length){
+    const empty=document.createElement('div');
+    empty.className='journey-empty';
+    empty.textContent='Your first completed quest will begin this timeline.';
+    list.appendChild(empty);
+    return;
+  }
+
+  entries.forEach(entry=>{
+    const article=document.createElement('article');
+    article.className='journey-entry '+entry.tone;
+    const date=document.createElement('div');
+    date.className='journey-date';
+    date.textContent=new Date(entry.dateKey+'T12:00:00').toLocaleDateString('en',{month:'short',day:'numeric',year:'numeric'});
+    const title=document.createElement('div');
+    title.className='journey-title';
+    title.textContent=entry.title;
+    const meta=document.createElement('div');
+    meta.className='journey-meta';
+    const questStatus=entry.mainQuest?(entry.mainQuest.completed?'Main Quest secured':'Main Quest missed'):entry.questsCompleted+' quest'+(entry.questsCompleted===1?'':'s');
+    meta.innerHTML='<span><i class="ti '+(entry.tone==='missed'?'ti-alert-triangle':'ti-check')+'"></i></span>';
+    meta.firstElementChild.appendChild(document.createTextNode(questStatus));
+    if(entry.xp>0){
+      const xp=document.createElement('span');
+      xp.innerHTML='<i class="ti ti-sparkles"></i>';
+      xp.appendChild(document.createTextNode(entry.xp+' XP'));
+      meta.appendChild(xp);
+    }
+    article.append(date,title,meta);
+    if(entry.growthEvents.length){
+      const events=document.createElement('div');
+      events.className='journey-events';
+      entry.growthEvents.forEach(event=>{
+        const badge=document.createElement('span');
+        badge.className='journey-event';
+        badge.textContent=event.label+(event.value?' / '+event.value:'');
+        events.appendChild(badge);
+      });
+      article.appendChild(events);
+    }
+    list.appendChild(article);
+  });
 }
 
 // Finds the most recently unlocked skill across ALL attributes (not just
@@ -872,7 +1162,7 @@ function switchAttr(id){
 
 function refreshAll(){
   gs=GameState.get();
-  renderHeader();renderRecentActivity();renderTabs();renderAttrBar();renderSkills();
+  renderHeader();renderActiveEffects();renderGoals();renderRecentActivity();renderJourneyTimeline();renderTabs();renderAttrBar();renderSkills();
 }
 
 const lastSeenUnlocked={};
@@ -882,6 +1172,9 @@ refreshAll();
 renderProfile();
 window.addEventListener('storage',event=>{
   if(event.key===UserProfile.storageKey) renderProfile();
+});
+window.addEventListener('keydown',event=>{
+  if(event.key==='Escape'&&document.getElementById('goal-overlay').classList.contains('open'))closeGoalEditor();
 });
 </script>
 <script src="js/panel-navigation.js"></script>

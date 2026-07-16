@@ -170,15 +170,40 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;background:re
 .operation-count{display:flex;align-items:baseline;gap:4px;color:var(--abyss-muted);font-size:10px;text-transform:uppercase;letter-spacing:.06em}.operation-count strong{font-size:18px;line-height:1;color:var(--abyss-text);font-weight:650}.operation-count span{color:var(--abyss-cyan)}
 .mission-progress{position:relative;margin-top:11px;height:6px;border:1px solid rgba(141,239,255,.15);border-radius:999px;background:rgba(2,7,19,.72);overflow:hidden}.mission-progress-fill{height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,var(--abyss-blue),var(--abyss-aqua));box-shadow:0 0 14px rgba(53,244,230,.3);transition:width .45s ease}
 .operation-meta{display:flex;justify-content:space-between;gap:12px;margin-top:8px;color:var(--abyss-muted);font-size:8px;text-transform:uppercase;letter-spacing:.08em}.operation-meta span{display:flex;align-items:center;gap:5px}.operation-meta i{font-size:12px;color:var(--abyss-soft)}.operation-meta strong{color:var(--abyss-soft);font-weight:600}
+.daily-state{position:relative;margin-top:11px;padding-top:10px;border-top:1px solid rgba(141,239,255,.12)}
+.daily-state-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px}.daily-state-title{display:flex;align-items:center;gap:6px;color:var(--abyss-soft);font-size:8px;text-transform:uppercase;letter-spacing:.11em}.daily-state-title i{font-size:13px;color:var(--abyss-aqua)}.daily-state-value{color:var(--abyss-muted);font-size:7px;text-transform:uppercase;letter-spacing:.08em}
+.daily-state-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.daily-state-option{--state-color:var(--abyss-aqua);min-width:0;height:34px;display:flex;align-items:center;justify-content:center;gap:5px;border:1px solid rgba(141,239,255,.13);border-radius:5px;background:rgba(2,7,19,.34);color:var(--abyss-muted);font-size:8px;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;transition:transform .15s,border-color .15s,background .15s,color .15s,box-shadow .15s}.daily-state-option i{font-size:13px}.daily-state-option:active{transform:scale(.97)}.daily-state-option.selected{border-color:color-mix(in srgb,var(--state-color) 52%,transparent);background:color-mix(in srgb,var(--state-color) 8%,rgba(2,7,19,.5));color:var(--state-color);box-shadow:0 0 16px color-mix(in srgb,var(--state-color) 8%,transparent)}
+.daily-load{margin-top:9px}.daily-load[hidden]{display:none}.daily-load-head,.daily-load-meta{display:flex;align-items:center;justify-content:space-between;gap:10px}.daily-load-head span{color:var(--abyss-muted);font-size:7px;text-transform:uppercase;letter-spacing:.09em}.daily-load-head strong{color:var(--abyss-soft);font-size:7px;font-weight:600;text-transform:uppercase;letter-spacing:.07em}.daily-load-track{height:4px;margin-top:5px;border-radius:4px;background:rgba(2,7,19,.72);overflow:hidden}.daily-load-fill{width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--abyss-blue),var(--abyss-aqua));box-shadow:0 0 10px rgba(53,244,230,.24);transition:width .3s ease,background .2s}.daily-load-meta{margin-top:5px;color:var(--abyss-muted);font-size:7px;text-transform:uppercase;letter-spacing:.06em}.daily-load-meta strong{color:var(--abyss-cyan);font-weight:600}.daily-load.over .daily-load-fill{background:linear-gradient(90deg,var(--abyss-blue),var(--abyss-gold))}.daily-load.over .daily-load-meta strong{color:var(--abyss-gold)}.daily-load.clear .daily-load-fill{background:var(--abyss-green)}.daily-load.clear .daily-load-meta strong{color:var(--abyss-green)}
+.minimum-protocol{display:grid;grid-template-columns:30px minmax(0,1fr) auto;align-items:center;gap:8px;margin-top:8px;padding:8px;border:1px solid rgba(141,239,255,.16);border-radius:6px;background:rgba(2,7,19,.42)}.minimum-protocol[hidden]{display:none}.minimum-protocol-icon{width:30px;height:30px;display:grid;place-items:center;border:1px solid rgba(141,239,255,.24);border-radius:5px;background:rgba(141,239,255,.05);color:var(--abyss-cyan)}.minimum-protocol-icon i{font-size:15px}.minimum-protocol-body{min-width:0}.minimum-protocol-kicker{color:var(--abyss-cyan);font-size:7px;text-transform:uppercase;letter-spacing:.1em}.minimum-protocol-title{margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--abyss-soft);font-size:8px}.minimum-protocol-action{height:30px;padding:0 9px;border:1px solid rgba(141,239,255,.34);border-radius:5px;background:rgba(53,244,230,.07);color:var(--abyss-aqua);font-size:7px;font-weight:650;text-transform:uppercase;letter-spacing:.07em;cursor:pointer}.minimum-protocol-action:active{transform:scale(.96)}.minimum-protocol-action[hidden]{display:none}.minimum-protocol.secured{border-color:rgba(65,230,164,.22);background:rgba(65,230,164,.045)}.minimum-protocol.secured .minimum-protocol-icon,.minimum-protocol.secured .minimum-protocol-kicker{color:var(--abyss-green);border-color:rgba(65,230,164,.28)}
+.qc.minimum{border-color:rgba(141,239,255,.3);box-shadow:0 15px 36px rgba(0,0,0,.22),0 0 20px rgba(141,239,255,.055)}.qc.minimum .mission-state{color:var(--abyss-cyan)}
 .lvlup{margin:0 0 12px;border:1px solid transparent;border-radius:6px;padding-left:12px;padding-right:12px}.lvlup.show{max-height:52px;border-color:rgba(53,244,230,.2)}
 .mission-section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:0 1px 11px}.mission-section-kicker{display:flex;align-items:center;gap:7px;font-size:8px;color:var(--abyss-aqua);text-transform:uppercase;letter-spacing:.15em}.mission-section-kicker i{font-size:15px}.mission-section-title{margin-top:4px;font-size:17px;font-weight:600;color:var(--abyss-text);letter-spacing:0}.mission-section-count{font-size:8px;color:var(--abyss-muted);text-transform:uppercase;letter-spacing:.09em;padding-bottom:2px}
 .mission-section-tools{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:6px}.completed-visibility{min-height:28px;padding:4px 8px;display:flex;align-items:center;justify-content:center;gap:5px;border:1px solid rgba(141,239,255,.18);border-radius:5px;background:rgba(10,28,48,.48);color:var(--abyss-soft);font-size:8px;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;white-space:nowrap}.completed-visibility i{font-size:12px;color:var(--abyss-aqua)}.completed-visibility.active{border-color:rgba(65,230,164,.3);background:rgba(65,230,164,.06);color:var(--abyss-green)}.completed-visibility.active i{color:var(--abyss-green)}.completed-visibility[hidden]{display:none!important}
+.main-quest-slot{display:grid;grid-template-columns:36px minmax(0,1fr) auto;align-items:center;gap:10px;margin:0 0 10px;padding:9px 10px;border:1px solid rgba(141,239,255,.18);border-radius:7px;background:linear-gradient(90deg,rgba(10,28,48,.68),rgba(7,19,38,.46))}.main-quest-slot[hidden]{display:none}.main-quest-mark{width:36px;height:36px;display:grid;place-items:center;border:1px solid rgba(53,244,230,.28);border-radius:6px;background:rgba(53,244,230,.055);color:var(--abyss-aqua)}.main-quest-mark i{font-size:17px}.main-quest-body{min-width:0}.main-quest-kicker{color:var(--abyss-aqua);font-size:7px;text-transform:uppercase;letter-spacing:.12em}.main-quest-title{margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--abyss-soft);font-size:10px;font-weight:600}.main-quest-state{margin-top:2px;color:var(--abyss-muted);font-size:7px;text-transform:uppercase;letter-spacing:.07em}.main-quest-select{height:32px;padding:0 10px;border:1px solid rgba(53,244,230,.34);border-radius:5px;background:rgba(53,244,230,.065);color:var(--abyss-aqua);font-size:7px;font-weight:650;text-transform:uppercase;letter-spacing:.07em;cursor:pointer}.main-quest-select:active{transform:scale(.96)}.main-quest-select[hidden]{display:none}.main-quest-slot.active{border-color:rgba(247,201,72,.3);box-shadow:0 0 20px rgba(247,201,72,.045)}.main-quest-slot.active .main-quest-mark,.main-quest-slot.active .main-quest-kicker{border-color:rgba(247,201,72,.3);color:var(--abyss-gold)}.main-quest-slot.cleared{border-color:rgba(65,230,164,.24)}.main-quest-slot.cleared .main-quest-mark,.main-quest-slot.cleared .main-quest-kicker{border-color:rgba(65,230,164,.28);color:var(--abyss-green)}
+.main-quest-effect{width:max-content;max-width:100%;margin-top:4px;display:inline-flex;align-items:center;gap:4px;color:var(--abyss-gold);font-size:7px;text-transform:uppercase;letter-spacing:.08em}.main-quest-effect[hidden]{display:none}.main-quest-effect i{font-size:10px;filter:drop-shadow(0 0 4px rgba(247,201,72,.4))}
+.qc.main-clearing{animation:mainQuestCardClear .72s cubic-bezier(.2,.75,.2,1)}.qc.main-clearing::after{content:"";position:absolute;z-index:4;inset:-1px;pointer-events:none;background:linear-gradient(110deg,transparent 20%,rgba(247,201,72,.3) 48%,transparent 76%);transform:translateX(-120%);animation:mainQuestCardSweep .7s ease-out}
+.main-clear-feedback{position:fixed;z-index:70;inset:0;max-width:390px;margin:0 auto;padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;background:rgba(2,7,19,.72);opacity:0;visibility:hidden}.main-clear-feedback.show{visibility:visible;animation:mainQuestFeedback 1.8s ease both}.main-clear-emblem{width:68px;height:68px;display:grid;place-items:center;border:1px solid rgba(247,201,72,.72);background:rgba(247,201,72,.07);color:var(--abyss-gold);transform:rotate(45deg);box-shadow:0 0 28px rgba(247,201,72,.16),inset 0 0 18px rgba(247,201,72,.06)}.main-clear-emblem i{font-size:29px;transform:rotate(-45deg);filter:drop-shadow(0 0 8px rgba(247,201,72,.45))}.main-clear-kicker{margin-top:25px;color:var(--abyss-gold);font-size:9px;text-transform:uppercase;letter-spacing:.18em}.main-clear-title{width:min(100%,300px);margin-top:7px;color:var(--abyss-text);font-size:17px;font-weight:650;line-height:1.3}.main-clear-sub{margin-top:6px;color:var(--abyss-muted);font-size:9px;text-transform:uppercase;letter-spacing:.08em}@keyframes mainQuestCardClear{0%{transform:scale(1)}35%{transform:scale(.985);border-color:rgba(247,201,72,.78)}100%{transform:scale(1)}}@keyframes mainQuestCardSweep{to{transform:translateX(120%)}}@keyframes mainQuestFeedback{0%{opacity:0}12%,72%{opacity:1}100%{opacity:0;visibility:hidden}}
+body.main-picker-open{overflow:hidden}.main-picker{width:min(calc(100% - 28px),370px);max-height:calc(100dvh - 40px);padding:0;border:0;border-radius:9px;background:transparent;color:var(--abyss-text);overflow:visible}.main-picker::backdrop{background:rgba(2,7,19,.84);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}.main-picker[open] .main-picker-sheet{animation:mainPickerIn .22s cubic-bezier(.2,.75,.2,1)}.main-picker-sheet{max-height:calc(100dvh - 40px);overflow-y:auto;padding:15px;border:1px solid rgba(247,201,72,.3);border-radius:9px;background:linear-gradient(180deg,rgba(13,38,64,.99),rgba(2,7,19,.995));box-shadow:0 24px 70px rgba(0,0,0,.52),0 0 28px rgba(247,201,72,.07)}.main-picker-head{display:grid;grid-template-columns:36px minmax(0,1fr) 32px;align-items:center;gap:9px;padding-bottom:12px;border-bottom:1px solid rgba(141,239,255,.12)}.main-picker-emblem{width:36px;height:36px;display:grid;place-items:center;border:1px solid rgba(247,201,72,.34);border-radius:6px;background:rgba(247,201,72,.06);color:var(--abyss-gold)}.main-picker-emblem i{font-size:17px}.main-picker-kicker{color:var(--abyss-gold);font-size:7px;text-transform:uppercase;letter-spacing:.13em}.main-picker-title{margin-top:2px;color:var(--abyss-text);font-size:15px;font-weight:650}.main-picker-close{width:32px;height:32px;display:grid;place-items:center;border:1px solid rgba(141,239,255,.15);border-radius:5px;background:rgba(2,7,19,.34);color:var(--abyss-muted);cursor:pointer}.main-picker-list{display:flex;flex-direction:column;gap:7px;margin-top:11px}.main-picker-option{--main-color:var(--abyss-aqua);width:100%;min-width:0;display:grid;grid-template-columns:34px minmax(0,1fr) 20px;align-items:center;gap:9px;padding:9px;border:1px solid rgba(141,239,255,.15);border-radius:6px;background:rgba(10,28,48,.48);text-align:left;color:var(--abyss-soft);cursor:pointer}.main-picker-option:active{transform:scale(.985)}.main-picker-option-icon{width:34px;height:34px;display:grid;place-items:center;border:1px solid color-mix(in srgb,var(--main-color) 32%,transparent);border-radius:6px;background:color-mix(in srgb,var(--main-color) 6%,transparent);color:var(--main-color)}.main-picker-option-icon .attribute-icon{width:21px;height:21px}.main-picker-option-body{min-width:0}.main-picker-option-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;font-weight:600}.main-picker-option-meta{margin-top:3px;color:var(--abyss-muted);font-size:7px;text-transform:uppercase;letter-spacing:.07em}.main-picker-option>i{color:var(--main-color);font-size:15px}.main-picker-fallback{position:fixed;z-index:90;inset:0;margin:auto}.main-picker-empty{padding:18px 8px;text-align:center;color:var(--abyss-muted);font-size:9px}@keyframes mainPickerIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 .filters{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:0 0 13px;padding:0;overflow:visible}.fb{width:100%;height:48px;min-height:48px;min-width:0;padding:4px 2px;flex-direction:column;justify-content:center;gap:4px;border-radius:7px;background:rgba(10,28,48,.5);border-color:var(--abyss-border);box-shadow:inset 0 1px rgba(255,255,255,.025)}.fb i{font-size:18px}.fb span,.fb.on span{display:block;max-width:100%;overflow:hidden;font-size:7px;line-height:1;text-overflow:ellipsis}.fb.on{padding:4px 2px;background:var(--filter-bg);box-shadow:0 0 18px rgba(53,244,230,.13),inset 0 1px rgba(255,255,255,.05)}
 .qlist{padding:0;gap:9px}.qc-wrap,.qc-swipe-bg{border-radius:8px}.qc{border-radius:8px;padding:11px 12px 12px 15px;background:linear-gradient(160deg,rgba(13,38,64,.75),rgba(7,19,38,.7));border-color:var(--abyss-border);box-shadow:0 12px 28px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.035)}.qc::after{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(141,239,255,.18),transparent)}.qc:hover{background:linear-gradient(160deg,rgba(15,44,74,.8),rgba(8,24,43,.74));border-color:rgba(141,239,255,.31)}.qc-accent{width:3px;top:8px;bottom:8px;border-radius:0 4px 4px 0}
 .mission-code{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;padding-left:48px;color:var(--abyss-muted);font-size:7px;text-transform:uppercase;letter-spacing:.14em}.mission-state{color:var(--abyss-soft)}.qc.featured{border-color:rgba(247,201,72,.38);box-shadow:0 15px 36px rgba(0,0,0,.25),0 0 24px rgba(247,201,72,.08),inset 0 1px rgba(255,255,255,.045)}.qc.featured .mission-state{color:var(--abyss-gold)}
 .qc-top{align-items:center;gap:10px}.qmission-icon{width:38px;height:38px;flex:0 0 38px;border:1px solid;border-radius:7px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 16px rgba(47,157,255,.07)}.qmission-icon i{font-size:19px}.qbody{min-width:0}.qt{font-size:13px;font-weight:600;line-height:1.35;color:var(--abyss-text)}.qmeta{margin-top:6px;gap:0;color:var(--abyss-muted);font-size:8px;text-transform:uppercase;letter-spacing:.07em}.qattr{padding:0;background:transparent!important;border:0!important;border-radius:0;font-size:8px}.qattr i{display:none}.qdiff,.qtime{padding:0;border:0;border-radius:0;color:var(--abyss-muted);font-size:8px}.qdiff::before,.qtime::before{content:"/";display:inline-block;margin:0 6px;color:rgba(141,239,255,.24)}.qtime{display:inline-flex;align-items:center;gap:3px}.qtime i{font-size:10px;color:var(--abyss-purple)}.qxp{align-self:center;min-width:45px;padding:0;border:0;border-radius:0;margin:0 2px 0 auto;color:var(--abyss-cyan);background:transparent;font-size:10px;text-align:right}.qchk{order:3;width:26px;height:26px;flex:0 0 26px;border-radius:6px;margin:0;border-color:rgba(141,239,255,.32);background:rgba(2,7,19,.42)}.qability,.priority-label{display:none}.qc.done{opacity:.55;background:rgba(7,19,38,.5);box-shadow:none}.qc.done .qt{text-decoration:none;color:var(--abyss-muted)}.qc.done .mission-state{color:var(--abyss-green)}.qc.done .qchk{background:var(--abyss-green);border-color:var(--abyss-green);color:var(--abyss-black)}.qc.done .qchk i{font-size:15px}.qc.done .qxp{color:var(--abyss-muted)}
 .quest-empty{border:1px dashed rgba(141,239,255,.2);border-radius:8px;padding:28px 20px;text-align:center;background:rgba(7,19,38,.34)}.quest-empty i{display:block;font-size:27px;color:var(--abyss-aqua);margin-bottom:9px}.quest-empty strong{display:block;font-size:12px;color:var(--abyss-soft);text-transform:uppercase;letter-spacing:.08em}.quest-empty span{display:block;margin-top:5px;font-size:10px;color:var(--abyss-muted);line-height:1.45}.all-done{margin:11px 0 0;border-radius:8px;background:rgba(65,230,164,.05);border-color:rgba(65,230,164,.22)}
 .quest-actions{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:8px;margin-top:13px}.quest-actions .add-btn{margin:0;width:100%;min-height:44px;border-radius:6px;font-weight:600}.add-btn.primary-action{color:var(--abyss-black);border:1px solid rgba(141,239,255,.62);background:linear-gradient(90deg,var(--abyss-blue),var(--abyss-aqua));box-shadow:0 0 20px rgba(53,244,230,.14)}.add-btn.primary-action:hover{background:linear-gradient(90deg,var(--abyss-aqua),var(--abyss-cyan))}.add-btn.secondary-action{border-style:solid;background:rgba(10,28,48,.48);color:var(--abyss-soft)}
+.goal-suggestions{margin:0 0 13px;padding:12px;border:1px solid rgba(141,239,255,.2);border-radius:8px;background:linear-gradient(135deg,rgba(47,157,255,.075),rgba(7,19,38,.72) 45%,rgba(53,244,230,.035));box-shadow:inset 0 0 26px rgba(47,157,255,.025),0 12px 30px rgba(0,0,0,.2)}
+.goal-suggestions[hidden]{display:none}
+.goal-suggestion-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}
+.goal-suggestion-kicker{display:flex;align-items:center;gap:6px;color:var(--abyss-aqua);font-size:8px;letter-spacing:.13em;text-transform:uppercase}.goal-suggestion-kicker i{font-size:13px}
+.goal-suggestion-count{color:var(--abyss-muted);font:600 8px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em}
+.goal-suggestion-list{display:grid;gap:7px}
+.goal-suggestion-card{--suggestion-color:var(--abyss-aqua);display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:center;gap:8px;min-width:0;padding:8px;border:1px solid rgba(141,239,255,.14);border-radius:6px;background:rgba(2,7,19,.38);transition:border-color .18s,background .18s,opacity .18s}
+.goal-suggestion-card:not(.selected){opacity:.48}.goal-suggestion-card.selected{border-color:color-mix(in srgb,var(--suggestion-color) 40%,transparent);background:color-mix(in srgb,var(--suggestion-color) 5%,rgba(2,7,19,.55))}
+.goal-suggestion-toggle{width:34px;height:34px;display:grid;place-items:center;border:1px solid color-mix(in srgb,var(--suggestion-color) 34%,transparent);border-radius:5px;background:color-mix(in srgb,var(--suggestion-color) 7%,transparent);color:var(--suggestion-color);cursor:pointer}.goal-suggestion-toggle i{font-size:15px}
+.goal-suggestion-body{min-width:0}.goal-suggestion-input{width:100%;min-width:0;height:24px;padding:0;border:0;border-bottom:1px solid transparent;outline:0;background:transparent;color:var(--abyss-text);font:600 11px/1.2 var(--abyss-font);letter-spacing:.01em}.goal-suggestion-input:focus{border-bottom-color:var(--suggestion-color)}
+.goal-suggestion-source{display:flex;align-items:center;gap:4px;margin-top:3px;color:var(--abyss-soft);font-size:7px;letter-spacing:.055em;text-transform:uppercase}.goal-suggestion-source i{font-size:9px;color:var(--suggestion-color)}
+.goal-suggestion-meta{display:flex;align-items:center;gap:6px;margin-top:4px;color:var(--abyss-muted);font-size:7px;letter-spacing:.07em;text-transform:uppercase}.goal-suggestion-meta span:first-child{color:var(--suggestion-color)}
+.goal-suggestion-xp{color:var(--suggestion-color);font:650 9px/1 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:nowrap}
+.goal-suggestion-actions{display:grid;grid-template-columns:.8fr 1.4fr;gap:8px;margin-top:10px}.goal-suggestion-actions button{min-height:39px;border-radius:6px;font-size:8px;font-weight:650;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}.goal-suggestion-dismiss{border:1px solid rgba(141,239,255,.14);background:rgba(2,7,19,.3);color:var(--abyss-muted)}.goal-suggestion-accept{border:1px solid rgba(53,244,230,.52);background:linear-gradient(90deg,rgba(47,157,255,.86),rgba(53,244,230,.84));color:var(--abyss-black)}.goal-suggestion-accept:disabled{cursor:default;opacity:.45}
 .boss-mission-slot:empty{display:none}
 .boss-mission-card{position:relative;overflow:hidden;margin:0 0 13px;padding:13px;border:1px solid rgba(255,92,122,.34);border-radius:8px;background:linear-gradient(145deg,rgba(50,20,42,.72),rgba(10,28,48,.78));box-shadow:0 14px 32px rgba(0,0,0,.25),0 0 25px rgba(255,92,122,.07)}
 .boss-mission-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(var(--abyss-coral),var(--abyss-gold));box-shadow:0 0 12px rgba(255,92,122,.65)}
@@ -205,7 +230,7 @@ body.modal-active{overflow:hidden}.modal-overlay{z-index:45;padding-top:calc(12p
 .quest-forge .m-acts{position:relative;z-index:1;display:grid;grid-template-columns:.8fr 1.4fr;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(141,239,255,.11)}.quest-forge .m-cancel,.quest-forge .m-ok{min-height:44px;padding:8px 10px;display:flex;align-items:center;justify-content:center;gap:7px;border-radius:7px;font-size:9px;font-weight:650;text-transform:uppercase;letter-spacing:.07em;cursor:pointer}.quest-forge .m-cancel{border:1px solid rgba(141,239,255,.16);background:rgba(2,7,19,.32);color:var(--abyss-muted)}.quest-forge .m-ok{border:1px solid rgba(141,239,255,.52);background:linear-gradient(90deg,rgba(47,157,255,.92),rgba(53,244,230,.9));color:var(--abyss-black);box-shadow:0 8px 24px rgba(47,157,255,.12)}.quest-forge .m-ok i{font-size:14px}.quest-forge .m-ok:active,.quest-forge .m-cancel:active{transform:scale(.98)}.modal-overlay.open .forge-header,.modal-overlay.open .forge-section,.modal-overlay.open .forge-output,.modal-overlay.open .m-acts{animation:forgeReveal .32s cubic-bezier(.2,.75,.2,1) both}.modal-overlay.open .forge-section:nth-of-type(1){animation-delay:.08s}.modal-overlay.open .forge-section:nth-of-type(2){animation-delay:.12s}.modal-overlay.open .forge-section:nth-of-type(3){animation-delay:.16s}.modal-overlay.open .forge-output{animation-delay:.2s}.modal-overlay.open .m-acts{animation-delay:.23s}
 @keyframes forgeSweep{0%{top:0;opacity:0}20%{opacity:.65}100%{top:100%;opacity:0}}@keyframes forgeReveal{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@keyframes forgeReject{0%,100%{transform:translateX(0)}30%{transform:translateX(-5px)}70%{transform:translateX(5px)}}@keyframes forgeTerminalPulse{0%{opacity:0;transform:scaleX(.2)}42%{opacity:1}100%{opacity:0;transform:scaleX(1)}}@keyframes forgeBlockCaret{0%,48%{opacity:1}49%,100%{opacity:0}}
 @media(max-width:350px){.quest-board-shell{padding-left:12px;padding-right:12px}.mission-heading h1{font-size:19px}.status-pill{padding-left:7px;padding-right:7px}.fb{height:42px;min-height:42px}.fb span,.fb.on span{display:none}.quest-actions{grid-template-columns:1fr}.operation-meta{font-size:7px}.mission-section-count{display:none}.completed-visibility{padding-left:7px;padding-right:7px}.boss-mission-card{padding:11px}.boss-mission-clock strong{font-size:11px}.boss-mission-effects{grid-template-columns:1fr}.boss-mission-actions{grid-template-columns:1fr 1.45fr}.quest-forge{padding-left:12px;padding-right:12px}.forge-header{grid-template-columns:38px minmax(0,1fr) 34px;gap:9px}.forge-emblem{width:38px;height:38px}.forge-title{font-size:17px}.quest-forge .do{height:58px}.quest-forge .co{height:44px;padding-left:7px;padding-right:7px}.quest-forge .co>span{font-size:7px}.forge-section{margin-top:12px}.forge-output{margin-top:12px}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.main-clear-feedback.show{animation:none!important;opacity:1;visibility:visible}.qc.main-clearing{animation:none!important}}
 </style>
 </head>
 <body data-panel="quests">
@@ -247,6 +272,27 @@ window.addEventListener('error', function(e){
       <span><i class="ti ti-target-arrow"></i><strong id="mission-s-left">0</strong> remaining</span>
       <span><i class="ti ti-dna-2"></i><strong id="mission-s-xp">0</strong> lifetime XP</span>
     </div>
+    <div class="daily-state" aria-labelledby="daily-state-title">
+      <div class="daily-state-head">
+        <div class="daily-state-title" id="daily-state-title"><i class="ti ti-heart-rate-monitor" aria-hidden="true"></i>Daily state</div>
+        <div class="daily-state-value" id="daily-state-value">Check in</div>
+      </div>
+      <div class="daily-state-options">
+        <button class="daily-state-option" type="button" data-capacity="low" style="--state-color:#8DEFFF" onclick="setDailyCapacity('low')" aria-pressed="false"><i class="ti ti-battery-1" aria-hidden="true"></i>Low</button>
+        <button class="daily-state-option" type="button" data-capacity="steady" style="--state-color:#35F4E6" onclick="setDailyCapacity('steady')" aria-pressed="false"><i class="ti ti-activity" aria-hidden="true"></i>Steady</button>
+        <button class="daily-state-option" type="button" data-capacity="strong" style="--state-color:#F7C948" onclick="setDailyCapacity('strong')" aria-pressed="false"><i class="ti ti-bolt" aria-hidden="true"></i>Strong</button>
+      </div>
+      <div class="daily-load" id="daily-load" hidden>
+        <div class="daily-load-head"><span id="daily-load-label">Recommended load</span><strong id="daily-load-target">0 focus quests</strong></div>
+        <div class="daily-load-track" aria-hidden="true"><div class="daily-load-fill" id="daily-load-fill"></div></div>
+        <div class="daily-load-meta"><span id="daily-load-count">0 remaining</span><strong id="daily-load-status">Load aligned</strong></div>
+      </div>
+      <div class="minimum-protocol" id="minimum-protocol" hidden>
+        <div class="minimum-protocol-icon"><i class="ti ti-shield-check" id="minimum-protocol-icon" aria-hidden="true"></i></div>
+        <div class="minimum-protocol-body"><div class="minimum-protocol-kicker" id="minimum-protocol-kicker">Minimum protocol</div><div class="minimum-protocol-title" id="minimum-protocol-title">Five-minute fallback</div></div>
+        <button class="minimum-protocol-action" id="minimum-protocol-action" type="button" onclick="deployMinimumQuest()">Deploy</button>
+      </div>
+    </div>
   </section>
   <div class="banner">
     <div class="scan"></div>
@@ -286,6 +332,22 @@ window.addEventListener('error', function(e){
       </button>
     </div>
   </div>
+  <section class="main-quest-slot" id="main-quest-slot" hidden>
+    <div class="main-quest-mark"><i class="ti ti-crown" id="main-quest-icon" aria-hidden="true"></i></div>
+    <div class="main-quest-body"><div class="main-quest-kicker">Today's Main Quest</div><div class="main-quest-title" id="main-quest-title">Not assigned</div><div class="main-quest-state" id="main-quest-state">Select your priority</div><div class="main-quest-effect" id="main-quest-effect" hidden><i class="ti ti-bolt" aria-hidden="true"></i><span>Momentum / next Side Quest +10% XP</span></div></div>
+    <button class="main-quest-select" id="main-quest-select" type="button" onclick="openMainQuestPicker()">Select</button>
+  </section>
+  <section class="goal-suggestions" id="goal-suggestions" aria-labelledby="goal-suggestion-title" hidden>
+    <div class="goal-suggestion-head">
+      <div class="goal-suggestion-kicker" id="goal-suggestion-title"><i class="ti ti-route" aria-hidden="true"></i>Directive suggestions</div>
+      <div class="goal-suggestion-count" id="goal-suggestion-count">0 selected</div>
+    </div>
+    <div class="goal-suggestion-list" id="goal-suggestion-list"></div>
+    <div class="goal-suggestion-actions">
+      <button class="goal-suggestion-dismiss" type="button" onclick="dismissGoalSuggestions()">Dismiss</button>
+      <button class="goal-suggestion-accept" id="goal-suggestion-accept" type="button" onclick="acceptGoalSuggestions()">Deploy selected</button>
+    </div>
+  </section>
   <div class="boss-mission-slot" id="boss-mission-slot"></div>
   <div class="filters" id="filters"></div>
   <div class="qlist" id="qlist"></div>
@@ -299,6 +361,24 @@ window.addEventListener('error', function(e){
     <button class="add-btn primary-action" onclick="openModal()"><i class="ti ti-plus"></i> New quest</button>
     <button class="add-btn secondary-action" onclick="PlanModal.open()"><i class="ti ti-calendar-event"></i> Plan tomorrow</button>
   </div>
+</div>
+
+<dialog class="main-picker" id="main-picker" onclick="backgroundCloseMainQuestPicker(event)">
+  <div class="main-picker-sheet">
+    <header class="main-picker-head">
+      <div class="main-picker-emblem"><i class="ti ti-crown" aria-hidden="true"></i></div>
+      <div><div class="main-picker-kicker">Priority lock</div><div class="main-picker-title">Choose Main Quest</div></div>
+      <button class="main-picker-close" type="button" onclick="closeMainQuestPicker()" aria-label="Close"><i class="ti ti-x" aria-hidden="true"></i></button>
+    </header>
+    <div class="main-picker-list" id="main-picker-list"></div>
+  </div>
+</dialog>
+
+<div class="main-clear-feedback" id="main-clear-feedback" role="status" aria-live="polite" aria-atomic="true">
+  <div class="main-clear-emblem"><i class="ti ti-crown" aria-hidden="true"></i></div>
+  <div class="main-clear-kicker">Main Quest Cleared</div>
+  <div class="main-clear-title" id="main-clear-title"></div>
+  <div class="main-clear-sub">Today's priority is secured</div>
 </div>
 
 <div class="ach-popup-overlay" id="ach-popup">
@@ -364,11 +444,14 @@ window.addEventListener('error', function(e){
 
 <script src="data/seed-data.js"></script>
 <script src="js/gamestate.js"></script>
+<script src="js/goals.js"></script>
 <script src="js/leveling.js"></script>
 <script src="js/attributes.js"></script>
 <script src="js/skills.js"></script>
 <script src="js/achievements.js"></script>
 <script src="js/date-utils.js"></script>
+<script src="js/active-effects.js"></script>
+<script src="js/daily-state.js"></script>
 <script src="js/profile.js"></script>
 <script src="js/bosses.js"></script>
 <script src="js/streak.js"></script>
@@ -401,9 +484,253 @@ const COMPLETED_VISIBILITY_KEY='rpg-quest-hidden-completed-v1';
 let bossMissionTimer=null;
 let bossMissionAction=null;
 let bossMissionExpiryBusy=false;
+let goalSuggestionDrafts=[];
+let mainQuestClearTimer=null;
+
+const DAILY_CAPACITY_LABELS={low:'Low capacity',steady:'Steady capacity',strong:'Strong capacity'};
+
+function renderDailyState(){
+  const entry=DailyState.getToday(gs);
+  document.getElementById('daily-state-value').textContent=entry?(DAILY_CAPACITY_LABELS[entry.capacity]||'Checked in'):'Check in';
+  document.querySelectorAll('.daily-state-option').forEach(button=>{
+    const selected=!!entry&&button.dataset.capacity===entry.capacity;
+    button.classList.toggle('selected',selected);
+    button.setAttribute('aria-pressed',selected?'true':'false');
+  });
+  renderDailyLoad();
+  renderMinimumProtocol();
+}
+
+function renderDailyLoad(){
+  const panel=document.getElementById('daily-load');
+  const recommendation=DailyState.getTodayRecommendation(gs);
+  panel.hidden=!recommendation;
+  if(!recommendation)return;
+
+  const tasks=gs.quests.active||[];
+  const remaining=tasks.filter(task=>!task.done).length;
+  const target=recommendation.recommendedQuestCount;
+  const percentage=remaining===0?0:Math.min(100,Math.round((remaining/target)*100));
+  const over=remaining>target;
+  const clear=remaining===0&&tasks.length>0;
+  panel.classList.toggle('over',over);
+  panel.classList.toggle('clear',clear);
+  document.getElementById('daily-load-label').textContent=recommendation.label;
+  document.getElementById('daily-load-target').textContent=target+' focus quest'+(target===1?'':'s');
+  document.getElementById('daily-load-fill').style.width=percentage+'%';
+  document.getElementById('daily-load-count').textContent=remaining+' remaining';
+  document.getElementById('daily-load-status').textContent=clear?'Day secured':remaining===0?'No missions':over?'Choose your priority':'Load aligned';
+}
+
+function renderMainQuestSlot(){
+  const slot=document.getElementById('main-quest-slot');
+  const mainQuest=Quests.getMainQuest(gs);
+  const candidates=Quests.getMainQuestCandidates(gs).filter(quest=>!mainQuest||quest.id!==mainQuest.id);
+  slot.hidden=!mainQuest&&candidates.length===0;
+  if(slot.hidden)return;
+
+  const cleared=!!mainQuest&&!!mainQuest.done;
+  const remainingOthers=(gs.quests.active||[]).filter(quest=>!quest.done&&(!mainQuest||quest.id!==mainQuest.id)).length;
+  slot.classList.toggle('active',!!mainQuest&&!cleared);
+  slot.classList.toggle('cleared',cleared);
+  document.getElementById('main-quest-icon').className='ti '+(cleared?'ti-check':mainQuest?'ti-crown':'ti-target-arrow');
+  document.getElementById('main-quest-title').textContent=mainQuest?mainQuest.title:'Not assigned';
+  document.getElementById('main-quest-state').textContent=cleared
+    ? 'Main objective secured / '+remainingOthers+' mission'+(remainingOthers===1?'':'s')+' remain'
+    : mainQuest
+      ? 'Priority locked / '+remainingOthers+' other mission'+(remainingOthers===1?'':'s')+' remain'
+      : candidates.length+' mission'+(candidates.length===1?'':'s')+' available';
+  document.getElementById('main-quest-effect').hidden=!ActiveEffects.getActive(gs).some(effect=>effect.id==='momentum');
+  const button=document.getElementById('main-quest-select');
+  button.hidden=cleared||candidates.length===0;
+  button.textContent=mainQuest?'Change':'Select';
+}
+
+function openMainQuestPicker(){
+  const current=Quests.getMainQuest(gs);
+  const candidates=Quests.getMainQuestCandidates(gs).filter(quest=>!current||quest.id!==current.id);
+  if(!candidates.length)return;
+
+  const list=document.getElementById('main-picker-list');
+  list.innerHTML='';
+  candidates.forEach(quest=>{
+    const attr=aById(ATTR_ID_REVERSE[quest.attribute]||'intel');
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='main-picker-option';
+    button.style.setProperty('--main-color',attr.col);
+    button.innerHTML=`<div class="main-picker-option-icon">${AttributeIcons.markup(quest.attribute,attr.icon)}</div><div class="main-picker-option-body"><div class="main-picker-option-title">${escapeQuestUi(quest.title)}</div><div class="main-picker-option-meta">${escapeQuestUi(attr.label)} / ${escapeQuestUi(quest.difficulty||'normal')} / +${Number(quest.xp)||0} XP</div></div><i class="ti ti-chevron-right" aria-hidden="true"></i>`;
+    button.onclick=()=>chooseMainQuest(quest.id);
+    list.appendChild(button);
+  });
+
+  const dialog=document.getElementById('main-picker');
+  document.body.classList.add('main-picker-open');
+  if(typeof dialog.showModal==='function')dialog.showModal();
+  else{dialog.setAttribute('open','');dialog.classList.add('main-picker-fallback')}
+}
+
+function closeMainQuestPicker(){
+  const dialog=document.getElementById('main-picker');
+  if(typeof dialog.close==='function'&&dialog.open)dialog.close();
+  else{dialog.removeAttribute('open');dialog.classList.remove('main-picker-fallback')}
+  document.body.classList.remove('main-picker-open');
+}
+
+function backgroundCloseMainQuestPicker(event){
+  if(event.target===document.getElementById('main-picker'))closeMainQuestPicker();
+}
+
+function chooseMainQuest(questId){
+  let outcome;
+  gs=GameState.set(state=>{outcome=Quests.setMainQuest(state,questId)});
+  closeMainQuestPicker();
+  renderHeader();
+  renderQuests();
+  if(outcome&&outcome.ok&&outcome.changed){
+    showBoardNotice('Main Quest locked',outcome.quest.title,2800);
+  }
+}
+
+function setDailyCapacity(capacity){
+  let result;
+  gs=GameState.set(state=>{result=DailyState.setToday(state,capacity)});
+  if(!result||!result.ok)return;
+  renderDailyState();
+}
+
+function renderMinimumProtocol(){
+  const panel=document.getElementById('minimum-protocol');
+  const entry=DailyState.getToday(gs);
+  const minimumQuest=Quests.getMinimumQuest(gs);
+  const relevant=(entry&&entry.capacity==='low')||!!minimumQuest;
+  panel.hidden=!relevant;
+  if(!relevant)return;
+
+  const secured=(Number(gs.quests.completedToday)||0)>0;
+  const action=document.getElementById('minimum-protocol-action');
+  const icon=document.getElementById('minimum-protocol-icon');
+  panel.classList.toggle('secured',secured);
+  action.hidden=secured||!!minimumQuest;
+
+  if(secured){
+    icon.className='ti ti-shield-check';
+    document.getElementById('minimum-protocol-kicker').textContent='No-zero day secured';
+    document.getElementById('minimum-protocol-title').textContent=minimumQuest&&minimumQuest.done?'Minimum quest cleared':'Progress recorded';
+  }else if(minimumQuest){
+    icon.className='ti ti-hourglass-low';
+    document.getElementById('minimum-protocol-kicker').textContent='Minimum quest active';
+    document.getElementById('minimum-protocol-title').textContent=minimumQuest.title;
+  }else{
+    icon.className='ti ti-shield-plus';
+    document.getElementById('minimum-protocol-kicker').textContent='Minimum protocol';
+    document.getElementById('minimum-protocol-title').textContent='Five-minute fallback';
+  }
+}
+
+function deployMinimumQuest(){
+  const entry=DailyState.getToday(gs);
+  if(!entry||entry.capacity!=='low')return;
+  let outcome;
+  gs=GameState.set(state=>{outcome=Quests.addMinimumQuest(state)});
+  renderHeader();
+  renderQuests();
+  if(outcome&&outcome.added){
+    showBoardNotice('Minimum quest deployed','One meaningful five-minute action can secure today.',3000);
+  }
+}
 
 function escapeQuestUi(value){
   return String(value==null?'':value).replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+}
+
+function suggestionColor(attribute){
+  const shortId=ATTR_ID_REVERSE[attribute]||'intel';
+  return aById(shortId).col;
+}
+
+function initializeGoalSuggestions(){
+  const today=DateUtils.getLocalDateKey();
+  if(!window.Goals||!Goals.shouldOfferSuggestions(gs,today)){
+    goalSuggestionDrafts=[];
+    return;
+  }
+  goalSuggestionDrafts=Goals.getSuggestions(gs,3).map(template=>({
+    id:template.id,
+    title:template.title,
+    attribute:template.attribute,
+    difficulty:template.difficulty,
+    xp:template.xp,
+    tags:Array.isArray(template.tags)?[...template.tags]:[],
+    suggestedForGoalId:template.suggestedForGoalId||null,
+    selected:true
+  }));
+}
+
+function renderGoalSuggestions(){
+  const panel=document.getElementById('goal-suggestions');
+  if(!goalSuggestionDrafts.length||!Goals.shouldOfferSuggestions(gs,DateUtils.getLocalDateKey())){
+    panel.hidden=true;
+    return;
+  }
+  panel.hidden=false;
+  document.getElementById('goal-suggestion-list').innerHTML=goalSuggestionDrafts.map(draft=>{
+    const attr=aById(ATTR_ID_REVERSE[draft.attribute]||'intel');
+    const goal=Goals.definitions().find(item=>item.id===draft.suggestedForGoalId);
+    return `<article class="goal-suggestion-card${draft.selected?' selected':''}" style="--suggestion-color:${suggestionColor(draft.attribute)}">
+      <button class="goal-suggestion-toggle" type="button" onclick="toggleGoalSuggestion('${draft.id}')" aria-label="${draft.selected?'Remove':'Add'} ${escapeQuestUi(draft.title)}" aria-pressed="${draft.selected}"><i class="ti ${draft.selected?'ti-check':'ti-plus'}" aria-hidden="true"></i></button>
+      <div class="goal-suggestion-body">
+        <input class="goal-suggestion-input" maxlength="80" value="${escapeQuestUi(draft.title)}" oninput="updateGoalSuggestionTitle('${draft.id}',this.value)" aria-label="Edit suggested quest">
+        ${goal?`<div class="goal-suggestion-source"><i class="ti ${goal.icon}" aria-hidden="true"></i><span>${escapeQuestUi(goal.label)} directive</span></div>`:''}
+        <div class="goal-suggestion-meta"><span>${attr.label}</span><span>${escapeQuestUi(draft.difficulty)}</span></div>
+      </div>
+      <div class="goal-suggestion-xp">+${draft.xp} XP</div>
+    </article>`;
+  }).join('');
+  const selectedCount=goalSuggestionDrafts.filter(draft=>draft.selected&&draft.title.trim()).length;
+  document.getElementById('goal-suggestion-count').textContent=selectedCount+' selected';
+  document.getElementById('goal-suggestion-accept').disabled=selectedCount===0;
+}
+
+function toggleGoalSuggestion(templateId){
+  const draft=goalSuggestionDrafts.find(item=>item.id===templateId);
+  if(!draft)return;
+  draft.selected=!draft.selected;
+  renderGoalSuggestions();
+}
+
+function updateGoalSuggestionTitle(templateId,value){
+  const draft=goalSuggestionDrafts.find(item=>item.id===templateId);
+  if(!draft)return;
+  draft.title=String(value||'').slice(0,80);
+  const selectedCount=goalSuggestionDrafts.filter(item=>item.selected&&item.title.trim()).length;
+  document.getElementById('goal-suggestion-count').textContent=selectedCount+' selected';
+  document.getElementById('goal-suggestion-accept').disabled=selectedCount===0;
+}
+
+function acceptGoalSuggestions(){
+  const selected=goalSuggestionDrafts.filter(draft=>draft.selected&&draft.title.trim());
+  if(!selected.length)return;
+  gs=GameState.set(state=>{
+    selected.forEach(draft=>Quests.addQuest(state,{
+      title:draft.title.trim(),
+      attribute:draft.attribute,
+      difficulty:draft.difficulty,
+      xp:draft.xp,
+      tags:draft.tags
+    }));
+    Goals.markSuggestionsHandled(state,DateUtils.getLocalDateKey());
+  });
+  goalSuggestionDrafts=[];
+  renderHeader();
+  renderQuests();
+  showBoardNotice('Directives deployed',selected.length+' goal-based quest'+(selected.length===1?'':'s')+' added.',3200);
+}
+
+function dismissGoalSuggestions(){
+  gs=GameState.set(state=>{Goals.markSuggestionsHandled(state,DateUtils.getLocalDateKey())});
+  goalSuggestionDrafts=[];
+  renderQuests();
 }
 
 function formatBossMissionTime(milliseconds){
@@ -620,12 +947,14 @@ function renderDayReport(){
     <div class="report-growth-list">
       ${events.map(e=>`<div class="report-growth-row"><i class="ti ${EVENT_ICON[e.type]||'ti-star'}"></i><span>${EVENT_LABEL[e.type]||e.type}: <strong>${e.value}</strong></span></div>`).join('')}
     </div>`:'';
+  const mainQuestHtml=rep.mainQuest?`<div class="report-row"><span class="report-lbl">Main Quest: ${escapeQuestUi(rep.mainQuest.title)}</span><span class="report-val ${rep.mainQuest.completed?'hit':'miss'}">${rep.mainQuest.completed?'Secured':'Missed'}</span></div>`:'';
 
   document.getElementById('day-report-banner').innerHTML=`
     <div class="report-banner">
       <div class="report-title"><i class="ti ti-clipboard-check"></i>Yesterday's report</div>
       ${rep.targetXp!=null?`<div class="report-row"><span class="report-lbl">XP target</span><span class="report-val ${rep.actualXp>=rep.targetXp?'hit':'miss'}">${rep.actualXp} / ${rep.targetXp}</span></div>`:''}
       ${attrLabel?`<div class="report-row"><span class="report-lbl">${attrLabel} focus</span><span class="report-val">${rep.actualAttributeXp||0} XP earned</span></div>`:''}
+      ${mainQuestHtml}
       <div class="report-row"><span class="report-lbl">Quests completed</span><span class="report-val">${rep.questsCompleted} / ${rep.questsPlanned}</span></div>
       ${growthHtml}
       <button class="report-close" onclick="document.getElementById('day-report-banner').innerHTML=''">Dismiss</button>
@@ -645,6 +974,7 @@ function renderHeader(){
   document.getElementById('s-xp').textContent=gs.lifetimeXp;
   document.getElementById('mission-h-streak').textContent=gs.streak+'-day streak';
   document.getElementById('mission-s-xp').textContent=gs.lifetimeXp;
+  renderDailyState();
 }
 function renderFilters(){
   const items=[{id:'all',label:'All',icon:'ti-layout-grid',col:'#2F9DFF',bg:'rgba(47,157,255,.1)',bd:'rgba(47,157,255,.3)'},...ATTRS];
@@ -653,6 +983,10 @@ function renderFilters(){
 function setF(id){st.filter=id;renderFilters();renderQuests()}
 function renderQuests(){
   const tasks=gs.quests.active;
+  renderDailyLoad();
+  renderMinimumProtocol();
+  renderMainQuestSlot();
+  renderGoalSuggestions();
   renderBossMission();
   renderCompletedVisibility(tasks);
   const visibleTasks=hideCompleted?tasks.filter(t=>!t.done):tasks;
@@ -676,11 +1010,13 @@ function renderQuests(){
       <div class="qc-swipe-bg complete-bg"><i class="ti ti-check"></i></div>
       <div class="qc-swipe-bg delete-bg"><i class="ti ti-trash"></i></div>`;
     const c=document.createElement('div');
-    const isPriority=t.priority==='high';
-    const isRoutine=String(t.id).startsWith('fixed_');
-    const isSideQuest=String(t.id).startsWith('goal_')&&!isPriority;
-    const questType=isPriority?'Main Quest':isRoutine?'Routine Quest':isSideQuest?'Side Quest':'Active Quest';
-    c.className='qc'+(t.done?' done':'')+(isPriority?' featured':'');
+    const isPriority=t.questType==='main'||t.priority==='high';
+    const isRoutine=t.questType==='routine'||String(t.id).startsWith('fixed_');
+    const isMinimum=t.questType==='minimum'||t.isMinimumQuest===true;
+    const isSideQuest=t.questType==='side'||String(t.id).startsWith('goal_')&&!isPriority;
+    const questType=isPriority?'Main Quest':isMinimum?'Minimum Quest':isRoutine?'Routine Quest':isSideQuest?'Side Quest':'Active Quest';
+    c.className='qc'+(t.done?' done':'')+(isPriority?' featured':'')+(isMinimum?' minimum':'');
+    c.dataset.questId=t.id;
     if(t.done) c.setAttribute('aria-disabled','true');
     c.innerHTML=`<div class="qc-accent" style="background:${a.col};box-shadow:0 0 8px ${a.col}"></div>
       <div class="mission-code"><span>Mission ${String(index+1).padStart(2,'0')}</span><span class="mission-state">${questType}${t.done?' / Cleared':''}</span></div>
@@ -715,6 +1051,25 @@ function vibrate(pattern){
   if(navigator.vibrate){
     try{ navigator.vibrate(pattern); }catch(e){ /* unsupported, fail silently */ }
   }
+}
+
+function showMainQuestCompletion(quest){
+  const overlay=document.getElementById('main-clear-feedback');
+  const reducedMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const card=[...document.querySelectorAll('.qc')].find(element=>element.dataset.questId===quest.id)||null;
+  if(card)card.classList.add('main-clearing');
+  document.getElementById('main-clear-title').textContent=quest.title;
+  overlay.classList.remove('show');
+  void overlay.offsetWidth;
+  overlay.classList.add('show');
+  vibrate(reducedMotion?20:[20,45,35]);
+
+  if(mainQuestClearTimer)clearTimeout(mainQuestClearTimer);
+  mainQuestClearTimer=setTimeout(()=>{
+    overlay.classList.remove('show');
+    if(card)card.classList.remove('main-clearing');
+    mainQuestClearTimer=null;
+  },reducedMotion?700:1850);
 }
 
 const SWIPE_THRESHOLD=70;
@@ -780,8 +1135,10 @@ function toggle(id,card){
   });
   if(!result||result.locked) return;
 
+  const mainQuestCleared=result.completed&&(result.quest.questType==='main'||result.quest.priority==='high');
   if(result.completed){
     burst(card,result.quest.xp);
+    if(result.bonusXpFromEffects>0) showBoardNotice('Momentum consumed','+'+result.bonusXpFromEffects+' bonus XP',2600);
     if(result.playerLeveledUp) showLU();
     if(result.newAchievements.length) result.newAchievements.forEach(a=>showAchievementToast(a));
     if(result.bossEncounterDefeated) showBoardNotice('Encounter lost','Dominance reached 100. The boss has retreated.',4500);
@@ -790,6 +1147,7 @@ function toggle(id,card){
   }
   renderHeader();
   renderQuests();
+  if(mainQuestCleared)showMainQuestCompletion(result.quest);
 }
 function bossDamageBurst(card,damage){
   const bossDef=SEED_DATA.bosses[gs.bosses.currentBossId];
@@ -887,7 +1245,9 @@ function addQ(){
 }
 
 if(window.TerminalCaret)TerminalCaret.bind(document.getElementById('qin'));
+document.getElementById('main-picker').addEventListener('close',()=>document.body.classList.remove('main-picker-open'));
 refreshFromGameState();
+initializeGoalSuggestions();
 renderHeader();renderFilters();renderQuests();
 if(new URLSearchParams(window.location.search).get('plan')==='1'){
   PlanModal.open();

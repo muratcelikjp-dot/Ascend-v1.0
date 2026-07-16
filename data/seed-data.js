@@ -57,12 +57,28 @@ const SEED_DATA = {
 
   // Default state for a brand new player with no save file yet.
   defaultState: {
-    version: 7,
+    version: 11,
     level: 1,
     xp: 0,
     lifetimeXp: 0,
     streak: 0,
     lastActiveDate: null,
+
+    goals: {
+      selected: [],
+      details: {},
+      onboardingComplete: false,
+      suggestionsAccepted: false,
+      lastSuggestionDate: null
+    },
+
+    dailyState: {
+      checkIns: {}
+    },
+
+    activeEffects: {
+      active: []
+    },
 
     attributes: {
       intelligence: { xp: 0, lifetimeXp: 0, level: 1 },
@@ -172,19 +188,28 @@ const SEED_DATA = {
     { id: "other",         label: "Other",          icon: "ti-dots" }
   ],
 
+  goalCategories: [
+    { id: "fitness", label: "Forge Your Body", description: "Strength, fitness, and recovery", icon: "ti-barbell", attributes: ["strength", "willpower"] },
+    { id: "education", label: "Master New Knowledge", description: "Study, reading, and practical skills", icon: "ti-book-2", attributes: ["intelligence", "willpower"] },
+    { id: "career", label: "Advance Your Career", description: "Work, portfolio, and income", icon: "ti-briefcase", attributes: ["intelligence", "charisma"] },
+    { id: "social", label: "Expand Your Circle", description: "New connections and social confidence", icon: "ti-users", attributes: ["charisma"] },
+    { id: "discipline", label: "Build Discipline", description: "Focus, order, and better habits", icon: "ti-shield-check", attributes: ["willpower"] },
+    { id: "personal-project", label: "Complete Your Project", description: "Finish what you started", icon: "ti-bulb", attributes: ["intelligence", "willpower"] }
+  ],
+
   // Quest templates the user can quickly add from, organized by attribute.
   // These are starting suggestions, not a locked list — the user can still
   // free-type custom quests in the UI.
   questTemplates: [
-    { id: "tmpl_coding",       title: "Complete a coding assignment", attribute: "intelligence", difficulty: "normal", xp: 100 },
-    { id: "tmpl_reading",      title: "Read 15 pages of a book",        attribute: "intelligence", difficulty: "easy",   xp: 50  },
-    { id: "tmpl_run",          title: "Go for a 30-minute run",          attribute: "strength",     difficulty: "easy",   xp: 50  },
-    { id: "tmpl_gym",          title: "Full gym workout",                 attribute: "strength",     difficulty: "hard",   xp: 200 },
-    { id: "tmpl_social",       title: "Have a real conversation with someone new", attribute: "charisma", difficulty: "normal", xp: 100 },
-    { id: "tmpl_meditate",     title: "10 minutes of meditation",         attribute: "willpower",    tags: ["discipline"], difficulty: "easy", xp: 50  },
-    { id: "tmpl_plan",         title: "Plan tomorrow before bed",          attribute: "willpower",    tags: ["discipline"], difficulty: "easy", xp: 50  },
-    { id: "tmpl_project",      title: "Build/ship a small project feature", attribute: "intelligence", tags: ["creativity"], difficulty: "hard", xp: 200 },
-    { id: "tmpl_resist",       title: "Resist a known bad habit today",    attribute: "willpower",    difficulty: "normal", xp: 100 }
+    { id: "tmpl_coding",       title: "Complete a coding assignment", attribute: "intelligence", goalTags: ["education", "career"], difficulty: "normal", xp: 100 },
+    { id: "tmpl_reading",      title: "Read 15 pages of a book",        attribute: "intelligence", goalTags: ["education"], difficulty: "easy",   xp: 50  },
+    { id: "tmpl_run",          title: "Go for a 30-minute run",          attribute: "strength",     goalTags: ["fitness"], difficulty: "easy",   xp: 50  },
+    { id: "tmpl_gym",          title: "Full gym workout",                 attribute: "strength",     goalTags: ["fitness"], difficulty: "hard",   xp: 200 },
+    { id: "tmpl_social",       title: "Have a real conversation with someone new", attribute: "charisma", goalTags: ["social"], difficulty: "normal", xp: 100 },
+    { id: "tmpl_meditate",     title: "10 minutes of meditation",         attribute: "willpower",    tags: ["discipline"], goalTags: ["discipline"], difficulty: "easy", xp: 50  },
+    { id: "tmpl_plan",         title: "Plan tomorrow before bed",          attribute: "willpower",    tags: ["discipline"], goalTags: ["discipline", "career", "personal-project"], difficulty: "easy", xp: 50  },
+    { id: "tmpl_project",      title: "Build/ship a small project feature", attribute: "intelligence", tags: ["creativity"], goalTags: ["career", "personal-project"], difficulty: "hard", xp: 200 },
+    { id: "tmpl_resist",       title: "Resist a known bad habit today",    attribute: "willpower",    goalTags: ["discipline"], difficulty: "normal", xp: 100 }
   ],
 
   // Attribute leveling thresholds reused by leveling.js (kept here so content

@@ -16,6 +16,10 @@ const GameState = (function () {
     return JSON.parse(JSON.stringify(obj));
   }
 
+  function isPlainObject(value) {
+    return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+  }
+
   function buildFreshState() {
     const fresh = deepClone(SEED_DATA.defaultState);
     const firstBoss = SEED_DATA.bosses[fresh.bosses.currentBossId];
@@ -42,6 +46,48 @@ const GameState = (function () {
     }
 
     quest.tags = [...new Set(tags)];
+  }
+
+  function normalizeQuestTypes(state) {
+    let activeMainSeen = false;
+    (state.quests && Array.isArray(state.quests.active) ? state.quests.active : []).forEach(quest => {
+      if (!quest || typeof quest !== "object") return;
+      const isRoutine = quest.questType === "routine" || String(quest.id || "").startsWith("fixed_");
+      const isMinimum = quest.questType === "minimum" || quest.isMinimumQuest === true;
+      const wantsMain = quest.questType === "main" || quest.priority === "high";
+
+      if (isRoutine) {
+        quest.questType = "routine";
+      } else if (isMinimum) {
+        quest.questType = "minimum";
+        quest.isMinimumQuest = true;
+        if (quest.priority === "high") quest.priority = "normal";
+      } else if (wantsMain && !activeMainSeen) {
+        quest.questType = "main";
+        quest.priority = "high";
+        activeMainSeen = true;
+      } else {
+        quest.questType = "side";
+        if (quest.priority === "high") quest.priority = "normal";
+      }
+    });
+
+    let plannedMainSeen = false;
+    const tomorrowGoals = state.planning && Array.isArray(state.planning.tomorrowGoals)
+      ? state.planning.tomorrowGoals
+      : [];
+    tomorrowGoals.forEach(goal => {
+      if (!goal || typeof goal !== "object") return;
+      const wantsMain = goal.questType === "main" || goal.priority === "high";
+      if (wantsMain && !plannedMainSeen) {
+        goal.questType = "main";
+        goal.priority = "high";
+        plannedMainSeen = true;
+      } else {
+        goal.questType = "side";
+        if (goal.priority === "high") goal.priority = "normal";
+      }
+    });
   }
 
   function mergeLegacyAttribute(state, sourceId, targetId) {
@@ -100,10 +146,27 @@ const GameState = (function () {
     if (currentVersion < ATTRIBUTE_SCHEMA_VERSION) migrateFourAttributeModel(state);
     state.version = SEED_DATA.defaultState.version;
     if (!state.dailyLog) state.dailyLog = {};
+    if (!state.dailyState || typeof state.dailyState !== "object" || Array.isArray(state.dailyState)) {
+      state.dailyState = deepClone(SEED_DATA.defaultState.dailyState);
+    }
+    if (!state.dailyState.checkIns || typeof state.dailyState.checkIns !== "object" || Array.isArray(state.dailyState.checkIns)) {
+      state.dailyState.checkIns = {};
+    }
+    if (!state.activeEffects || typeof state.activeEffects !== "object" || Array.isArray(state.activeEffects)) {
+      state.activeEffects = deepClone(SEED_DATA.defaultState.activeEffects);
+    }
+    if (!Array.isArray(state.activeEffects.active)) state.activeEffects.active = [];
+    if (!state.goals || typeof state.goals !== "object") state.goals = deepClone(SEED_DATA.defaultState.goals);
+    if (!Array.isArray(state.goals.selected)) state.goals.selected = [];
+    if (!state.goals.details || typeof state.goals.details !== "object" || Array.isArray(state.goals.details)) state.goals.details = {};
+    if (typeof state.goals.onboardingComplete !== "boolean") state.goals.onboardingComplete = false;
+    if (typeof state.goals.suggestionsAccepted !== "boolean") state.goals.suggestionsAccepted = false;
+    if (typeof state.goals.lastSuggestionDate !== "string") state.goals.lastSuggestionDate = null;
     if (!state.planning) state.planning = deepClone(SEED_DATA.defaultState.planning);
     if (!state.planning.dayReports) state.planning.dayReports = {};
     if (state.planning.tomorrowTargetXp === undefined) state.planning.tomorrowTargetXp = null;
     if (state.planning.tomorrowTargetAttribute === undefined) state.planning.tomorrowTargetAttribute = null;
+    normalizeQuestTypes(state);
     if (!state.shieldRitual) state.shieldRitual = deepClone(SEED_DATA.defaultState.shieldRitual);
     if (!state.bosses) state.bosses = deepClone(SEED_DATA.defaultState.bosses);
     if (!state.bosses.titlesEarned) state.bosses.titlesEarned = [];
@@ -315,6 +378,51 @@ const GameState = (function () {
     return fresh;
   }
 
+  function validateImport(candidate) {
+    if (!isPlainObject(candidate)) {
+      return { ok: false, error: "Backup game data is invalid." };
+    }
+
+    const version = Number(candidate.version);
+    const hasRequiredSections =
+      Number.isFinite(version) && version > 0 &&
+      isPlainObject(candidate.attributes) &&
+      isPlainObject(candidate.quests) &&
+      Array.isArray(candidate.quests.active) &&
+      isPlainObject(candidate.bosses) &&
+      isPlainObject(candidate.planning);
+
+    if (!hasRequiredSections) {
+      return { ok: false, error: "Backup game data is incomplete." };
+    }
+
+    try {
+      const state = migrateIfNeeded(deepClone(candidate));
+      return { ok: true, state };
+    } catch (error) {
+      console.error("GameState: backup validation failed.", error);
+      return { ok: false, error: "Backup game data could not be read." };
+    }
+  }
+
+  function exportState() {
+    return deepClone(get());
+  }
+
+  function importState(candidate) {
+    const validation = validateImport(candidate);
+    if (!validation.ok) return validation;
+    const previousState = deepClone(get());
+
+    if (!writeRaw(validation.state)) {
+      volatileState = previousState;
+      return { ok: false, error: "Restored data could not be saved on this device." };
+    }
+
+    notify(validation.state);
+    return { ok: true, state: deepClone(validation.state) };
+  }
+
   function subscribe(callback) {
     subscribers.push(callback);
     return function unsubscribe() {
@@ -322,7 +430,7 @@ const GameState = (function () {
     };
   }
 
-  return { get, set, reset, subscribe };
+  return { get, set, reset, subscribe, validateImport, exportState, importState };
 })();
 
 if (typeof window !== "undefined") window.GameState = GameState;

@@ -20,6 +20,7 @@ const Quests = (function () {
   // if this already ran today.
   function ensureDailyReset(state) {
     const today = todayDateString();
+    ActiveEffects.pruneExpired(state, today);
     if (state.quests.lastResetDate === today) return false; // already reset today
 
     const previousResetDate = state.quests.lastResetDate;
@@ -62,6 +63,7 @@ const Quests = (function () {
       const actualAttrXp = targetAttr
         ? state.quests.active.filter(q => q.done && q.attribute === targetAttr).reduce((sum, q) => sum + q.xp, 0)
         : null;
+      const endingMainQuest = getMainQuest(state);
 
       state.planning.dayReports[yesterdayDate] = {
         targetXp: state.planning._activeTargetXp || null,
@@ -70,6 +72,11 @@ const Quests = (function () {
         actualAttributeXp: actualAttrXp,
         questsPlanned: state.quests.active.length,
         questsCompleted: yesterdayCompletedCount,
+        mainQuest: endingMainQuest ? {
+          id: endingMainQuest.id,
+          title: endingMainQuest.title,
+          completed: !!endingMainQuest.done
+        } : null,
         growthEvents: yesterdayLog.growthEvents || []
       };
     }
@@ -89,6 +96,7 @@ const Quests = (function () {
       done: false,
       dateAssigned: today,
       isWillpowerGoal: (g.attribute || "willpower") === "willpower",
+      questType: g.questType === "main" || g.priority === "high" ? "main" : "side",
       priority: g.priority || "normal",
       scheduledTime: g.scheduledTime || null
     }));
@@ -103,6 +111,7 @@ const Quests = (function () {
       done: false,
       dateAssigned: today,
       isWillpowerGoal: false,
+      questType: "routine",
       priority: tmpl.priority || "normal",
       scheduledTime: tmpl.scheduledTime || null
     }));
@@ -142,17 +151,49 @@ const Quests = (function () {
     return { didReset: true, streakEvaluationDates };
   }
 
-  function addQuest(state, { title, attribute, difficulty, xp, tags = [] }) {
+  function addQuest(state, { title, attribute, difficulty, xp, tags = [], questType = "side" }) {
+    const hasMainQuest = state.quests.active.some(quest => quest.questType === "main" || quest.priority === "high");
+    const hasMinimumQuest = state.quests.active.some(quest => quest.questType === "minimum" || quest.isMinimumQuest === true);
+    const normalizedQuestType = questType === "minimum" && !hasMinimumQuest
+      ? "minimum"
+      : (questType === "main" && !hasMainQuest ? "main" : "side");
     const quest = {
       id: "q_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7),
       title, attribute, difficulty, xp,
       tags: Array.isArray(tags) ? [...new Set(tags)] : [],
       done: false,
       dateAssigned: todayDateString(),
-      isWillpowerGoal: attribute === "willpower"
+      isWillpowerGoal: attribute === "willpower",
+      isMinimumQuest: normalizedQuestType === "minimum",
+      questType: normalizedQuestType,
+      priority: normalizedQuestType === "main" ? "high" : "normal"
     };
     state.quests.active.push(quest);
     return quest;
+  }
+
+  function addMinimumQuest(state) {
+    const existing = state.quests.active.find(quest => quest.questType === "minimum" || quest.isMinimumQuest === true);
+    if (existing) return { added: false, reason: "already-active", quest: existing };
+    if ((Number(state.quests.completedToday) || 0) > 0) {
+      return { added: false, reason: "day-secured", quest: null };
+    }
+
+    const mainQuest = getMainQuest(state);
+    const mainTitle = mainQuest && typeof mainQuest.title === "string" ? mainQuest.title.trim() : "";
+    const title = mainTitle
+      ? 'Work on "' + mainTitle.slice(0, 58) + '" for 5 minutes'
+      : "Do one meaningful task for 5 minutes";
+    const quest = addQuest(state, {
+      title,
+      attribute: mainQuest && mainQuest.attribute ? mainQuest.attribute : "willpower",
+      difficulty: "easy",
+      xp: 50,
+      tags: ["minimum", "no-zero-day"],
+      questType: "minimum"
+    });
+    quest.sourceMainQuestId = mainQuest ? mainQuest.id : null;
+    return { added: true, reason: null, quest };
   }
 
   function removeQuest(state, questId) {
@@ -181,8 +222,11 @@ const Quests = (function () {
         bossDamageDealt: 0,
         bossDefeated: null,
         bonusXpFromSkills: 0,
+        bonusXpFromEffects: 0,
         newMilestoneTitles: [],
-        newSkills: []
+        newSkills: [],
+        activatedEffects: [],
+        consumedEffects: []
       };
     }
 
@@ -202,8 +246,11 @@ const Quests = (function () {
       bossDamageDealt: 0,
       bossDefeated: null,
       bonusXpFromSkills: 0,
+      bonusXpFromEffects: 0,
       newMilestoneTitles: [],
-      newSkills: []
+      newSkills: [],
+      activatedEffects: [],
+      consumedEffects: []
     };
 
     if (result.completed) {
@@ -214,10 +261,13 @@ const Quests = (function () {
       // than numbers printed on a card that do nothing.
       const skillMultiplier = Skills.getPassiveXpMultiplier(state, quest.attribute);
       const prestigeMultiplier = (state.prestige && state.prestige.permanentXpBonus) || 0;
-      const totalMultiplier = skillMultiplier + prestigeMultiplier;
-      const bonusXp = Math.round(quest.xp * totalMultiplier);
-      const effectiveXp = quest.xp + bonusXp;
-      result.bonusXpFromSkills = bonusXp;
+      const passiveMultiplier = skillMultiplier + prestigeMultiplier;
+      const passiveBonusXp = Math.round(quest.xp * passiveMultiplier);
+      const effectBonus = ActiveEffects.getQuestXpBonus(state, quest);
+      const effectBonusXp = Math.round(quest.xp * effectBonus.multiplier);
+      const effectiveXp = quest.xp + passiveBonusXp + effectBonusXp;
+      result.bonusXpFromSkills = passiveBonusXp;
+      result.bonusXpFromEffects = effectBonusXp;
 
       // 1. Player XP
       const prevPlayerLevel = state.level;
@@ -252,15 +302,16 @@ const Quests = (function () {
       result.newSkills = Skills.checkAndUnlock(state, quest.attribute);
 
       // 5. Boss damage — uses a synthetic quest object carrying the
-      // boosted XP, so a skill bonus also makes you hit harder against
-      // bosses, consistent with it being a real mechanical effect.
+      // passive-boosted XP, so skill/prestige bonuses retain their existing
+      // behavior. Temporary effect XP is excluded to preserve boss balance.
       // A completed normal quest pushes back Dominance once. This runs
       // before damage so a defeating blow cannot affect the next boss.
       const dominanceOutcome = Bosses.applyNormalQuestDominanceReduction(state);
       result.bossDominanceReduced = dominanceOutcome.reducedBy;
       result.bossEncounterDefeated = !!dominanceOutcome.encounterDefeated;
 
-      const bossOutcome = Bosses.applyQuestDamage(state, { ...quest, xp: effectiveXp });
+      const bossEffectiveXp = quest.xp + passiveBonusXp;
+      const bossOutcome = Bosses.applyQuestDamage(state, { ...quest, xp: bossEffectiveXp });
       result.bossDamageDealt = bossOutcome.damageDealt;
       result.bossDefeated = bossOutcome.defeated ? bossOutcome.bossId : null;
       result.playerLeveledUp = result.playerLeveledUp || !!bossOutcome.playerLeveledUp;
@@ -268,6 +319,16 @@ const Quests = (function () {
       // 6. Achievement check (runs last so it can see all the updated counters)
       result.newAchievements = [...(bossOutcome.newAchievements || []), ...Achievements.checkAll(state)];
       result.newMilestoneTitles = [...(bossOutcome.newMilestoneTitles || []), ...Ranks.checkMilestoneTitles(state)];
+
+      if (effectBonus.effect) {
+        const consumeOutcome = ActiveEffects.consume(state, effectBonus.effect.id);
+        if (consumeOutcome.consumed) result.consumedEffects.push(consumeOutcome.effect);
+      }
+
+      if (quest.questType === "main" || quest.priority === "high") {
+        const effectOutcome = ActiveEffects.activate(state, "momentum", quest);
+        if (effectOutcome.activated) result.activatedEffects.push(effectOutcome.effect);
+      }
 
       // Record every growth event into today's log, so the end-of-day
       // report (built by ensureDailyReset) can summarize the full
@@ -317,7 +378,61 @@ const Quests = (function () {
     return state.quests.active;
   }
 
-  return { ensureDailyReset, addQuest, removeQuest, toggleQuest, getActiveQuests, todayDateString };
+  function getMainQuest(state) {
+    return state.quests.active.find(quest => quest.questType === "main" || quest.priority === "high") || null;
+  }
+
+  function isMainQuestCandidate(quest) {
+    if (!quest || quest.done) return false;
+    if (quest.questType === "main" || quest.priority === "high") return true;
+    if (quest.questType === "routine" || String(quest.id || "").startsWith("fixed_")) return false;
+    if (quest.questType === "minimum" || quest.isMinimumQuest === true) return false;
+    return true;
+  }
+
+  function getMainQuestCandidates(state) {
+    return state.quests.active.filter(isMainQuestCandidate);
+  }
+
+  function setMainQuest(state, questId) {
+    const target = state.quests.active.find(quest => quest.id === questId);
+    if (!target) return { ok: false, reason: "not-found", quest: null };
+    if (!isMainQuestCandidate(target)) return { ok: false, reason: "not-eligible", quest: target };
+
+    const current = getMainQuest(state);
+    if (current && current.id === target.id) {
+      return { ok: true, changed: false, quest: current, previousMainId: current.id };
+    }
+    if (current && current.done) {
+      return { ok: false, reason: "main-cleared", quest: current };
+    }
+
+    if (current) {
+      current.questType = "side";
+      current.priority = "normal";
+    }
+    target.questType = "main";
+    target.priority = "high";
+
+    const targetIndex = state.quests.active.indexOf(target);
+    if (targetIndex > 0) {
+      state.quests.active.splice(targetIndex, 1);
+      state.quests.active.unshift(target);
+    }
+
+    return {
+      ok: true,
+      changed: true,
+      quest: target,
+      previousMainId: current ? current.id : null
+    };
+  }
+
+  function getMinimumQuest(state) {
+    return state.quests.active.find(quest => quest.questType === "minimum" || quest.isMinimumQuest === true) || null;
+  }
+
+  return { ensureDailyReset, addQuest, addMinimumQuest, removeQuest, toggleQuest, getActiveQuests, getMainQuest, getMainQuestCandidates, setMainQuest, getMinimumQuest, todayDateString };
 })();
 
 if (typeof window !== "undefined") window.Quests = Quests;

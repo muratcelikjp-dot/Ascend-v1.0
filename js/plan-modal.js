@@ -25,6 +25,10 @@ const PlanModal = (function () {
     return String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#039;" })[char]);
   }
 
+  function isMainGoal(goal) {
+    return goal && (goal.questType === "main" || goal.priority === "high");
+  }
+
   function ensureDialog() {
     if (document.getElementById("plan-dialog")) return;
     const dialog = document.createElement("dialog");
@@ -223,7 +227,7 @@ const PlanModal = (function () {
       const template = SEED_DATA.questTemplates.find(entry => entry.id === item.templateId);
       return total + (template ? template.xp : 0);
     }, 0);
-    document.getElementById("pm-main-count").textContent = goals.some(goal => goal.priority === "high") ? "1" : "0";
+    document.getElementById("pm-main-count").textContent = goals.some(isMainGoal) ? "1" : "0";
     document.getElementById("pm-fixed-count").textContent = state.planning.tomorrowFixed.length;
     document.getElementById("pm-planned-xp").textContent = goals.reduce((total, goal) => total + (Number(goal.xp) || 0), routineXp);
   }
@@ -259,7 +263,7 @@ const PlanModal = (function () {
 
   function renderLimit(message) {
     const goals = state.planning.tomorrowGoals;
-    const mainCount = goals.filter(goal => goal.priority === "high").length;
+    const mainCount = goals.filter(isMainGoal).length;
     const sideCount = goals.length - mainCount;
     const limit = document.getElementById("pm-limit");
     limit.textContent = message || (mainCount + "/1 Main Quest / " + sideCount + "/3 Side Quests");
@@ -276,7 +280,7 @@ const PlanModal = (function () {
     list.innerHTML = state.planning.tomorrowGoals.map((goal, index) => {
       const attributeId = goal.attribute || "willpower";
       const meta = attributes[attributeId] || attributes.willpower;
-      const isMain = goal.priority === "high";
+      const isMain = isMainGoal(goal);
       const difficulty = goal.difficulty || "normal";
       const difficultyMeta = difficulties[difficulty] || difficulties.normal;
       return `<article class="plan-item" style="--item-color:${meta.color};--item-bg:${meta.bg};--item-border:${meta.border}">
@@ -312,14 +316,20 @@ const PlanModal = (function () {
     let mainSeen = false;
     state = GameState.set(gs => {
       gs.planning.tomorrowGoals.forEach(goal => {
-        if (goal.priority === "high" && !mainSeen) mainSeen = true;
-        else goal.priority = "normal";
+        if (isMainGoal(goal) && !mainSeen) {
+          mainSeen = true;
+          goal.questType = "main";
+          goal.priority = "high";
+        } else {
+          goal.questType = "side";
+          goal.priority = "normal";
+        }
         goal.attribute = goal.attribute || "willpower";
         goal.difficulty = goal.difficulty || "normal";
         goal.xp = Number(goal.xp) || (difficulties[goal.difficulty] || difficulties.normal).xp;
       });
     });
-    selectedQuestType = state.planning.tomorrowGoals.some(goal => goal.priority === "high") ? "side" : "main";
+    selectedQuestType = state.planning.tomorrowGoals.some(isMainGoal) ? "side" : "main";
     selectedAttribute = "willpower";
     selectedDifficulty = "normal";
     draftGoalTime = null;
@@ -358,12 +368,12 @@ const PlanModal = (function () {
       return;
     }
     const goals = state.planning.tomorrowGoals;
-    const mainCount = goals.filter(goal => goal.priority === "high").length;
+    const mainCount = goals.filter(isMainGoal).length;
     const sideCount = goals.length - mainCount;
     if (selectedQuestType === "main" && mainCount >= 1) { renderLimit("Remove the current Main Quest first"); return; }
     if (selectedQuestType === "side" && sideCount >= 3) { renderLimit("Side Quest limit reached"); return; }
     const xp = (difficulties[selectedDifficulty] || difficulties.normal).xp;
-    state = GameState.set(gs => { gs.planning.tomorrowGoals.push({ text, attribute: selectedAttribute, difficulty: selectedDifficulty, xp, priority: selectedQuestType === "main" ? "high" : "normal", scheduledTime: draftGoalTime || null }); });
+    state = GameState.set(gs => { gs.planning.tomorrowGoals.push({ text, attribute: selectedAttribute, difficulty: selectedDifficulty, xp, questType: selectedQuestType, priority: selectedQuestType === "main" ? "high" : "normal", scheduledTime: draftGoalTime || null }); });
     input.value = ""; clearGoalError(); draftGoalTime = null; updateGoalTimeTrigger();
     if (selectedQuestType === "main") selectedQuestType = "side";
     renderQuestControls(); renderGoals();

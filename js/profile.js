@@ -60,30 +60,58 @@
     }
   }
 
-  function save(name, birthDate) {
+  function validate(name, birthDate) {
     const cleanName = String(name || "").trim().replace(/\s+/g, " ").slice(0, 32);
-    const age = calculateAge(birthDate);
+    const cleanBirthDate = String(birthDate || "");
+    const age = calculateAge(cleanBirthDate);
 
     if (!cleanName) return { ok: false, error: "Enter your name." };
     if (age === null) return { ok: false, error: "Enter a valid birth date." };
-    if (age < 0 || birthDate > getTodayKey()) {
+    if (age < 0 || cleanBirthDate > getTodayKey()) {
       return { ok: false, error: "Birth date cannot be in the future." };
     }
 
-    const profile = { name: cleanName, birthDate };
+    return { ok: true, profile: { name: cleanName, birthDate: cleanBirthDate } };
+  }
+
+  function save(name, birthDate) {
+    const validation = validate(name, birthDate);
+    if (!validation.ok) return validation;
+
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
-      return { ok: true, profile };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(validation.profile));
+      return validation;
     } catch (error) {
       console.error("Could not save local profile.", error);
       return { ok: false, error: "Profile could not be saved on this device." };
     }
   }
 
+  function clear() {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+      return { ok: true, profile: null };
+    } catch (error) {
+      console.error("Could not clear local profile.", error);
+      return { ok: false, error: "Profile could not be cleared on this device." };
+    }
+  }
+
+  function replace(profile) {
+    if (profile === null) return clear();
+    if (!profile || typeof profile !== "object") {
+      return { ok: false, error: "Backup profile is invalid." };
+    }
+    return save(profile.name, profile.birthDate);
+  }
+
   global.UserProfile = {
     storageKey: STORAGE_KEY,
     get,
+    validate,
     save,
+    clear,
+    replace,
     calculateAge,
     getTodayKey
   };

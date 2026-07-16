@@ -80,8 +80,9 @@ function createFracturePath(startX,startY,angle,length,segments){
   const points=[{x:startX,y:startY}];
   let x=startX,y=startY,currentAngle=angle;
   for(let index=0;index<segments;index++){
-    const step=length/segments*(.84+Math.random()*.32);
-    currentAngle+=(Math.random()-.5)*22;
+    const step=length/segments*(.68+Math.random()*.58);
+    const jaggedTurn=(index%2===0?1:-1)*(8+Math.random()*14);
+    currentAngle=angle+jaggedTurn+(Math.random()-.5)*6;
     const radians=currentAngle*Math.PI/180;
     x+=Math.cos(radians)*step;
     y+=Math.sin(radians)*step;
@@ -124,20 +125,22 @@ function spawnCrack(impact,length,branchIndex,totalBranches){
   const branches=Math.max(1,totalBranches||1);
   const towardCenter=Math.atan2(104-impact.y,100-impact.x)*180/Math.PI;
   const fanOffset=(branchIndex-(branches-1)/2)*30+(Math.random()-.5)*8;
-  const fracture=createFracturePath(impact.x,impact.y,towardCenter+fanOffset,length,4);
+  const fracture=createFracturePath(impact.x,impact.y,towardCenter+fanOffset,length,5);
   const group=document.createElementNS('http://www.w3.org/2000/svg','g');
   group.setAttribute('class','shield-fracture');
   const delay=branchIndex*34;
 
-  appendFracturePath(group,fracture.d,'fracture-path fracture-glow',delay);
+  appendFracturePath(group,fracture.d,'fracture-path fracture-rift',delay);
+  appendFracturePath(group,fracture.d,'fracture-path fracture-glow',delay+8);
   appendFracturePath(group,fracture.d,'fracture-path fracture-core',delay+16);
-  appendFracturePath(group,fracture.d,'fracture-path fracture-hairline',delay+24);
+  appendFracturePath(group,fracture.d,'fracture-path fracture-hairline',delay+22);
 
   const joint=fracture.points[Math.min(2,fracture.points.length-1)];
   const branchDirection=fracture.angle+(branchIndex%2===0?52:-52)+(Math.random()-.5)*14;
   const offshoot=createFracturePath(joint.x,joint.y,branchDirection,length*.36,2);
-  appendFracturePath(group,offshoot.d,'fracture-path fracture-glow fracture-offshoot',delay+86);
-  appendFracturePath(group,offshoot.d,'fracture-path fracture-core fracture-offshoot',delay+96);
+  appendFracturePath(group,offshoot.d,'fracture-path fracture-rift fracture-offshoot',delay+80);
+  appendFracturePath(group,offshoot.d,'fracture-path fracture-glow fracture-offshoot',delay+88);
+  appendFracturePath(group,offshoot.d,'fracture-path fracture-core fracture-offshoot',delay+98);
 
   layer.appendChild(group);
 }
@@ -155,24 +158,41 @@ let shieldRecoilTimer=null;
 function shakeShieldOnly(power,impact){
   const sb=document.getElementById('shield-body');
   const direction=impact||{dx:0,dy:0};
-  const travel=4+Math.min(16,power)*.28;
+  const cappedPower=Math.min(16,power);
+  const travel=3+cappedPower*.22;
+  const depth=24+cappedPower*1.35;
   const hitX=direction.dx*travel;
   const hitY=direction.dy*travel*.72;
-  const rotateX=-direction.dy*(5+power*.32);
-  const rotateY=direction.dx*(6+power*.38);
+  const rotateX=-direction.dy*(8+cappedPower*.42);
+  const rotateY=direction.dx*(9+cappedPower*.48);
   sb.style.setProperty('--hit-x',hitX.toFixed(2)+'px');
   sb.style.setProperty('--hit-y',hitY.toFixed(2)+'px');
+  sb.style.setProperty('--hit-z',(-depth).toFixed(2)+'px');
   sb.style.setProperty('--hit-rx',rotateX.toFixed(2)+'deg');
   sb.style.setProperty('--hit-ry',rotateY.toFixed(2)+'deg');
+  sb.style.setProperty('--lead-x',(hitX*.35).toFixed(2)+'px');
+  sb.style.setProperty('--lead-y',(hitY*.35).toFixed(2)+'px');
+  sb.style.setProperty('--lead-z',(-depth*.32).toFixed(2)+'px');
+  sb.style.setProperty('--lead-rx',(rotateX*.36).toFixed(2)+'deg');
+  sb.style.setProperty('--lead-ry',(rotateY*.36).toFixed(2)+'deg');
+  sb.style.setProperty('--settle-x',(hitX*.28).toFixed(2)+'px');
+  sb.style.setProperty('--settle-y',(hitY*.28).toFixed(2)+'px');
+  sb.style.setProperty('--settle-rx',(rotateX*.34).toFixed(2)+'deg');
+  sb.style.setProperty('--settle-ry',(rotateY*.34).toFixed(2)+'deg');
+  sb.style.setProperty('--tail-rx',(rotateX*.05).toFixed(2)+'deg');
+  sb.style.setProperty('--tail-ry',(rotateY*.05).toFixed(2)+'deg');
+  sb.style.setProperty('--shadow-x',(-hitX*.7).toFixed(2)+'px');
+  sb.style.setProperty('--shadow-y',(14-hitY*.35).toFixed(2)+'px');
   sb.style.setProperty('--rebound-x',(-hitX*.18).toFixed(2)+'px');
   sb.style.setProperty('--rebound-y',(-hitY*.18).toFixed(2)+'px');
+  sb.style.setProperty('--rebound-z',(3.5+cappedPower*.16).toFixed(2)+'px');
   sb.style.setProperty('--rebound-rx',(-rotateX*.14).toFixed(2)+'deg');
   sb.style.setProperty('--rebound-ry',(-rotateY*.14).toFixed(2)+'deg');
   sb.classList.remove('directional-hit');
   void sb.offsetWidth;
   sb.classList.add('directional-hit');
   clearTimeout(shieldRecoilTimer);
-  shieldRecoilTimer=setTimeout(()=>sb.classList.remove('directional-hit'),430);
+  shieldRecoilTimer=setTimeout(()=>sb.classList.remove('directional-hit'),560);
 }
 
 function spawnShards(count){
