@@ -103,6 +103,30 @@
     return { removed: true, reason: null };
   }
 
+  function updateArchiveRecord(state, questId, note) {
+    const records = ensureArchive(state);
+    const recordIndex = records.findIndex(record => record && record.questId === questId);
+    if (recordIndex < 0) return { saved: false, reason: "proof-not-found", record: null };
+
+    const normalizedNote = normalizeNote(note);
+    if (!normalizedNote) return { saved: false, reason: "empty-note", record: null };
+
+    const now = new Date().toISOString();
+    const updatedRecord = {
+      ...records[recordIndex],
+      note: normalizedNote,
+      updatedAt: now
+    };
+    records[recordIndex] = updatedRecord;
+
+    const quest = findQuest(state, questId);
+    if (quest && getQuestProof(quest)) {
+      quest.proof.note = normalizedNote;
+      quest.proof.updatedAt = now;
+    }
+    return { saved: true, reason: null, record: normalizeArchiveRecord(updatedRecord) };
+  }
+
   function getArchive(state, limit) {
     if (!state || !state.proofs || !Array.isArray(state.proofs.records)) return [];
     const maxRecords = Number.isInteger(limit) && limit > 0 ? limit : MAX_ARCHIVE_RECORDS;
@@ -119,6 +143,7 @@
     getQuestProof,
     getArchive,
     setQuestProof,
+    updateArchiveRecord,
     removeQuestProof
   };
 })(typeof window !== "undefined" ? window : globalThis);

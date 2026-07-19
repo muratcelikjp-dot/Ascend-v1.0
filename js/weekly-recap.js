@@ -22,9 +22,12 @@
 
   function buildNarrative(summary) {
     if (summary.activeDays === 0) {
+      const archiveSentence = summary.proofsLogged > 0
+        ? " " + summary.proofsLogged + " archived completion " + (summary.proofsLogged === 1 ? "record falls" : "records fall") + " within this window, but no quest or XP activity was recorded."
+        : "";
       return {
         headline: "The campaign is waiting",
-        narrative: "No progress was recorded during this seven-day window. Your character has not fallen behind; the next meaningful action can restart the signal.",
+        narrative: "No progress was recorded during this seven-day window." + archiveSentence + " Your character has not fallen behind; the next meaningful action can restart the signal.",
         nextFocus: "Begin with one achievable quest and rebuild from there."
       };
     }
@@ -34,6 +37,9 @@
       : "";
     const attributeSentence = summary.strongestAttribute
       ? " " + summary.strongestAttribute.label + " led your growth with " + summary.strongestAttribute.xp + " XP."
+      : "";
+    const proofSentence = summary.proofsLogged > 0
+      ? " " + summary.proofsLogged + " completion " + (summary.proofsLogged === 1 ? "record was" : "records were") + " added to your journey."
       : "";
     const questLabel = summary.questsCompleted === 1 ? " quest" : " quests";
     let headline = "Progress signal established";
@@ -47,7 +53,7 @@
 
     return {
       headline,
-      narrative: "You showed up on " + summary.activeDays + " of 7 days, cleared " + summary.questsCompleted + questLabel + ", and earned " + summary.xpEarned + " XP." + mainQuestSentence + attributeSentence,
+      narrative: "You showed up on " + summary.activeDays + " of 7 days, cleared " + summary.questsCompleted + questLabel + ", and earned " + summary.xpEarned + " XP." + proofSentence + mainQuestSentence + attributeSentence,
       nextFocus
     };
   }
@@ -56,6 +62,12 @@
     const dateKeys = getDateKeys(endDate);
     const dailyLog = state.dailyLog || {};
     const reports = state.planning && state.planning.dayReports || {};
+    const proofRecords = global.Proof ? global.Proof.getArchive(state) : [];
+    const proofCountsByDate = proofRecords.reduce((counts, record) => {
+      if (!dateKeys.includes(record.dateKey)) return counts;
+      counts[record.dateKey] = (counts[record.dateKey] || 0) + 1;
+      return counts;
+    }, {});
     const attributeXp = {};
     let xpEarned = 0;
     let questsCompleted = 0;
@@ -96,6 +108,7 @@
       mainQuestsSecured,
       mainQuestsMissed: mainQuestsRecorded - mainQuestsSecured,
       growthEvents,
+      proofsLogged: Object.values(proofCountsByDate).reduce((sum, count) => sum + count, 0),
       strongestAttribute: strongestEntry ? {
         id: strongestEntry[0],
         label: ATTRIBUTE_LABELS[strongestEntry[0]],

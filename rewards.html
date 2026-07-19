@@ -270,6 +270,7 @@ window.addEventListener('error', function(e){
 <script src="js/shield.js"></script>
 <script src="js/ranks.js"></script>
 <script src="js/gameloop.js"></script>
+<script src="js/home-feed.js"></script>
 <script>
 GameLoop.bootstrapDay();
 let gs=GameState.get();
@@ -422,6 +423,7 @@ function buyReward(rewardId){
   gs=GameState.set(state=>{ result=Rewards.purchaseReward(state,rewardId); });
 
   if(result.success){
+    if(window.HomeFeed) HomeFeed.queueRewardPurchase();
     vibrate(40);
     showToast('ok','Purchased: '+result.reward.name);
     if(cardEl){

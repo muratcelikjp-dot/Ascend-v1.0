@@ -85,6 +85,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .prestige-btn{margin-top:10px;width:100%;padding:9px;background:var(--pu);border:none;border-radius:2px;color:#fff;font-size:11px;font-weight:500;cursor:pointer;text-transform:uppercase;letter-spacing:.06em}
 .prestige-btn:hover{opacity:.9}
 .prestige-count-badge{font-size:10px;color:var(--pu);background:rgba(127,119,221,.12);border:1px solid rgba(127,119,221,.3);padding:2px 8px;border-radius:2px;margin-left:auto}
+.prestige-host[hidden]{display:none}
 
 .confirm-overlay{position:fixed;inset:0;background:rgba(2,13,24,.9);display:none;align-items:center;justify-content:center;z-index:70;padding:24px;max-width:390px;margin:0 auto}
 .confirm-overlay.show{display:flex}
@@ -349,7 +350,7 @@ body{
 .legacy-drawer[open] .legacy-chevron{transform:rotate(180deg)}
 .journey-drawer{margin:16px 14px 0;border-top:1px solid rgba(0,180,216,.16);border-bottom:1px solid rgba(0,180,216,.12)}.journey-drawer>summary{height:48px;display:flex;align-items:center;gap:9px;list-style:none;color:var(--txm);cursor:pointer;-webkit-tap-highlight-color:transparent}.journey-drawer>summary::-webkit-details-marker{display:none}.journey-drawer>summary .journey-main-icon{font-size:15px;color:var(--neon)}.journey-drawer>summary>span{font-size:9px;text-transform:uppercase;letter-spacing:.13em}.journey-count{margin-left:auto;color:var(--txd);font-size:8px;letter-spacing:.07em}.journey-chevron{font-size:14px;color:var(--txd);transition:transform .2s ease}.journey-drawer[open] .journey-chevron{transform:rotate(180deg)}.journey-list{position:relative;padding:1px 0 13px 19px}.journey-list::before{content:"";position:absolute;top:8px;bottom:18px;left:5px;width:1px;background:linear-gradient(var(--neon),rgba(0,180,216,.08))}.journey-entry{--journey-color:var(--neon);position:relative;padding:9px 10px 10px;border-bottom:1px solid rgba(0,180,216,.09)}.journey-entry:last-child{border-bottom:0}.journey-entry::before{content:"";position:absolute;top:14px;left:-17px;width:7px;height:7px;border:1px solid var(--journey-color);border-radius:50%;background:#020d18;box-shadow:0 0 7px color-mix(in srgb,var(--journey-color) 45%,transparent)}.journey-entry.secured{--journey-color:var(--gr)}.journey-entry.missed{--journey-color:#ff8894}.journey-entry.growth{--journey-color:var(--am)}.journey-date{color:var(--journey-color);font-size:7px;text-transform:uppercase;letter-spacing:.1em}.journey-title{margin-top:3px;overflow:hidden;color:#dff7fc;font-size:10px;font-weight:620;text-overflow:ellipsis;white-space:nowrap}.journey-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px;color:var(--txd);font-size:7px;text-transform:uppercase;letter-spacing:.06em}.journey-meta span{display:inline-flex;align-items:center;gap:3px}.journey-meta i{font-size:10px;color:var(--journey-color)}.journey-events{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}.journey-event{max-width:100%;padding:3px 5px;border:1px solid rgba(239,159,39,.18);border-radius:3px;background:rgba(239,159,39,.045);overflow:hidden;color:#d9bc82;font-size:7px;text-overflow:ellipsis;white-space:nowrap}.journey-empty{padding:4px 8px 15px;color:var(--txd);font-size:9px;line-height:1.5}
 .journey-drawer.locked{border-color:rgba(111,142,163,.13)}.journey-drawer.locked>summary{color:var(--txd)}.journey-drawer.locked>summary .journey-main-icon{color:var(--txd);filter:none}.journey-drawer.locked .journey-count{color:#8da6b5}.journey-drawer.locked .journey-list::before{background:rgba(111,142,163,.13)}
-.journey-entry.proof{--journey-color:#b8a4ff}.journey-proofs{margin-top:7px;display:grid;gap:6px}.journey-proof{min-width:0;padding:6px 7px;display:grid;grid-template-columns:18px minmax(0,1fr);gap:7px;border-left:2px solid rgba(184,164,255,.45);background:rgba(139,92,246,.045)}.journey-proof>i{margin-top:1px;color:#b8a4ff;font-size:13px;filter:drop-shadow(0 0 4px rgba(139,92,246,.3))}.journey-proof-copy{min-width:0}.journey-proof-copy strong{display:block;overflow:hidden;color:#d9d2ff;font-size:8px;font-weight:650;text-overflow:ellipsis;white-space:nowrap}.journey-proof-copy span{display:-webkit-box;margin-top:2px;overflow:hidden;color:#7696a8;font-size:7px;line-height:1.4;-webkit-box-orient:vertical;-webkit-line-clamp:2}.journey-proof-more{color:#8f82ca;font-size:7px;text-transform:uppercase;letter-spacing:.07em}
+.journey-entry.proof{--journey-color:#b8a4ff}.journey-proofs{margin-top:7px;display:grid;gap:6px}.journey-proof{min-width:0;border-left:2px solid rgba(184,164,255,.45);background:rgba(139,92,246,.045)}.journey-proof>summary{min-width:0;padding:6px 7px;display:grid;grid-template-columns:18px minmax(0,1fr) 14px;gap:7px;align-items:start;list-style:none;cursor:pointer;-webkit-tap-highlight-color:transparent}.journey-proof>summary::-webkit-details-marker{display:none}.journey-proof>summary>i:first-child{margin-top:1px;color:#b8a4ff;font-size:13px;filter:drop-shadow(0 0 4px rgba(139,92,246,.3))}.journey-proof-chevron{margin-top:2px;color:#7568ad;font-size:11px;transition:transform .18s}.journey-proof[open] .journey-proof-chevron{transform:rotate(180deg)}.journey-proof-copy{min-width:0}.journey-proof-copy strong{display:block;overflow:hidden;color:#d9d2ff;font-size:8px;font-weight:650;text-overflow:ellipsis;white-space:nowrap}.journey-proof-copy span{display:-webkit-box;margin-top:2px;overflow:hidden;color:#7696a8;font-size:7px;line-height:1.4;-webkit-box-orient:vertical;-webkit-line-clamp:2}.journey-proof-editor{padding:7px;border-top:1px solid rgba(184,164,255,.1)}.journey-proof-note{width:100%;min-height:66px;resize:vertical;padding:7px;border:1px solid rgba(184,164,255,.2);border-radius:4px;outline:0;background:rgba(1,10,19,.72);color:#cde8ef;font:500 8px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;caret-color:#b8a4ff}.journey-proof-note:focus{border-color:rgba(184,164,255,.55);box-shadow:0 0 0 2px rgba(139,92,246,.055)}.journey-proof-controls{display:flex;align-items:center;gap:6px;margin-top:6px}.journey-proof-status{min-width:0;flex:1;color:#748fa0;font-size:7px;line-height:1.25}.journey-proof-status.error{color:#ff8894}.journey-proof-status.saved{color:#65e6b4}.journey-proof-counter{color:#607e90;font-size:7px}.journey-proof-control{width:34px;height:32px;display:grid;place-items:center;border:1px solid rgba(141,239,255,.14);border-radius:4px;background:rgba(2,13,24,.52);color:#7fa4b7;cursor:pointer}.journey-proof-control i{font-size:13px}.journey-proof-control.save{border-color:rgba(184,164,255,.28);color:#b8a4ff}.journey-proof-control.remove{border-color:rgba(255,136,148,.16);color:#b56b77}.journey-proof-control.remove.armed{border-color:rgba(255,136,148,.5);background:rgba(255,136,148,.08);color:#ff8894}.journey-proof-more{color:#8f82ca;font-size:7px;text-transform:uppercase;letter-spacing:.07em}
 .legacy-body{padding:0 0 12px}
 .legacy-body .boss-summary-card{margin:0}
 .legacy-body .summary-row{margin:7px 0 0}
@@ -558,6 +559,19 @@ window.addEventListener('error', function(e){
   <div class="journey-list" id="journey-list"></div>
 </details>
 
+<section class="prestige-host" id="prestige-card" aria-live="polite" hidden></section>
+
+</div>
+
+<div class="confirm-overlay" id="prestige-confirm" onclick="backgroundClosePrestige(event)" role="dialog" aria-modal="true" aria-labelledby="prestige-confirm-title" aria-hidden="true">
+  <div class="confirm-card">
+    <div class="confirm-title" id="prestige-confirm-title">Begin Ascension?</div>
+    <div class="confirm-body" id="prestige-confirm-body"></div>
+    <div class="confirm-acts">
+      <button class="confirm-cancel" type="button" onclick="closePrestigeConfirm()">Not yet</button>
+      <button class="confirm-ok" type="button" onclick="doPrestigeConfirmed()">Ascend</button>
+    </div>
+  </div>
 </div>
 
 <div class="profile-overlay" id="goal-overlay" onclick="backgroundCloseGoals(event)" role="dialog" aria-modal="true" aria-labelledby="goal-editor-title" aria-hidden="true">
@@ -954,8 +968,9 @@ function renderJourneyTimeline(){
       const proofs=document.createElement('div');
       proofs.className='journey-proofs';
       entry.proofs.slice(0,2).forEach(record=>{
-        const row=document.createElement('div');
+        const row=document.createElement('details');
         row.className='journey-proof';
+        const summary=document.createElement('summary');
         const icon=document.createElement('i');
         icon.className='ti ti-fingerprint';
         const copy=document.createElement('div');
@@ -964,8 +979,86 @@ function renderJourneyTimeline(){
         proofTitle.textContent=record.questTitle;
         const note=document.createElement('span');
         note.textContent=record.note;
+        const chevron=document.createElement('i');
+        chevron.className='ti ti-chevron-down journey-proof-chevron';
         copy.append(proofTitle,note);
-        row.append(icon,copy);
+        summary.append(icon,copy,chevron);
+
+        const editor=document.createElement('div');
+        editor.className='journey-proof-editor';
+        const textarea=document.createElement('textarea');
+        textarea.className='journey-proof-note';
+        textarea.maxLength=Proof.MAX_NOTE_LENGTH;
+        textarea.value=record.note;
+        textarea.setAttribute('aria-label','Edit proof for '+record.questTitle);
+        const controls=document.createElement('div');
+        controls.className='journey-proof-controls';
+        const status=document.createElement('span');
+        status.className='journey-proof-status';
+        const counter=document.createElement('span');
+        counter.className='journey-proof-counter';
+        counter.textContent=textarea.value.length+' / '+Proof.MAX_NOTE_LENGTH;
+        const remove=document.createElement('button');
+        remove.type='button';
+        remove.className='journey-proof-control remove';
+        remove.title='Remove proof';
+        remove.setAttribute('aria-label','Remove proof for '+record.questTitle);
+        remove.innerHTML='<i class="ti ti-trash"></i>';
+        const save=document.createElement('button');
+        save.type='button';
+        save.className='journey-proof-control save';
+        save.title='Save proof';
+        save.setAttribute('aria-label','Save proof for '+record.questTitle);
+        save.innerHTML='<i class="ti ti-device-floppy"></i>';
+        let removeArmed=false;
+        let removeTimer=null;
+
+        textarea.addEventListener('input',()=>{
+          counter.textContent=textarea.value.length+' / '+Proof.MAX_NOTE_LENGTH;
+          status.textContent='';
+          status.className='journey-proof-status';
+          removeArmed=false;
+          remove.classList.remove('armed');
+        });
+        save.addEventListener('click',()=>{
+          let outcome=null;
+          gs=GameState.set(state=>{outcome=Proof.updateArchiveRecord(state,record.questId,textarea.value)});
+          if(!outcome||!outcome.saved){
+            status.textContent='Enter a completion note.';
+            status.className='journey-proof-status error';
+            textarea.focus();
+            return;
+          }
+          note.textContent=outcome.record.note;
+          textarea.value=outcome.record.note;
+          counter.textContent=textarea.value.length+' / '+Proof.MAX_NOTE_LENGTH;
+          status.textContent='Saved';
+          status.className='journey-proof-status saved';
+          setTimeout(()=>{row.open=false},500);
+        });
+        remove.addEventListener('click',()=>{
+          if(!removeArmed){
+            removeArmed=true;
+            remove.classList.add('armed');
+            status.textContent='Tap delete again to confirm.';
+            status.className='journey-proof-status error';
+            if(removeTimer)clearTimeout(removeTimer);
+            removeTimer=setTimeout(()=>{
+              removeArmed=false;
+              remove.classList.remove('armed');
+              status.textContent='';
+              status.className='journey-proof-status';
+            },3000);
+            return;
+          }
+          if(removeTimer)clearTimeout(removeTimer);
+          gs=GameState.set(state=>{Proof.removeQuestProof(state,record.questId)});
+          renderJourneyTimeline();
+        });
+
+        controls.append(status,counter,remove,save);
+        editor.append(textarea,controls);
+        row.append(summary,editor);
         proofs.appendChild(row);
       });
       if(entry.proofs.length>2){
@@ -1054,44 +1147,39 @@ function renderSummary(){
 function renderPrestigeCard(){
   const card=document.getElementById('prestige-card');
   const eligible=Prestige.canPrestige(gs);
-  const threshold=SEED_DATA.prestigeConfig.levelThreshold;
   const prestigeData=gs.prestige||{count:0,permanentXpBonus:0};
-  const bonusPct=Math.round((prestigeData.permanentXpBonus||0)*100);
-
-  if(eligible){
-    card.innerHTML=`
-      <div class="prestige-card eligible">
-        <div class="prestige-top">
-          <div class="prestige-icon"><i class="ti ti-infinity"></i></div>
-          <div><div class="prestige-title">Ready to Ascend</div><div class="prestige-sub">Reset level & attributes for a permanent XP bonus</div></div>
-          ${prestigeData.count>0?`<div class="prestige-count-badge">×${prestigeData.count}</div>`:''}
-        </div>
-        <button class="prestige-btn" onclick="openPrestigeConfirm()">Ascend now</button>
-      </div>`;
-  }else{
-    const pct=Math.min(100,Math.round((gs.level/threshold)*100));
-    card.innerHTML=`
-      <div class="prestige-card">
-        <div class="prestige-top">
-          <div class="prestige-icon"><i class="ti ti-infinity"></i></div>
-          <div><div class="prestige-title">Prestige — Level ${gs.level} / ${threshold}</div><div class="prestige-sub">${bonusPct>0?'Current bonus: +'+bonusPct+'% XP':'Unlocks a permanent XP bonus at level '+threshold}</div></div>
-        </div>
-        <div class="prestige-bar-bg"><div class="prestige-bar-fill" style="width:${pct}%"></div></div>
-      </div>`;
-  }
+  card.hidden=!eligible;
+  if(!eligible){card.innerHTML='';return}
+  card.innerHTML=`
+    <div class="prestige-card eligible">
+      <div class="prestige-top">
+        <div class="prestige-icon"><i class="ti ti-infinity"></i></div>
+        <div><div class="prestige-title">Ascension available</div><div class="prestige-sub">Begin a new cycle with a permanent XP bonus</div></div>
+        ${prestigeData.count>0?`<div class="prestige-count-badge">Cycle ${prestigeData.count}</div>`:''}
+      </div>
+      <button class="prestige-btn" onclick="openPrestigeConfirm()">Review ascension</button>
+    </div>`;
 }
 
 function openPrestigeConfirm(){
   const nextBonus=Math.round((gs.prestige.permanentXpBonus+SEED_DATA.prestigeConfig.xpBonusPerPrestige)*100);
   document.getElementById('prestige-confirm-body').innerHTML=
-    `Your level and attribute levels will reset to 1. <strong>Skills, achievements, boss defeats, titles, and rewards are permanently kept.</strong><br><br>
-     You'll gain a permanent XP bonus, bringing your total to <strong>+${nextBonus}%</strong> forever.<br><br>
-     This cannot be undone. Ascend?`;
-  document.getElementById('prestige-confirm').classList.add('show');
+    `Your current level and attribute levels will return to 1. <strong>Lifetime XP, streak, quest history, proofs, goals, skills, achievements, boss progress, titles, and rewards will remain.</strong><br><br>
+     Your permanent XP bonus will become <strong>+${nextBonus}%</strong>.<br><br>
+     This action cannot be undone.`;
+  const overlay=document.getElementById('prestige-confirm');
+  overlay.classList.add('show');
+  overlay.setAttribute('aria-hidden','false');
 }
 
 function closePrestigeConfirm(){
-  document.getElementById('prestige-confirm').classList.remove('show');
+  const overlay=document.getElementById('prestige-confirm');
+  overlay.classList.remove('show');
+  overlay.setAttribute('aria-hidden','true');
+}
+
+function backgroundClosePrestige(event){
+  if(event.target===document.getElementById('prestige-confirm'))closePrestigeConfirm();
 }
 
 function doPrestigeConfirmed(){
@@ -1218,7 +1306,7 @@ function switchAttr(id){
 
 function refreshAll(){
   gs=GameState.get();
-  renderHeader();renderActiveEffects();renderGoals();renderRecentActivity();renderJourneyTimeline();renderTabs();renderAttrBar();renderSkills();
+  renderHeader();renderActiveEffects();renderGoals();renderRecentActivity();renderJourneyTimeline();renderPrestigeCard();renderTabs();renderAttrBar();renderSkills();
 }
 
 const lastSeenUnlocked={};
@@ -1231,6 +1319,7 @@ window.addEventListener('storage',event=>{
 });
 window.addEventListener('keydown',event=>{
   if(event.key==='Escape'&&document.getElementById('goal-overlay').classList.contains('open'))closeGoalEditor();
+  if(event.key==='Escape'&&document.getElementById('prestige-confirm').classList.contains('show'))closePrestigeConfirm();
 });
 </script>
 <script src="js/panel-navigation.js"></script>

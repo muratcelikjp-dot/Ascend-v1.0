@@ -484,6 +484,7 @@ window.addEventListener('error', function(e){
 <script src="js/shield.js"></script>
 <script src="js/ranks.js"></script>
 <script src="js/gameloop.js"></script>
+<script src="js/home-feed.js"></script>
 <script src="js/attribute-icons.js"></script>
 <script src="js/terminal-caret.js"></script>
 <script src="js/plan-modal.js"></script>
@@ -894,6 +895,7 @@ function confirmBossMissionAction(){
     return;
   }
   if(action==='complete'&&outcome&&outcome.completed){
+    if(outcome.damageDealt>0&&window.HomeFeed) HomeFeed.queueBossImpact();
     if(outcome.defeated) showBossDefeatedToast(outcome.bossId);
     else showBoardNotice('Weak point destroyed','-'+outcome.damageDealt+' Integrity / -'+outcome.dominanceReduced+' Dominance',4200);
     return;
@@ -1233,6 +1235,8 @@ function toggle(id,card){
 
   const mainQuestCleared=result.completed&&(result.quest.questType==='main'||result.quest.priority==='high');
   if(result.completed){
+    if(window.HomeFeed) HomeFeed.queueQuestCompletion();
+    if(result.bossDamageDealt>0&&window.HomeFeed) HomeFeed.queueBossImpact();
     burst(card,result.quest.xp);
     if(result.bonusXpFromEffects>0) showBoardNotice('Momentum consumed','+'+result.bonusXpFromEffects+' bonus XP',2600);
     if(result.playerLeveledUp) showLU();

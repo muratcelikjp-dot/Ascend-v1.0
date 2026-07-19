@@ -18,6 +18,7 @@ const progressiveUnlocksSource = fs.readFileSync(path.join(ROOT, "js", "progress
 const journeyTimelineSource = fs.readFileSync(path.join(ROOT, "js", "journey-timeline.js"), "utf8");
 const bossesSource = fs.readFileSync(path.join(ROOT, "js", "bosses.js"), "utf8");
 const ranksSource = fs.readFileSync(path.join(ROOT, "js", "ranks.js"), "utf8");
+const prestigeSource = fs.readFileSync(path.join(ROOT, "js", "prestige.js"), "utf8");
 const dailyStateSource = fs.readFileSync(path.join(ROOT, "js", "daily-state.js"), "utf8");
 const questsSource = fs.readFileSync(path.join(ROOT, "js", "quests.js"), "utf8");
 const proofSource = fs.readFileSync(path.join(ROOT, "js", "proof.js"), "utf8");
@@ -83,12 +84,13 @@ function createRuntime(storage) {
   vm.runInContext(skillsSource + ";globalThis.Skills=Skills;", context);
   vm.runInContext(achievementsSource + ";globalThis.Achievements=Achievements;", context);
   vm.runInContext(activeEffectsSource, context);
+  vm.runInContext(proofSource, context);
   vm.runInContext(weeklyRecapSource, context);
   vm.runInContext(progressiveUnlocksSource, context);
-  vm.runInContext(proofSource, context);
   vm.runInContext(journeyTimelineSource, context);
   vm.runInContext(bossesSource + ";globalThis.Bosses=Bosses;", context);
   vm.runInContext(ranksSource + ";globalThis.Ranks=Ranks;", context);
+  vm.runInContext(prestigeSource + ";globalThis.Prestige=Prestige;", context);
   vm.runInContext(dailyStateSource, context);
   vm.runInContext(questsSource + ";globalThis.Quests=Quests;", context);
   vm.runInContext(profileSource, context);
@@ -104,6 +106,7 @@ function createRuntime(storage) {
     DailyState: context.DailyState,
     Quests: context.Quests,
     Proof: context.Proof,
+    Prestige: context.Prestige,
     UserProfile: context.UserProfile,
     SaveVault: context.SaveVault,
     SEED_DATA: context.SEED_DATA,
@@ -173,6 +176,60 @@ test("older saves migrate without losing player progress", () => {
   assert.equal(persisted.version, SEED_DATA.defaultState.version);
 });
 
+test("current-version partial saves are repaired without losing existing progress", () => {
+  const bootstrap = createRuntime(new MemoryStorage());
+  const partialState = {
+    version: bootstrap.SEED_DATA.defaultState.version,
+    level: 4,
+    xp: 275,
+    lifetimeXp: 920,
+    streak: 6,
+    goals: {
+      selected: ["fitness"],
+      onboardingComplete: true
+    }
+  };
+  const storage = new MemoryStorage({ rpg_state: JSON.stringify(partialState) });
+  const { GameState } = createRuntime(storage);
+
+  const repaired = GameState.get();
+  const persisted = JSON.parse(storage.getItem("rpg_state"));
+
+  assert.equal(repaired.level, 4);
+  assert.equal(repaired.xp, 275);
+  assert.equal(repaired.lifetimeXp, 920);
+  assert.equal(repaired.streak, 6);
+  assert.deepEqual([...repaired.goals.selected], ["fitness"]);
+  assert.equal(repaired.goals.onboardingComplete, true);
+  assert.deepEqual(repaired.goals.details, {});
+  assert.ok(repaired.attributes.intelligence);
+  assert.ok(Array.isArray(repaired.quests.active));
+  assert.ok(Array.isArray(repaired.bosses.missionHistory));
+  assert.ok(Array.isArray(repaired.rewards.purchased));
+  assert.ok(Array.isArray(repaired.achievements.unlocked));
+  assert.ok(persisted.attributes.strength);
+  assert.ok(Array.isArray(persisted.quests.active));
+});
+
+test("structurally invalid state sections are replaced with safe defaults", () => {
+  const bootstrap = createRuntime(new MemoryStorage());
+  const malformedState = clone(bootstrap.SEED_DATA.defaultState);
+  malformedState.xp = 340;
+  malformedState.attributes = [];
+  malformedState.quests = "invalid";
+  malformedState.rewards.purchased = {};
+
+  const storage = new MemoryStorage({ rpg_state: JSON.stringify(malformedState) });
+  const { GameState } = createRuntime(storage);
+  const repaired = GameState.get();
+
+  assert.equal(repaired.xp, 340);
+  assert.ok(repaired.attributes.willpower);
+  assert.ok(Array.isArray(repaired.quests.active));
+  assert.ok(Array.isArray(repaired.rewards.purchased));
+  assert.deepEqual([...repaired.rewards.purchased], []);
+});
+
 test("corrupted JSON is preserved before a fresh save is created", () => {
   const corrupted = "{not-valid-json";
   const storage = new MemoryStorage({ rpg_state: corrupted });
@@ -222,8 +279,8 @@ test("invalid imported state is rejected without changing the save", () => {
   const storage = new MemoryStorage();
   const { GameState } = createRuntime(storage);
   GameState.set(state => { state.xp = 345; });
-  const before = storage.getItem("rpg_state");
   const invalid = GameState.exportState();
+  const before = storage.getItem("rpg_state");
   delete invalid.planning;
 
   const result = GameState.importState(invalid);
@@ -636,6 +693,7 @@ test("weekly recap returns a calm empty-state story without mutating progress", 
   assert.equal(recap.activeDays, 0);
   assert.equal(recap.questsCompleted, 0);
   assert.equal(recap.xpEarned, 0);
+  assert.equal(recap.proofsLogged, 0);
   assert.equal(recap.headline, "The campaign is waiting");
   assert.equal(JSON.stringify(state), before);
 });
@@ -661,6 +719,14 @@ test("weekly recap combines local daily logs and Main Quest reports", () => {
     };
     state.planning.dayReports[yesterday] = { mainQuest: { title: "Ship it", completed: true } };
     state.planning.dayReports[twoDaysAgo] = { mainQuest: { title: "Prepare it", completed: false } };
+    state.proofs.records = [{
+      questId: "proof-weekly",
+      questTitle: "Ship it",
+      dateKey: yesterday,
+      note: "Release deployed.",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }];
   });
 
   const recap = runtime.WeeklyRecap.build(runtime.GameState.get(), runtime.DateUtils.parseLocalDateKey(today));
@@ -670,9 +736,33 @@ test("weekly recap combines local daily logs and Main Quest reports", () => {
   assert.equal(recap.mainQuestsSecured, 1);
   assert.equal(recap.mainQuestsMissed, 1);
   assert.equal(recap.growthEvents, 3);
+  assert.equal(recap.proofsLogged, 1);
   assert.equal(recap.strongestAttribute.id, "strength");
   assert.equal(recap.strongestAttribute.xp, 200);
   assert.match(recap.narrative, /1 of 2 recorded Main Quests were secured/);
+  assert.match(recap.narrative, /1 completion record was added to your journey/);
+});
+
+test("weekly recap reports proof-only dates without changing active days", () => {
+  const runtime = createRuntime(new MemoryStorage());
+  const today = runtime.DateUtils.getLocalDateKey();
+  runtime.GameState.set(state => {
+    state.proofs.records = [{
+      questId: "proof-only-week",
+      questTitle: "Send the application",
+      dateKey: today,
+      note: "Confirmation email received.",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }];
+  });
+
+  const recap = runtime.WeeklyRecap.build(runtime.GameState.get(), runtime.DateUtils.parseLocalDateKey(today));
+  assert.equal(recap.activeDays, 0);
+  assert.equal(recap.questsCompleted, 0);
+  assert.equal(recap.proofsLogged, 1);
+  assert.equal(recap.headline, "The campaign is waiting");
+  assert.match(recap.narrative, /1 archived completion record falls within this window/);
 });
 
 test("journey timeline stays empty until meaningful progress exists", () => {
@@ -917,6 +1007,34 @@ test("proof archive survives the daily quest reset and a new runtime", () => {
   assert.equal(archive[0].questId, questId);
   assert.equal(archive[0].dateKey, yesterday);
   assert.equal(archive[0].note, "Final build delivered.");
+  const progressionBeforeUpdate = {
+    xp: state.xp,
+    lifetimeXp: state.lifetimeXp,
+    completedToday: state.quests.completedToday,
+    totalCompletedEver: state.quests.totalCompletedEver
+  };
+
+  let update;
+  reloaded.GameState.set(current => {
+    update = reloaded.Proof.updateArchiveRecord(current, questId, "Delivery confirmed by the client.");
+  });
+  assert.equal(update.saved, true);
+  assert.equal(reloaded.Proof.getArchive(reloaded.GameState.get())[0].note, "Delivery confirmed by the client.");
+
+  let rejectedUpdate;
+  reloaded.GameState.set(current => {
+    rejectedUpdate = reloaded.Proof.updateArchiveRecord(current, questId, "   ");
+  });
+  assert.equal(rejectedUpdate.saved, false);
+  assert.equal(rejectedUpdate.reason, "empty-note");
+  assert.equal(reloaded.Proof.getArchive(reloaded.GameState.get())[0].note, "Delivery confirmed by the client.");
+  const afterUpdate = reloaded.GameState.get();
+  assert.deepEqual({
+    xp: afterUpdate.xp,
+    lifetimeXp: afterUpdate.lifetimeXp,
+    completedToday: afterUpdate.quests.completedToday,
+    totalCompletedEver: afterUpdate.quests.totalCompletedEver
+  }, progressionBeforeUpdate);
 
   let removal;
   reloaded.GameState.set(current => {
@@ -924,4 +1042,85 @@ test("proof archive survives the daily quest reset and a new runtime", () => {
   });
   assert.equal(removal.removed, true);
   assert.deepEqual([...reloaded.Proof.getArchive(reloaded.GameState.get())], []);
+});
+
+test("prestige is unavailable below the configured level and leaves state unchanged", () => {
+  const runtime = createRuntime(new MemoryStorage());
+  const state = runtime.GameState.get();
+  const before = clone(state);
+
+  assert.equal(runtime.Prestige.canPrestige(state), false);
+  assert.equal(runtime.Prestige.doPrestige(state), null);
+  assert.deepEqual(clone(state), before);
+});
+
+test("prestige resets only current leveling progress and preserves the character journey", () => {
+  const runtime = createRuntime(new MemoryStorage());
+  let outcome;
+
+  runtime.GameState.set(state => {
+    state.level = runtime.SEED_DATA.prestigeConfig.levelThreshold;
+    state.xp = 275;
+    state.lifetimeXp = 18450;
+    state.streak = 12;
+    state.lastActiveDate = "2026-07-17";
+    state.goals.selected = ["fitness"];
+    state.quests.totalCompletedEver = 24;
+    state.quests.active.push({ id: "prestige-quest", title: "Keep moving", done: false });
+    state.proofs.records.push({ questId: "proof-kept", note: "Milestone recorded.", dateKey: "2026-07-16" });
+    state.skills.unlocked.push("str_daily_energy");
+    state.achievements.unlocked.push("first_blood");
+    state.bosses.currentHp = 75;
+    state.bosses.defeated.push("procrastination");
+    state.rewards.purchased.push({ id: "reward-kept", purchasedAt: 1 });
+    if (!state.dailyLog) state.dailyLog = {};
+    state.dailyLog["2026-07-16"] = { xpEarned: 200, questsCompleted: 1 };
+    Object.values(state.attributes).forEach(attribute => {
+      attribute.level = 8;
+      attribute.xp = 140;
+    });
+  });
+
+  const before = runtime.GameState.get();
+  const preserved = {
+    lifetimeXp: before.lifetimeXp,
+    streak: before.streak,
+    lastActiveDate: before.lastActiveDate,
+    goals: clone(before.goals),
+    quests: clone(before.quests),
+    proofs: clone(before.proofs),
+    skills: clone(before.skills),
+    bossHp: before.bosses.currentHp,
+    bossesDefeated: clone(before.bosses.defeated),
+    rewardsPurchased: clone(before.rewards.purchased),
+    dailyLog: clone(before.dailyLog)
+  };
+
+  runtime.GameState.set(state => {
+    outcome = runtime.Prestige.doPrestige(state);
+  });
+
+  const after = runtime.GameState.get();
+  assert.equal(outcome.previousLevel, runtime.SEED_DATA.prestigeConfig.levelThreshold);
+  assert.equal(after.level, 1);
+  assert.equal(after.xp, 0);
+  assert.equal(after.prestige.count, 1);
+  assert.equal(after.prestige.permanentXpBonus, runtime.SEED_DATA.prestigeConfig.xpBonusPerPrestige);
+  Object.values(after.attributes).forEach(attribute => {
+    assert.equal(attribute.level, 1);
+    assert.equal(attribute.xp, 0);
+  });
+  assert.equal(after.lifetimeXp, preserved.lifetimeXp);
+  assert.equal(after.streak, preserved.streak);
+  assert.equal(after.lastActiveDate, preserved.lastActiveDate);
+  assert.deepEqual(clone(after.goals), preserved.goals);
+  assert.deepEqual(clone(after.quests), preserved.quests);
+  assert.deepEqual(clone(after.proofs), preserved.proofs);
+  assert.deepEqual(clone(after.skills), preserved.skills);
+  assert.equal(after.bosses.currentHp, preserved.bossHp);
+  assert.deepEqual(clone(after.bosses.defeated), preserved.bossesDefeated);
+  assert.deepEqual(clone(after.rewards.purchased), preserved.rewardsPurchased);
+  assert.deepEqual(clone(after.dailyLog), preserved.dailyLog);
+  assert.equal(after.achievements.unlocked.includes("first_blood"), true);
+  assert.equal(after.achievements.unlocked.includes("legend_prestige_1"), true);
 });

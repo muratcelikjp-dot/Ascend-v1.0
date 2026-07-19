@@ -208,6 +208,7 @@ window.addEventListener("error",function(e){
 <script src="js/shield.js"></script>
 <script src="js/ranks.js"></script>
 <script src="js/gameloop.js"></script>
+<script src="js/home-feed.js"></script>
 <script>
 const bootstrapReport=GameLoop.bootstrapDay();
 let gs=GameState.get();
@@ -465,6 +466,7 @@ function completeBossMission(){
   lastWeakPointTrigger=null;closeMissionSheet();renderBossScreen();
   if(outcome&&outcome.encounterDefeated){checkForPendingDefeat();return;}
   if(outcome&&outcome.expired){openFailurePrompt();return;}
+  if(outcome&&outcome.completed&&outcome.damageDealt>0&&window.HomeFeed)HomeFeed.queueBossImpact();
   if(outcome&&outcome.defeated)showVictory(defeatedBossDef);
 }
 

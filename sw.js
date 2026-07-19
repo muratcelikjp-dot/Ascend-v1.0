@@ -9,7 +9,7 @@
 //
 // CACHE_VERSION must be bumped on any meaningful app-shell file change.
 const CACHE_PREFIX = "rpg-app-";
-const CACHE_VERSION = "v127";
+const CACHE_VERSION = "v160";
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
 
 const PRECACHE_URLS = [
@@ -55,6 +55,7 @@ const PRECACHE_URLS = [
   "js/ranks.js",
   "js/prestige.js",
   "js/gameloop.js",
+  "js/home-feed.js",
   "js/index-effects.js",
   "js/index-ui.js",
   "js/index.js",
@@ -79,7 +80,13 @@ const PRECACHE_URLS = [
   "icons/attribute-strength.svg",
   "icons/attribute-strength-logo.jpg",
   "icons/attribute-charisma-logo.png",
-  "icons/attribute-willpower-logo.png"
+  "icons/attribute-willpower-logo.png",
+  "icons/node-quests.png",
+  "icons/node-stats-dashboard.png",
+  "icons/node-hero-helmet.png",
+  "icons/node-rewards.png",
+  "icons/node-skill-tree.png",
+  "icons/node-boss-eye.png"
 ];
 
 self.addEventListener("install", event => {

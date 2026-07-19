@@ -30,6 +30,113 @@ function fireConstellationRipple(){
   gate.classList.add('wave-fired');
 }
 
+let energyCoreWakeTimer=null;
+let energyCoreReactionTimer=null;
+let homeFeedTimer=null;
+let homeFeedMotionTimers=[];
+
+const HOME_FEED_SOURCES={
+  quest:{node:'quests',motion:'M99 196 C119 220 145 247 177 265',path:'#d9f2f7',bright:'#ffffff',mid:'#d9f2f7',deep:'#4f9db8',rgb:'125,227,255',angle:'32deg',pullX:'-2.7px',pullY:'-1.8px',halfX:'-1.8px',halfY:'-1.2px',coreFilter:'brightness(1.56) drop-shadow(0 0 10px rgba(230,253,255,.82))'},
+  rewards:{node:'rewards',motion:'M104 375 C121 349 145 317 178 296',path:'#f7c948',bright:'#fffbed',mid:'#f7c948',deep:'#a96f0c',rgb:'247,201,72',angle:'-36deg',pullX:'-2.7px',pullY:'2px',halfX:'-1.8px',halfY:'1.3px',coreFilter:'brightness(1.14) sepia(.92) saturate(3.2) hue-rotate(350deg) drop-shadow(0 0 11px rgba(247,201,72,.82))'},
+  hero:{node:'hero',motion:'M195 140 C204 176 188 219 195 257',path:'#7cc8ff',bright:'#f5fbff',mid:'#9bd5ff',deep:'#397eb6',rgb:'124,200,255',angle:'90deg',pullX:'0px',pullY:'-2.8px',halfX:'0px',halfY:'-1.8px',coreFilter:'brightness(1.38) saturate(1.35) drop-shadow(0 0 11px rgba(124,200,255,.8))'},
+  skill:{node:'skill',motion:'M291 196 C271 220 245 247 213 265',path:'#9aa7ff',bright:'#f7f3ff',mid:'#b8abff',deep:'#6558ba',rgb:'154,167,255',angle:'148deg',pullX:'2.7px',pullY:'-1.8px',halfX:'1.8px',halfY:'-1.2px',coreFilter:'brightness(1.3) saturate(1.6) hue-rotate(32deg) drop-shadow(0 0 11px rgba(154,167,255,.82))'},
+  boss:{node:'boss',motion:'M195 414 C202 385 188 344 195 303',path:'#ff6f9a',bright:'#fff4f7',mid:'#ff8bab',deep:'#b8325e',rgb:'255,111,154',angle:'-90deg',pullX:'0px',pullY:'2.8px',halfX:'0px',halfY:'1.8px',coreFilter:'brightness(1.24) sepia(.25) saturate(2.3) hue-rotate(292deg) drop-shadow(0 0 11px rgba(255,111,154,.82))'},
+  stats:{node:'stats',motion:'M286 375 C269 349 245 317 212 296',path:'#41e6c4',bright:'#effffb',mid:'#75f0d4',deep:'#168b75',rgb:'65,230,196',angle:'-144deg',pullX:'2.7px',pullY:'2px',halfX:'1.8px',halfY:'1.3px',coreFilter:'brightness(1.3) saturate(1.55) hue-rotate(92deg) drop-shadow(0 0 11px rgba(65,230,196,.8))'}
+};
+
+function wakeEnergyCore(){
+  const gate=document.getElementById('screen-wrap');
+  if(!gate) return;
+  gate.classList.remove('is-core-waking');
+  void gate.offsetWidth;
+  gate.classList.add('is-core-waking');
+  clearTimeout(energyCoreWakeTimer);
+  energyCoreWakeTimer=setTimeout(()=>gate.classList.remove('is-core-waking'),1450);
+}
+
+function pulseEnergyCore(){
+  const core=document.getElementById('energy-core');
+  if(!core||core.getAttribute('aria-disabled')==='true') return;
+  core.classList.remove('is-core-reacting');
+  void core.offsetWidth;
+  core.classList.add('is-core-reacting');
+  clearTimeout(energyCoreReactionTimer);
+  energyCoreReactionTimer=setTimeout(()=>core.classList.remove('is-core-reacting'),680);
+}
+
+function clearHomeFeedState(gate){
+  homeFeedMotionTimers.forEach(timer=>clearTimeout(timer));
+  homeFeedMotionTimers=[];
+  gate.classList.remove('home-feed-active','home-feed-reduced','home-feed-fallback');
+  Object.values(HOME_FEED_SOURCES).forEach(config=>gate.classList.remove('feed-source-'+config.node));
+  const packet=document.getElementById('home-energy-packet');
+  if(packet) packet.setAttribute('opacity','0');
+}
+
+function playHomeFeedEvent(event,reducedMotion){
+  const gate=document.getElementById('screen-wrap');
+  const config=event&&HOME_FEED_SOURCES[event.source];
+  if(!gate||!config) return 0;
+  const isStrong=Number(event.strength)>=2||Number(event.count)>=2||Number(event.waves)>=3;
+  const pulseCount=Math.max(1,Math.min(6,Number(event.count)||1));
+  clearHomeFeedState(gate);
+  gate.style.setProperty('--home-feed-color',config.path);
+  gate.style.setProperty('--home-feed-bright',config.bright);
+  gate.style.setProperty('--home-feed-mid',config.mid);
+  gate.style.setProperty('--home-feed-deep',config.deep);
+  gate.style.setProperty('--home-feed-rgb',config.rgb);
+  gate.style.setProperty('--home-feed-reach-angle',config.angle);
+  gate.style.setProperty('--home-feed-pull-x',config.pullX);
+  gate.style.setProperty('--home-feed-pull-y',config.pullY);
+  gate.style.setProperty('--home-feed-half-x',config.halfX);
+  gate.style.setProperty('--home-feed-half-y',config.halfY);
+  gate.style.setProperty('--home-feed-core-filter',config.coreFilter);
+  gate.style.setProperty('--home-feed-packet-glow',isStrong?'1':'.82');
+  const motion=document.getElementById('home-energy-motion');
+  const radius=document.getElementById('home-energy-radius');
+  const opacity=document.getElementById('home-energy-opacity');
+  const brightStop=document.getElementById('home-energy-stop-bright');
+  const midStop=document.getElementById('home-energy-stop-mid');
+  const deepStop=document.getElementById('home-energy-stop-deep');
+  if(motion) motion.setAttribute('path',config.motion);
+  if(radius) radius.setAttribute('values',isStrong?'4;8;9;6.8;1':'3;7;7.8;5.8;1');
+  if(brightStop) brightStop.setAttribute('stop-color',config.bright);
+  if(midStop) midStop.setAttribute('stop-color',config.mid);
+  if(deepStop) deepStop.setAttribute('stop-color',config.deep);
+  void gate.offsetWidth;
+  gate.classList.add('feed-source-'+config.node,reducedMotion?'home-feed-reduced':'home-feed-active');
+  if(!reducedMotion){
+    const pulseInterval=2050;
+    for(let pulseIndex=0;pulseIndex<pulseCount;pulseIndex++){
+      const pulseDelay=800+(pulseIndex*pulseInterval);
+      const motionTimer=setTimeout(()=>{
+        let started=false;
+        [motion,radius,opacity].forEach(animation=>{
+          if(animation&&typeof animation.beginElement==='function'){
+            animation.beginElement();
+            started=true;
+          }
+        });
+        if(!started){
+          gate.classList.remove('home-feed-fallback');
+          void gate.offsetWidth;
+          gate.classList.add('home-feed-fallback');
+        }
+      },pulseDelay);
+      const arrivalTimer=setTimeout(()=>pulseEnergyCore(),pulseDelay+1850);
+      homeFeedMotionTimers.push(motionTimer,arrivalTimer);
+    }
+  }
+  const duration=reducedMotion?900:Math.max(5200,3400+((pulseCount-1)*2050));
+  clearTimeout(homeFeedTimer);
+  homeFeedTimer=setTimeout(()=>clearHomeFeedState(gate),duration);
+  return duration;
+}
+
+function playQuestFeedWaves(waves){
+  return playHomeFeedEvent({source:'quest',strength:Number(waves)>=3?2:1},false);
+}
+
 function spawnDamagePopup(damage,tapX,tapY){
   const wrap=document.getElementById('shield-wrap');
   const p=document.createElement('div');

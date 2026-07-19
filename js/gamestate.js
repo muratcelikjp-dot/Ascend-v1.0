@@ -20,6 +20,40 @@ const GameState = (function () {
     return Boolean(value) && typeof value === "object" && !Array.isArray(value);
   }
 
+  function fillMissingDefaults(target, defaults) {
+    let changed = false;
+
+    Object.keys(defaults).forEach(key => {
+      const defaultValue = defaults[key];
+      const currentValue = target[key];
+
+      if (Array.isArray(defaultValue)) {
+        if (!Array.isArray(currentValue)) {
+          target[key] = deepClone(defaultValue);
+          changed = true;
+        }
+        return;
+      }
+
+      if (isPlainObject(defaultValue)) {
+        if (!isPlainObject(currentValue)) {
+          target[key] = deepClone(defaultValue);
+          changed = true;
+        } else if (fillMissingDefaults(currentValue, defaultValue)) {
+          changed = true;
+        }
+        return;
+      }
+
+      if (currentValue === undefined) {
+        target[key] = defaultValue;
+        changed = true;
+      }
+    });
+
+    return changed;
+  }
+
   function buildFreshState() {
     const fresh = deepClone(SEED_DATA.defaultState);
     const firstBoss = SEED_DATA.bosses[fresh.bosses.currentBossId];
@@ -143,6 +177,7 @@ const GameState = (function () {
 
   function migrateIfNeeded(state) {
     const currentVersion = Number(state.version) || 0;
+    fillMissingDefaults(state, SEED_DATA.defaultState);
     if (currentVersion < ATTRIBUTE_SCHEMA_VERSION) migrateFourAttributeModel(state);
     state.version = SEED_DATA.defaultState.version;
     if (!state.dailyLog) state.dailyLog = {};
@@ -351,8 +386,14 @@ const GameState = (function () {
       return state;
     }
     const previousVersion = Number(state.version) || 0;
+    const serializedBeforeMigration = JSON.stringify(state);
     state = migrateIfNeeded(state);
-    if (previousVersion < SEED_DATA.defaultState.version) writeRaw(state);
+    if (
+      previousVersion < SEED_DATA.defaultState.version ||
+      JSON.stringify(state) !== serializedBeforeMigration
+    ) {
+      writeRaw(state);
+    }
     return state;
   }
 

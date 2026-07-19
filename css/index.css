@@ -1089,6 +1089,7 @@ body::after{
 }
 
 .constellation-stage{
+  touch-action:none;
   position:relative;
   width:100%;
   max-width:390px;
@@ -1108,7 +1109,6 @@ body::after{
 }
 
 .network-base path,
-.network-capillaries path,
 .network-flow path,
 .network-impulses path,
 .activation-ripple{
@@ -1117,23 +1117,15 @@ body::after{
 }
 
 .network-base path{
-  stroke:rgba(111,142,163,.24);
-  stroke-width:1.15;
+  stroke:rgba(111,142,163,.18);
+  stroke-width:.9;
   stroke-linecap:round;
-  transition:stroke .55s ease,opacity .55s ease,filter .55s ease;
-}
-
-.network-capillaries path{
-  stroke:rgba(111,142,163,.24);
-  stroke-width:.82;
-  stroke-linecap:round;
-  opacity:.68;
   transition:stroke .55s ease,opacity .55s ease,filter .55s ease;
 }
 
 .network-flow path{
   stroke:var(--abyss-aqua);
-  stroke-width:1.55;
+  stroke-width:.72;
   stroke-linecap:round;
   stroke-dasharray:1;
   stroke-dashoffset:1;
@@ -1143,7 +1135,7 @@ body::after{
 
 .network-impulses path{
   stroke:var(--abyss-cyan);
-  stroke-width:3.2;
+  stroke-width:1.45;
   stroke-linecap:round;
   stroke-dasharray:.1 .9;
   stroke-dashoffset:1;
@@ -1151,12 +1143,18 @@ body::after{
   filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 8px rgba(53,244,230,.95));
 }
 
-.flow-hero,.impulse-hero{--flow-time:420ms;--flow-delay:140ms}
-.flow-quests,.impulse-quests{--flow-time:300ms;--flow-delay:40ms}
-.flow-skill,.impulse-skill{--flow-time:310ms;--flow-delay:55ms;stroke:var(--abyss-purple)}
-.flow-rewards,.impulse-rewards{--flow-time:390ms;--flow-delay:90ms;stroke:var(--abyss-gold)}
-.flow-boss,.impulse-boss{--flow-time:410ms;--flow-delay:105ms;stroke:var(--abyss-coral)}
-.flow-stats,.impulse-stats{--flow-time:390ms;--flow-delay:90ms;stroke:var(--abyss-green)}
+.home-energy-packet{
+  pointer-events:none;
+  mix-blend-mode:screen;
+  filter:url(#home-energy-texture) drop-shadow(0 0 2px rgba(255,255,255,.88)) drop-shadow(0 0 8px rgba(var(--home-feed-rgb,125,227,255),.82)) drop-shadow(0 0 16px rgba(var(--home-feed-rgb,125,227,255),var(--home-feed-packet-glow,.82)));
+}
+
+.flow-hero,.impulse-hero{--flow-time:680ms;--flow-delay:180ms;--river-time:11.4s;--river-delay:-3.6s;--spark-time:24s;--spark-delay:-15s}
+.flow-quests,.impulse-quests{--flow-time:560ms;--flow-delay:80ms;--river-time:9.8s;--river-delay:-6.2s;--spark-time:21s;--spark-delay:-4.8s}
+.flow-skill,.impulse-skill{--flow-time:570ms;--flow-delay:95ms;--river-time:12.8s;--river-delay:-9.4s;--spark-time:27s;--spark-delay:-12s;--spark-alpha:.14;stroke:var(--abyss-purple)}
+.flow-rewards,.impulse-rewards{--flow-time:650ms;--flow-delay:130ms;--river-time:10.8s;--river-delay:-5.2s;--spark-time:25s;--spark-delay:-19s;stroke:var(--abyss-gold)}
+.flow-boss,.impulse-boss{--flow-time:670ms;--flow-delay:145ms;--river-time:12.2s;--river-delay:-1.8s;--spark-time:23s;--spark-delay:-9.6s;stroke:var(--abyss-coral)}
+.flow-stats,.impulse-stats{--flow-time:650ms;--flow-delay:130ms;--river-time:10.4s;--river-delay:-8.2s;--spark-time:24s;--spark-delay:-17s;stroke:var(--abyss-green)}
 
 .shield-gate.wave-fired .network-flow path{
   animation:constellationBranchCharge var(--flow-time) ease-out var(--flow-delay) forwards;
@@ -1166,24 +1164,109 @@ body::after{
   animation:neuralImpulseTravel var(--flow-time) cubic-bezier(.18,.7,.3,1) var(--flow-delay) forwards;
 }
 
-.shield-gate.wave-fired .network-capillaries path{
-  animation:neuralCapillaryWake 720ms ease-out 120ms both;
-}
-
 .shield-gate.is-settled .network-base path{
-  stroke:rgba(141,239,255,.3);
-  filter:drop-shadow(0 0 2px rgba(53,244,230,.2));
-}
-.shield-gate.is-settled .network-capillaries path{
-  stroke:rgba(141,239,255,.34);
-  opacity:.86;
+  stroke:rgba(89,174,196,.16);
+  filter:drop-shadow(0 0 2px rgba(53,244,230,.1));
 }
 .shield-gate.is-settled .network-flow path{
+  stroke-dasharray:.08 .32;
   stroke-dashoffset:0;
-  opacity:.42;
-  animation:neuralRestPulse 9s ease-in-out infinite;
+  opacity:.22;
+  animation:neuralRiverInflow var(--river-time) linear var(--river-delay) infinite;
 }
-.shield-gate.is-settled .network-flow .flow-skill{opacity:.14}
+.shield-gate.is-settled .network-impulses path{
+  --spark-alpha:.42;
+  stroke-dasharray:.018 .982;
+  stroke-dashoffset:0;
+  opacity:0;
+  animation:neuralRiverSpark var(--spark-time) linear var(--spark-delay) infinite;
+}
+.shield-gate.is-settled .network-flow .flow-skill{opacity:.1}
+.shield-gate.is-settled .network-impulses .impulse-skill{--spark-alpha:.12}
+
+.shield-gate.home-feed-active.feed-source-hero .network-flow .flow-hero,
+.shield-gate.home-feed-active.feed-source-quests .network-flow .flow-quests,
+.shield-gate.home-feed-active.feed-source-skill .network-flow .flow-skill,
+.shield-gate.home-feed-active.feed-source-rewards .network-flow .flow-rewards,
+.shield-gate.home-feed-active.feed-source-boss .network-flow .flow-boss,
+.shield-gate.home-feed-active.feed-source-stats .network-flow .flow-stats{
+  stroke:var(--home-feed-color);
+  stroke-dasharray:1 1;
+  stroke-dashoffset:-1;
+  stroke-width:1.15;
+  opacity:.18;
+  animation:questNerveCharge 2250ms cubic-bezier(.2,.68,.24,1) 550ms 1 both;
+}
+
+.shield-gate.home-feed-active.feed-source-hero .network-impulses .impulse-hero,
+.shield-gate.home-feed-active.feed-source-quests .network-impulses .impulse-quests,
+.shield-gate.home-feed-active.feed-source-skill .network-impulses .impulse-skill,
+.shield-gate.home-feed-active.feed-source-rewards .network-impulses .impulse-rewards,
+.shield-gate.home-feed-active.feed-source-boss .network-impulses .impulse-boss,
+.shield-gate.home-feed-active.feed-source-stats .network-impulses .impulse-stats{
+  opacity:0;
+  animation:none;
+}
+
+.shield-gate.home-feed-active.home-feed-fallback.feed-source-hero .network-impulses .impulse-hero,
+.shield-gate.home-feed-active.home-feed-fallback.feed-source-quests .network-impulses .impulse-quests,
+.shield-gate.home-feed-active.home-feed-fallback.feed-source-skill .network-impulses .impulse-skill,
+.shield-gate.home-feed-active.home-feed-fallback.feed-source-rewards .network-impulses .impulse-rewards,
+.shield-gate.home-feed-active.home-feed-fallback.feed-source-boss .network-impulses .impulse-boss,
+.shield-gate.home-feed-active.home-feed-fallback.feed-source-stats .network-impulses .impulse-stats{
+  stroke:var(--home-feed-color);
+  stroke-width:4px;
+  stroke-dasharray:.14 .86;
+  filter:drop-shadow(0 0 3px rgba(255,255,255,.82)) drop-shadow(0 0 12px rgba(var(--home-feed-rgb),.82));
+  animation:homeFeedFallbackPacket 1900ms cubic-bezier(.28,.58,.25,1) 0ms 1 both;
+}
+
+.shield-gate.home-feed-active.feed-source-hero .node-hero .node-frame,
+.shield-gate.home-feed-active.feed-source-quests .node-quests .node-frame,
+.shield-gate.home-feed-active.feed-source-skill .node-skill .node-frame,
+.shield-gate.home-feed-active.feed-source-rewards .node-rewards .node-frame,
+.shield-gate.home-feed-active.feed-source-boss .node-boss .node-frame,
+.shield-gate.home-feed-active.feed-source-stats .node-stats .node-frame{
+  animation:questFeedNode 1200ms cubic-bezier(.2,.72,.22,1) 0ms 1;
+}
+
+.shield-gate.home-feed-active.feed-source-hero .node-hero .node-glyph,
+.shield-gate.home-feed-active.feed-source-quests .node-quests .node-glyph,
+.shield-gate.home-feed-active.feed-source-skill .node-skill .node-glyph,
+.shield-gate.home-feed-active.feed-source-rewards .node-rewards .node-glyph,
+.shield-gate.home-feed-active.feed-source-boss .node-boss .node-glyph,
+.shield-gate.home-feed-active.feed-source-stats .node-stats .node-glyph{
+  animation:questFeedGlyph 1200ms cubic-bezier(.2,.72,.22,1) 0ms 1;
+}
+
+.shield-gate.home-feed-active .neutron-star-corona{
+  animation:questFeedCorona 4800ms ease-in-out 0ms 1;
+}
+
+.shield-gate.home-feed-active .neutron-star-surface{
+  animation:questFeedCoreReceive 4800ms cubic-bezier(.2,.72,.24,1) 0ms 1;
+}
+
+.shield-gate.home-feed-active .neutron-star-corona::before{
+  animation:questCoreLiquidReach 860ms cubic-bezier(.18,.68,.2,1) 2040ms 1 both;
+}
+
+.shield-gate.home-feed-active .neutron-star-corona::after{
+  animation:questCoreMergeRipple 720ms ease-out 2400ms 1 both;
+}
+
+.shield-gate.home-feed-reduced.feed-source-hero .node-hero,
+.shield-gate.home-feed-reduced.feed-source-quests .node-quests,
+.shield-gate.home-feed-reduced.feed-source-skill .node-skill,
+.shield-gate.home-feed-reduced.feed-source-rewards .node-rewards,
+.shield-gate.home-feed-reduced.feed-source-boss .node-boss,
+.shield-gate.home-feed-reduced.feed-source-stats .node-stats{
+  filter:brightness(1.35) drop-shadow(0 0 12px rgba(var(--home-feed-rgb),.55));
+}
+
+.shield-gate.home-feed-reduced .neutron-star-surface{
+  filter:var(--home-feed-core-filter);
+}
 
 .activation-ripple{
   stroke:rgba(141,239,255,.72);
@@ -1214,6 +1297,8 @@ body::after{
   text-decoration:none;
   -webkit-tap-highlight-color:transparent;
   touch-action:manipulation;
+  transition:transform .34s cubic-bezier(.16,.78,.22,1),filter .38s ease;
+  will-change:transform;
 }
 
 .gated-node{
@@ -1329,12 +1414,69 @@ body::after{
   stroke-linecap:round;
   stroke-linejoin:round;
   filter:drop-shadow(0 0 5px var(--node-glow));
+  transition:transform .34s cubic-bezier(.16,.78,.22,1),filter .38s ease;
 }
 
 .node-glyph .glyph-fill{
   fill:currentColor;
   stroke:none;
   opacity:.13;
+}
+
+.node-glyph-raster{
+  display:block;
+  flex:none;
+  background:currentColor;
+  -webkit-mask-repeat:no-repeat;
+  mask-repeat:no-repeat;
+  -webkit-mask-position:center top;
+  mask-position:center top;
+  -webkit-mask-size:100% auto;
+  mask-size:100% auto;
+  filter:drop-shadow(0 0 3px currentColor) drop-shadow(0 0 8px var(--node-glow));
+  transition:transform .34s cubic-bezier(.16,.78,.22,1),filter .38s ease;
+}
+
+.node-glyph-quests{
+  width:56%;
+  height:48%;
+  -webkit-mask-image:url("../icons/node-quests.png");
+  mask-image:url("../icons/node-quests.png");
+}
+
+.node-glyph-stats{
+  width:56%;
+  height:44%;
+  -webkit-mask-image:url("../icons/node-stats-dashboard.png");
+  mask-image:url("../icons/node-stats-dashboard.png");
+}
+
+.node-glyph-raster.node-glyph-hero{
+  width:70%;
+  height:54%;
+  -webkit-mask-image:url("../icons/node-hero-helmet.png");
+  mask-image:url("../icons/node-hero-helmet.png");
+}
+
+.node-glyph-raster.node-glyph-rewards{
+  width:60%;
+  height:51%;
+  -webkit-mask-image:url("../icons/node-rewards.png");
+  mask-image:url("../icons/node-rewards.png");
+}
+
+.node-glyph-raster.node-glyph-skill{
+  width:56%;
+  height:48%;
+  -webkit-mask-image:url("../icons/node-skill-tree.png");
+  mask-image:url("../icons/node-skill-tree.png");
+}
+
+.node-glyph-raster.node-glyph-boss{
+  width:68%;
+  height:48%;
+  -webkit-mask-image:url("../icons/node-boss-eye.png");
+  mask-image:url("../icons/node-boss-eye.png");
 }
 
 .node-glyph-hero,
@@ -1380,11 +1522,43 @@ body::after{
 
 .shield-gate.is-settled .gated-node.is-node-awake .node-frame{animation:none}
 
-.gated-node.is-node-awake:active .node-frame{transform:scale(.92)}
+.gated-node.is-node-awake:active .node-frame{transform:scale(1)}
 .gated-node.is-node-awake:focus-visible{outline:none}
 .gated-node.is-node-awake:focus-visible .node-frame::before{
   filter:brightness(1.35);
   box-shadow:0 0 30px var(--node-glow);
+}
+
+.constellation-node.is-node-pressed{
+  z-index:7;
+  transform:translate(-50%,-50%) scale(1.14);
+  filter:brightness(1.2) drop-shadow(0 0 15px var(--node-glow));
+}
+
+.constellation-node.is-node-pressed .node-frame{
+  opacity:1;
+  transform:scale(1.025);
+  filter:brightness(1.12) saturate(1.08);
+}
+
+.constellation-node.is-node-pressed .node-glyph{
+  transform:scale(1.055);
+  filter:drop-shadow(0 0 5px currentColor) drop-shadow(0 0 12px var(--node-glow));
+}
+
+.shield-gate.is-core-awake .node-skill,
+.shield-gate.is-settled .node-skill{
+  pointer-events:auto;
+}
+
+@media (hover:hover) and (pointer:fine){
+  .gated-node.is-node-awake:hover,
+  .shield-gate.is-core-awake .node-skill:hover,
+  .shield-gate.is-settled .node-skill:hover{
+    z-index:7;
+    transform:translate(-50%,-50%) scale(1.14);
+    filter:brightness(1.2) drop-shadow(0 0 15px var(--node-glow));
+  }
 }
 
 .node-hero{left:50%;top:16.8%;--node-accent:#7cc8ff;--node-glow:rgba(47,157,255,.42)}
@@ -1563,44 +1737,158 @@ body::after{
 
 .energy-core{
   position:absolute;
-  inset:20%;
-  z-index:2;
+  inset:19%;
+  z-index:5;
   display:grid;
   place-items:center;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:transparent;
   opacity:0;
-  transform:scale(.72);
-  transition:opacity .3s ease,transform .38s cubic-bezier(.2,.8,.25,1);
+  transform:scale(.58);
+  transition:opacity .26s ease,transform .38s cubic-bezier(.2,.8,.25,1),filter .22s ease;
+  pointer-events:none;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  outline:none;
+}
+
+.energy-core::before{
+  content:"";
+  position:absolute;
+  inset:-15%;
+  border-radius:50%;
+  border:1px solid rgba(141,239,255,.2);
+  box-shadow:inset 0 0 18px rgba(53,244,230,.08),0 0 24px rgba(47,157,255,.11);
+  opacity:.46;
+  transform:scale(.86);
+  transition:opacity .2s ease,transform .2s ease,box-shadow .2s ease;
+}
+
+.energy-core:focus-visible::before{
+  opacity:1;
+  border-color:rgba(141,239,255,.7);
+  box-shadow:0 0 26px rgba(53,244,230,.34),inset 0 0 20px rgba(47,157,255,.12);
+  transform:scale(1);
+}
+
+.neutron-star-halo,
+.neutron-star-corona,
+.neutron-star-surface{
+  position:absolute;
   pointer-events:none;
 }
 
-.energy-core-ring{
-  position:absolute;
-  border:1px solid rgba(53,244,230,.55);
+.neutron-star-halo{
   border-radius:50%;
-  box-shadow:inset 0 0 16px rgba(47,157,255,.13),0 0 18px rgba(53,244,230,.18);
+  mix-blend-mode:screen;
 }
 
-.energy-core-ring-a{inset:0;animation:energyCoreOrbit 8s linear infinite}
-.energy-core-ring-b{inset:17%;border-color:rgba(139,92,246,.48);animation:energyCoreOrbit 6s linear infinite reverse}
+.neutron-star-halo-outer{
+  inset:var(--core-halo-outer-inset,18%);
+  background:radial-gradient(circle,rgba(255,255,255,.2) 0 15%,rgba(182,247,255,.2) 29%,rgba(67,181,255,.13) 49%,transparent 72%);
+  filter:blur(5px);
+  transition:inset .7s cubic-bezier(.2,.8,.25,1);
+  animation:neutronHaloBreathe 5.4s ease-in-out infinite;
+}
 
-.energy-core-crystal{
-  width:38%;
-  aspect-ratio:.72;
-  clip-path:polygon(50% 0,100% 30%,82% 82%,50% 100%,18% 82%,0 30%);
-  background:linear-gradient(145deg,var(--abyss-cyan),var(--abyss-neon-blue) 54%,var(--abyss-purple));
-  box-shadow:0 0 24px rgba(53,244,230,.62),0 0 44px rgba(47,157,255,.32);
-  animation:energyCorePulse 2.7s ease-in-out infinite;
+.neutron-star-halo-inner{
+  inset:var(--core-halo-inner-inset,26%);
+  background:radial-gradient(circle,rgba(238,255,255,.5),rgba(53,244,230,.19) 31%,rgba(47,157,255,.1) 55%,transparent 73%);
+  filter:blur(2.6px);
+  transition:inset .7s cubic-bezier(.2,.8,.25,1);
+  animation:neutronHaloBreathe 3.8s ease-in-out infinite reverse;
+}
+
+.neutron-star-corona{
+  z-index:2;
+  width:var(--core-corona-size,40%);
+  aspect-ratio:1;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.42) 0 20%,rgba(179,244,255,.24) 38%,rgba(54,174,240,.12) 58%,transparent 73%);
+  filter:blur(2.4px) drop-shadow(0 0 8px rgba(125,227,255,.48));
+  opacity:.54;
+  transition:width .7s cubic-bezier(.2,.8,.25,1);
+  animation:neutronCoronaBreathe 4.8s ease-in-out infinite;
+}
+
+.neutron-star-corona::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  right:48%;
+  top:39%;
+  width:24px;
+  height:8px;
+  border-radius:70% 28% 28% 70%;
+  background:linear-gradient(90deg,rgba(var(--home-feed-rgb,125,227,255),.22),var(--home-feed-mid,#d9f2f7) 58%,var(--home-feed-bright,#f3fbfd) 100%);
+  opacity:0;
+  filter:blur(.45px) drop-shadow(0 0 6px rgba(var(--home-feed-rgb,125,227,255),.58));
+  transform:rotate(var(--home-feed-reach-angle,32deg)) scaleX(.08) scaleY(.58);
+  transform-origin:100% 50%;
+}
+
+.neutron-star-corona::after{
+  content:"";
+  position:absolute;
+  inset:-8%;
+  border:1px solid rgba(var(--home-feed-rgb,125,227,255),.76);
+  border-radius:50%;
+  opacity:0;
+  box-shadow:0 0 8px rgba(var(--home-feed-rgb,125,227,255),.48),inset 0 0 6px rgba(255,255,255,.24);
+  transform:scale(.46);
+}
+
+.neutron-star-surface{
+  z-index:3;
+  width:var(--core-surface-size,29%);
+  aspect-ratio:1;
+  border-radius:50%;
+  overflow:visible;
+  transform-box:fill-box;
+  transform-origin:center;
+  box-shadow:
+    inset 0 0 8px rgba(255,255,255,.72),
+    inset 0 0 15px rgba(75,166,200,.22),
+    0 0 3px rgba(255,255,255,.74),
+    0 0 10px rgba(205,244,250,.62),
+    0 0 22px rgba(99,190,228,.34),
+    0 0 38px rgba(76,139,210,.1);
+  transition:width .7s cubic-bezier(.2,.8,.25,1);
+  animation:neutronSurfacePulse 3.2s ease-in-out infinite;
 }
 
 .shield-gate.is-breaking .shield-body{
   animation:shieldGateCollapse .42s ease-out forwards;
 }
 
-.shield-gate.is-breaking .energy-core,
 .shield-gate.is-core-awake .energy-core,
 .shield-gate.is-settled .energy-core{
   opacity:1;
   transform:scale(1);
+  pointer-events:auto;
+}
+
+.shield-gate.is-core-waking .energy-core{
+  animation:neutronCoreWake 1.35s cubic-bezier(.16,.76,.22,1) both;
+}
+
+.shield-gate.is-core-waking .neutron-star-halo-outer{
+  animation:neutronWakeHalo 1.3s ease-out both;
+}
+
+.shield-gate.is-core-waking .neutron-star-surface{
+  animation:neutronWakeSurface 1.15s cubic-bezier(.16,.8,.2,1) both;
+}
+
+.energy-core.is-core-reacting{
+  animation:neutronCoreReaction .62s cubic-bezier(.2,.82,.24,1);
+}
+
+.energy-core.is-core-reacting .neutron-star-halo-inner,
+.energy-core.is-core-reacting .neutron-star-surface{
+  filter:brightness(1.42);
 }
 
 .shield-gate.is-core-awake .shield-body,
@@ -1648,15 +1936,75 @@ body::after{
   100%{stroke-dashoffset:0;opacity:0}
 }
 
-@keyframes neuralCapillaryWake{
-  0%{opacity:.28;filter:none}
-  48%{opacity:.9;filter:drop-shadow(0 0 4px rgba(53,244,230,.62))}
-  100%{opacity:.72;filter:drop-shadow(0 0 2px rgba(53,244,230,.18))}
+@keyframes neuralRiverInflow{
+  0%{stroke-dashoffset:0;filter:drop-shadow(0 0 1px rgba(53,244,230,.14))}
+  50%{filter:drop-shadow(0 0 2px rgba(53,244,230,.25))}
+  100%{stroke-dashoffset:1;filter:drop-shadow(0 0 1px rgba(53,244,230,.14))}
 }
 
-@keyframes neuralRestPulse{
-  0%,88%,100%{opacity:.36;filter:drop-shadow(0 0 3px rgba(53,244,230,.35))}
-  94%{opacity:.5;filter:drop-shadow(0 0 5px rgba(53,244,230,.58))}
+@keyframes neuralRiverSpark{
+  0%,68%{stroke-dashoffset:0;opacity:0}
+  73%{opacity:var(--spark-alpha)}
+  96%{opacity:var(--spark-alpha)}
+  100%{stroke-dashoffset:1;opacity:0}
+}
+
+@keyframes questNerveCharge{
+  0%{stroke-dashoffset:-1;opacity:.08;filter:drop-shadow(0 0 1px rgba(var(--home-feed-rgb),.12))}
+  18%{opacity:.68;filter:drop-shadow(0 0 5px rgba(var(--home-feed-rgb),.5))}
+  82%{stroke-dashoffset:0;opacity:.76;filter:drop-shadow(0 0 6px rgba(var(--home-feed-rgb),.58))}
+  100%{stroke-dashoffset:0;opacity:.22;filter:drop-shadow(0 0 2px rgba(var(--home-feed-rgb),.2))}
+}
+
+@keyframes homeFeedFallbackPacket{
+  0%{stroke-dashoffset:0;opacity:0}
+  8%{opacity:1}
+  82%{opacity:.94}
+  100%{stroke-dashoffset:1;opacity:0;stroke-width:1.5px}
+}
+
+@keyframes questFeedNode{
+  0%,100%{filter:none;transform:scale(1)}
+  34%{filter:brightness(1.62) drop-shadow(0 0 18px rgba(var(--home-feed-rgb),.72));transform:scale(1.065)}
+  68%{filter:brightness(1.34) drop-shadow(0 0 11px rgba(var(--home-feed-rgb),.48));transform:scale(1.035)}
+}
+
+@keyframes questFeedGlyph{
+  0%,100%{filter:drop-shadow(0 0 5px var(--node-glow));transform:scale(1)}
+  36%{filter:brightness(1.72) drop-shadow(0 0 12px var(--home-feed-color));transform:scale(1.085)}
+  70%{filter:brightness(1.34) drop-shadow(0 0 9px rgba(var(--home-feed-rgb),.58));transform:scale(1.035)}
+}
+
+@keyframes questFeedCorona{
+  0%,54%,100%{opacity:.54;transform:translate(0,0) scale(1);filter:blur(2.4px) drop-shadow(0 0 8px rgba(125,227,255,.48))}
+  57%{opacity:.82;transform:translate(var(--home-feed-half-x),var(--home-feed-half-y)) scale(1.13);filter:blur(2.1px) brightness(1.2) drop-shadow(0 0 12px rgba(var(--home-feed-rgb),.66))}
+  62%{opacity:.98;transform:translate(0,0) scale(1.25);filter:blur(1.9px) var(--home-feed-core-filter)}
+  88%{opacity:.88;transform:translate(0,0) scale(1.16);filter:blur(2px) var(--home-feed-core-filter)}
+  95%{opacity:.68;transform:translate(0,0) scale(1.06);filter:blur(2.3px) brightness(1.08) drop-shadow(0 0 9px rgba(var(--home-feed-rgb),.42))}
+}
+
+@keyframes questFeedCoreReceive{
+  0%,54%,100%{transform:translate(0,0) scale(1);filter:none}
+  57%{transform:translate(var(--home-feed-half-x),var(--home-feed-half-y)) scale(1.04,.985);filter:brightness(1.18) drop-shadow(0 0 6px rgba(var(--home-feed-rgb),.54))}
+  60%{transform:translate(var(--home-feed-pull-x),var(--home-feed-pull-y)) scale(1.085,.955);filter:brightness(1.34) drop-shadow(0 0 9px rgba(var(--home-feed-rgb),.72))}
+  64%{transform:translate(0,0) scale(1.09,.98);filter:var(--home-feed-core-filter)}
+  88%{transform:translate(0,0) scale(1.035);filter:var(--home-feed-core-filter)}
+  94%{transform:translate(0,0) scale(.995,1.025);filter:brightness(1.14) drop-shadow(0 0 7px rgba(var(--home-feed-rgb),.42))}
+  97%{transform:translate(0,0) scale(1.012,.996);filter:brightness(1.06)}
+}
+
+@keyframes questCoreLiquidReach{
+  0%{opacity:0;transform:rotate(var(--home-feed-reach-angle)) scaleX(.08) scaleY(.58)}
+  24%{opacity:.64;transform:rotate(var(--home-feed-reach-angle)) scaleX(.52) scaleY(.76)}
+  62%{opacity:.9;transform:rotate(var(--home-feed-reach-angle)) scaleX(1.08) scaleY(1)}
+  82%{opacity:.72;transform:rotate(var(--home-feed-reach-angle)) scaleX(.7) scaleY(.84)}
+  100%{opacity:0;transform:rotate(var(--home-feed-reach-angle)) scaleX(.08) scaleY(.5)}
+}
+
+@keyframes questCoreMergeRipple{
+  0%{opacity:.9;transform:scale(.42)}
+  68%{opacity:.46;transform:scale(1.36)}
+  100%{opacity:0;transform:scale(1.78)}
 }
 
 @keyframes constellationNodeWake{
@@ -1665,15 +2013,43 @@ body::after{
   100%{opacity:1;transform:scale(1);filter:none}
 }
 
-@keyframes energyCorePulse{
-  0%,100%{transform:scale(.94);filter:brightness(.94)}
-  50%{transform:scale(1.05);filter:brightness(1.16)}
+@keyframes neutronCoreWake{
+  0%{opacity:0;transform:scale(.32);filter:brightness(2.4) blur(5px)}
+  38%{opacity:1;transform:scale(1.18);filter:brightness(1.8) blur(0)}
+  68%{transform:scale(.94);filter:brightness(1.18)}
+  100%{opacity:1;transform:scale(1);filter:none}
 }
 
-@keyframes energyCoreOrbit{
-  0%{transform:rotate(0deg) scale(1)}
-  50%{transform:rotate(180deg) scale(1.04)}
-  100%{transform:rotate(360deg) scale(1)}
+@keyframes neutronWakeHalo{
+  0%{opacity:0;transform:scale(.18)}
+  42%{opacity:1;transform:scale(1.34)}
+  100%{opacity:.72;transform:scale(1)}
+}
+
+@keyframes neutronWakeSurface{
+  0%{transform:scale(.2);filter:brightness(3)}
+  48%{transform:scale(1.28);filter:brightness(1.8)}
+  100%{transform:scale(1);filter:none}
+}
+
+@keyframes neutronCoreReaction{
+  0%,100%{transform:scale(1);filter:none}
+  42%{transform:scale(1.09);filter:brightness(1.42) drop-shadow(0 0 12px rgba(53,244,230,.5))}
+}
+
+@keyframes neutronHaloBreathe{
+  0%,100%{opacity:.48;transform:scale(.94)}
+  50%{opacity:.82;transform:scale(1.07)}
+}
+
+@keyframes neutronCoronaBreathe{
+  0%,100%{opacity:.62;transform:scale(.96)}
+  50%{opacity:.78;transform:scale(1.04)}
+}
+
+@keyframes neutronSurfacePulse{
+  0%,100%{transform:scale(.96);filter:brightness(.96)}
+  46%{transform:scale(1.04);filter:brightness(1.13)}
 }
 
 @media (max-height:579px){
@@ -1728,20 +2104,37 @@ body::after{
 
 @media (prefers-reduced-motion:reduce){
   .gated-node.is-node-awake .node-frame{animation:none}
+  .constellation-node.is-node-pressed{transform:translate(-50%,-50%) scale(1.04)}
   .shield-body.directional-hit{animation:none}
   .fracture-path{animation:none;stroke-dashoffset:0;opacity:.82}
   .fracture-rift{opacity:.92;stroke-width:4.2}
   .fracture-glow{opacity:.25}
   .shield-impact-bloom{display:none}
-  .energy-core-crystal,
-  .energy-core-ring{animation:none}
+  .energy-core,
+  .neutron-star-halo,
+  .neutron-star-corona,
+  .neutron-star-surface{animation:none!important}
   .shield-gate.wave-fired .network-flow path,
-  .shield-gate.wave-fired .network-capillaries path,
   .shield-gate.wave-fired .network-impulses path,
-  .shield-gate.is-settled .network-flow path{animation:none}
+  .shield-gate.is-settled .network-flow path,
+  .shield-gate.is-settled .network-impulses path,
+  .shield-gate.home-feed-active .network-flow path,
+  .shield-gate.home-feed-active .network-impulses path,
+  .shield-gate.home-feed-active .constellation-node .node-frame,
+  .shield-gate.home-feed-active .constellation-node .node-glyph,
+  .shield-gate.home-feed-active .neutron-star-corona,
+  .shield-gate.home-feed-active .neutron-star-corona::before,
+  .shield-gate.home-feed-active .neutron-star-corona::after,
+  .shield-gate.home-feed-active .neutron-star-surface{animation:none}
   .shield-gate.wave-fired .network-flow path,
   .shield-gate.is-settled .network-flow path{stroke-dashoffset:0;opacity:.42}
+  .shield-gate.is-settled .network-flow path{stroke-dasharray:none}
+  .shield-gate.is-settled .network-impulses path{opacity:0}
   .shield-gate.wave-fired .network-impulses path{opacity:0}
+  .shield-gate.home-feed-active .network-impulses path{opacity:0}
+  .shield-gate.home-feed-active .neutron-star-corona::before,
+  .shield-gate.home-feed-active .neutron-star-corona::after{opacity:0}
+  .home-energy-packet{display:none}
 }
 
 /* First-device player identity */
