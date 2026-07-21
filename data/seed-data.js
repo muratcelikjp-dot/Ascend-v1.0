@@ -17,6 +17,12 @@ const SEED_DATA = {
     xpBonusPerPrestige: 0.15 // +15% XP per prestige, stacking additively
   },
 
+  // Spendable Credits are intentionally based on quest difficulty rather
+  // than boosted XP, keeping the reward economy predictable.
+  creditRewards: {
+    questByDifficulty: { easy: 10, normal: 25, hard: 50 }
+  },
+
   // Rank system: the player's displayed "class" scales with level
   // indefinitely (not capped at 5 tiers like the old hardcoded array each
   // page used to duplicate). Beyond the last named tier, ranks continue
@@ -57,11 +63,12 @@ const SEED_DATA = {
 
   // Default state for a brand new player with no save file yet.
   defaultState: {
-    version: 12,
+    version: 14,
     level: 1,
     xp: 0,
     lifetimeXp: 0,
     streak: 0,
+    streakLastCountedDate: null,
     lastActiveDate: null,
 
     goals: {
@@ -151,6 +158,9 @@ const SEED_DATA = {
     },
 
     rewards: {
+      credits: 0,
+      totalCreditsEarned: 0,
+      totalCreditsSpent: 0,
       custom: [
         { id: "r_watch_anime", name: "Watch anime episode", cost: 250, category: "entertainment", requiredLevel: 1, isPremium: false, createdAt: null },
         { id: "r_play_games",  name: "Play games for 1 hour", cost: 500, category: "entertainment", requiredLevel: 1, isPremium: false, createdAt: null },
@@ -302,7 +312,7 @@ const SEED_DATA = {
 
     // --- Reward achievements ---
     { id: "first_purchase", name: "Treat Yourself", description: "Make your first reward purchase.", category: "reward", icon: "ti-gift", type: "counter", stat: "rewards.purchased.length", threshold: 1 },
-    { id: "big_spender",   name: "Big Spender",    description: "Spend 5,000 lifetime XP on rewards.", category: "reward", icon: "ti-credit-card", type: "counter", stat: "rewards.totalXpSpent", threshold: 5000 },
+    { id: "big_spender",   name: "Big Spender",    description: "Spend 5,000 lifetime Credits on rewards.", category: "reward", icon: "ti-credit-card", type: "counter", stat: "rewards.totalCreditsSpent", threshold: 5000 },
 
     // --- Secret achievements (hidden until unlocked) ---
     { id: "secret_night_owl", name: "Night Owl", description: "Break the daily seal after midnight.", category: "secret", icon: "ti-moon", secret: true, type: "event" },
@@ -391,7 +401,7 @@ const SEED_DATA = {
           breakDamagePct: 0.3
         }
       ],
-      rewards: { xp: 500, title: "Procrastination Slayer" },
+      rewards: { xp: 500, credits: 150, title: "Procrastination Slayer" },
       nextBossId: "social_anxiety"
     },
     social_anxiety: {
@@ -411,7 +421,7 @@ const SEED_DATA = {
       damageRules: [
         { matchType: "attribute", match: "charisma", damagePerXp: 0.8 }
       ],
-      rewards: { xp: 600, title: "Voice Reclaimed" },
+      rewards: { xp: 600, credits: 180, title: "Voice Reclaimed" },
       nextBossId: "phone_addiction"
     },
     phone_addiction: {
@@ -431,7 +441,7 @@ const SEED_DATA = {
       damageRules: [
         { matchType: "attribute", match: "willpower", damagePerXp: 0.8 }
       ],
-      rewards: { xp: 700, title: "Present Mind" },
+      rewards: { xp: 700, credits: 220, title: "Present Mind" },
       nextBossId: "self_doubt"
     },
 
@@ -458,7 +468,7 @@ const SEED_DATA = {
         { matchType: "attribute", match: "willpower", damagePerXp: 0.3 },
         { matchType: "tag", match: "discipline", damagePerXp: 0.4 }
       ],
-      rewards: { xp: 1200, title: "Self-Assured" },
+      rewards: { xp: 1200, credits: 350, title: "Self-Assured" },
       nextBossId: "the_plateau"
     },
     the_plateau: {
@@ -483,7 +493,7 @@ const SEED_DATA = {
         { matchType: "tag", match: "creativity", damagePerXp: 0.2 },
         { matchType: "attribute", match: "charisma", damagePerXp: 0.2 }
       ],
-      rewards: { xp: 2000, title: "Unplateaued" },
+      rewards: { xp: 2000, credits: 500, title: "Unplateaued" },
       nextBossId: null
     }
   }

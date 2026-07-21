@@ -507,10 +507,13 @@ const Bosses = (function () {
     if (!state.bosses.titlesEarned.includes(bossDef.rewards.title)) state.bosses.titlesEarned.push(bossDef.rewards.title);
 
     const rewardXp = Math.max(0, Number(bossDef.rewards.xp) || 0);
+    const rewardCredits = Math.max(0, Number(bossDef.rewards.credits) || 0);
     const previousLevel = state.level;
     state.xp += rewardXp;
     state.lifetimeXp += rewardXp;
     state.level = Leveling.levelFromTotalXp(state.xp);
+    state.rewards.credits += rewardCredits;
+    state.rewards.totalCreditsEarned += rewardCredits;
     getTodayLog(state).xp += rewardXp;
 
     const newAchievements = Achievements.checkAll(state);

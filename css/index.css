@@ -1053,15 +1053,21 @@ body::after{
   overflow:hidden;
   touch-action:manipulation;
   background:
-    radial-gradient(ellipse at 50% 48%,rgba(53,244,230,.09),transparent 34%),
-    linear-gradient(180deg,#01050e 0%,#06162b 48%,#020713 100%);
+    linear-gradient(180deg,rgba(1,5,14,.38),rgba(3,12,27,.28) 48%,rgba(1,4,12,.52)),
+    radial-gradient(ellipse at 50% 48%,rgba(53,244,230,.045),transparent 36%),
+    #01050e;
 }
 
 .screen.abyss-home.shield-gate::before{
+  inset:-4%;
   background:
-    repeating-linear-gradient(117deg,transparent 0 76px,rgba(141,239,255,.018) 77px 78px),
-    repeating-linear-gradient(0deg,transparent 0 54px,rgba(47,157,255,.015) 55px 56px);
-  opacity:.55;
+    radial-gradient(circle at 50% 48%,transparent 0 42%,rgba(1,5,14,.13) 68%,rgba(1,4,12,.58) 100%),
+    linear-gradient(180deg,rgba(2,7,19,.08),transparent 34%,rgba(2,7,19,.24)),
+    url("../assets/abyss-cosmos-bg.jpg") center/cover no-repeat;
+  opacity:1;
+  transform:translate3d(-.5%,-.35%,0) scale(1.035);
+  will-change:transform;
+  animation:abyssCosmosDrift 48s ease-in-out infinite alternate;
 }
 
 .screen.abyss-home.shield-gate::after{
@@ -1076,7 +1082,21 @@ body::after{
     radial-gradient(circle at 27% 74%,rgba(139,92,246,.24) 0 1px,transparent 1.5px),
     radial-gradient(circle at 72% 88%,rgba(247,201,72,.18) 0 1px,transparent 1.5px);
   background-size:157px 181px,193px 163px,211px 197px,239px 223px;
-  opacity:.28;
+  opacity:.12;
+  will-change:transform,opacity;
+  animation:abyssCosmosStars 34s ease-in-out infinite alternate;
+}
+
+@keyframes abyssCosmosDrift{
+  0%{transform:translate3d(-.5%,-.35%,0) scale(1.035)}
+  50%{transform:translate3d(.45%,.2%,0) scale(1.045)}
+  100%{transform:translate3d(-.15%,.65%,0) scale(1.04)}
+}
+
+@keyframes abyssCosmosStars{
+  0%{opacity:.1;transform:translate3d(0,0,0)}
+  50%{opacity:.15;transform:translate3d(-5px,4px,0)}
+  100%{opacity:.11;transform:translate3d(4px,-3px,0)}
 }
 
 .constellation-shell{
@@ -1283,6 +1303,7 @@ body::after{
 .constellation-node{
   --node-accent:var(--abyss-aqua);
   --node-glow:rgba(53,244,230,.28);
+  --node-rgb:53,244,230;
   position:absolute;
   z-index:3;
   width:clamp(76px,23%,90px);
@@ -1352,6 +1373,7 @@ body::after{
   inset:0;
   display:grid;
   place-items:center;
+  isolation:isolate;
   opacity:.22;
   transform:scale(.94);
   filter:saturate(.35) brightness(.66);
@@ -1367,13 +1389,43 @@ body::after{
 }
 
 .node-frame::before{
-  background:var(--node-accent);
-  box-shadow:0 0 22px var(--node-glow);
+  z-index:0;
+  background:
+    linear-gradient(145deg,
+      rgba(236,253,255,.72) 0%,
+      rgba(var(--node-rgb),.64) 12%,
+      rgba(151,190,211,.28) 40%,
+      rgba(var(--node-rgb),.42) 72%,
+      rgba(232,252,255,.3) 100%);
+  box-shadow:
+    0 0 3px rgba(var(--node-rgb),.14),
+    0 0 12px var(--node-glow);
+  transition:opacity .34s ease,filter .34s ease,box-shadow .34s ease;
 }
 
 .node-frame::after{
-  inset:1.5px;
-  background:linear-gradient(180deg,rgba(10,30,52,.96),rgba(2,9,21,.98));
+  z-index:1;
+  inset:2px;
+  background:
+    linear-gradient(116deg,
+      transparent 0%,
+      transparent 31%,
+      rgba(245,254,255,.14) 42%,
+      rgba(var(--node-rgb),.04) 48%,
+      transparent 59%,
+      transparent 100%) 145% 0/230% 100% no-repeat,
+    linear-gradient(146deg,rgba(248,254,255,.075) 0%,rgba(248,254,255,.018) 23%,transparent 24%,transparent 67%,rgba(var(--node-rgb),.018) 68%,transparent 100%),
+    radial-gradient(circle at 29% 17%,rgba(244,254,255,.12),transparent 31%),
+    radial-gradient(circle at 72% 82%,rgba(var(--node-rgb),.035),transparent 44%),
+    linear-gradient(154deg,rgba(18,31,44,.82),rgba(5,14,26,.88) 48%,rgba(1,7,18,.93));
+  -webkit-backdrop-filter:blur(5px) saturate(1.28);
+  backdrop-filter:blur(5px) saturate(1.28);
+  box-shadow:
+    inset 0 1px 0 rgba(243,254,255,.15),
+    inset 1px 0 0 rgba(var(--node-rgb),.04),
+    inset 0 -12px 24px rgba(0,3,12,.24),
+    inset 0 0 22px rgba(var(--node-rgb),.015);
+  transition:background-position .72s cubic-bezier(.18,.72,.22,1),box-shadow .38s ease,filter .38s ease;
 }
 
 .node-frame-empty{
@@ -1383,7 +1435,9 @@ body::after{
 
 .node-frame-empty::after{
   inset:2px;
-  background:rgba(2,9,21,.72);
+  background:
+    linear-gradient(145deg,rgba(220,244,255,.045),transparent 33%),
+    rgba(2,9,21,.64);
 }
 
 .node-frame-empty::before{box-shadow:none}
@@ -1399,8 +1453,13 @@ body::after{
 }
 
 .node-frame-preview::after{
-  inset:1.5px;
-  background:linear-gradient(180deg,rgba(18,22,55,.96),rgba(5,8,24,.98));
+  inset:2px;
+  background:
+    linear-gradient(116deg,transparent 0 32%,rgba(238,241,255,.12) 43%,rgba(var(--node-rgb),.035) 49%,transparent 60%) 145% 0/230% 100% no-repeat,
+    linear-gradient(146deg,rgba(248,254,255,.06) 0%,transparent 25%,transparent 68%,rgba(var(--node-rgb),.014) 69%),
+    radial-gradient(circle at 31% 19%,rgba(244,246,255,.1),transparent 31%),
+    radial-gradient(circle at 72% 82%,rgba(var(--node-rgb),.03),transparent 44%),
+    linear-gradient(154deg,rgba(19,30,44,.82),rgba(6,13,27,.88) 52%,rgba(2,6,18,.93));
 }
 
 .node-glyph{
@@ -1433,7 +1492,7 @@ body::after{
   mask-position:center top;
   -webkit-mask-size:100% auto;
   mask-size:100% auto;
-  filter:drop-shadow(0 0 3px currentColor) drop-shadow(0 0 8px var(--node-glow));
+  filter:drop-shadow(0 0 2px currentColor) drop-shadow(0 0 5px var(--node-glow));
   transition:transform .34s cubic-bezier(.16,.78,.22,1),filter .38s ease;
 }
 
@@ -1475,6 +1534,7 @@ body::after{
 .node-glyph-raster.node-glyph-boss{
   width:68%;
   height:48%;
+  top:-3px;
   -webkit-mask-image:url("../icons/node-boss-eye.png");
   mask-image:url("../icons/node-boss-eye.png");
 }
@@ -1507,7 +1567,7 @@ body::after{
 .shield-gate.is-core-awake .node-skill .node-frame-preview{
   opacity:1;
   transform:scale(1);
-  filter:none;
+  filter:drop-shadow(0 6px 9px rgba(0,0,0,.3)) drop-shadow(0 0 4px rgba(var(--node-rgb),.08));
   animation:constellationNodeWake .52s ease-out .34s both;
 }
 
@@ -1516,11 +1576,21 @@ body::after{
 .gated-node.is-node-awake .node-frame{
   opacity:1;
   transform:scale(1);
-  filter:none;
+  filter:drop-shadow(0 6px 9px rgba(0,0,0,.3)) drop-shadow(0 0 4px rgba(var(--node-rgb),.08));
   animation:constellationNodeWake .52s ease-out both;
 }
 
 .shield-gate.is-settled .gated-node.is-node-awake .node-frame{animation:none}
+
+.shield-gate.is-settled:not(.home-feed-active) .gated-node.is-node-awake .node-frame::before,
+.shield-gate.is-settled:not(.home-feed-active) .node-skill .node-frame-preview::before{
+  animation:constellationNodeIdleGlow var(--node-idle-duration,5.4s) ease-in-out var(--node-idle-delay,0s) infinite;
+}
+
+.shield-gate.is-settled:not(.home-feed-active) .gated-node.is-node-awake .node-frame::after,
+.shield-gate.is-settled:not(.home-feed-active) .node-skill .node-frame-preview::after{
+  animation:constellationGlassSheen var(--node-sheen-duration,9s) ease-in-out var(--node-sheen-delay,0s) infinite;
+}
 
 .gated-node.is-node-awake:active .node-frame{transform:scale(1)}
 .gated-node.is-node-awake:focus-visible{outline:none}
@@ -1541,6 +1611,24 @@ body::after{
   filter:brightness(1.12) saturate(1.08);
 }
 
+.constellation-node.is-node-pressed .node-frame::before{
+  animation-play-state:paused;
+  opacity:1;
+  filter:brightness(1.26) saturate(1.08);
+  box-shadow:0 0 6px rgba(var(--node-rgb),.24),0 0 20px var(--node-glow);
+}
+
+.constellation-node.is-node-pressed .node-frame::after{
+  animation:none!important;
+  background-position:-42% 0,0 0,0 0,0 0,0 0;
+  filter:brightness(1.13) saturate(1.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.25),
+    inset 1px 0 0 rgba(var(--node-rgb),.1),
+    inset 0 -10px 22px rgba(0,3,12,.18),
+    inset 0 0 24px rgba(var(--node-rgb),.055);
+}
+
 .constellation-node.is-node-pressed .node-glyph{
   transform:scale(1.055);
   filter:drop-shadow(0 0 5px currentColor) drop-shadow(0 0 12px var(--node-glow));
@@ -1559,14 +1647,22 @@ body::after{
     transform:translate(-50%,-50%) scale(1.14);
     filter:brightness(1.2) drop-shadow(0 0 15px var(--node-glow));
   }
+
+  .gated-node.is-node-awake:hover .node-frame::after,
+  .shield-gate.is-core-awake .node-skill:hover .node-frame-preview::after,
+  .shield-gate.is-settled .node-skill:hover .node-frame-preview::after{
+    animation:none;
+    background-position:-36% 0,0 0,0 0,0 0,0 0;
+    filter:brightness(1.1) saturate(1.06);
+  }
 }
 
-.node-hero{left:50%;top:16.8%;--node-accent:#7cc8ff;--node-glow:rgba(47,157,255,.42)}
-.node-quests{left:14%;top:34%;--node-accent:var(--abyss-aqua);--node-glow:rgba(53,244,230,.42)}
-.node-skill{left:86%;top:34%;--node-accent:#9aa7ff;--node-glow:rgba(139,92,246,.2);pointer-events:none;cursor:default}
-.node-rewards{left:18%;top:74%;--node-accent:var(--abyss-gold);--node-glow:rgba(247,201,72,.4)}
-.node-boss{left:50%;top:82%;--node-accent:#ff6f9a;--node-glow:rgba(255,92,122,.38)}
-.node-stats{left:82%;top:74%;--node-accent:#41e6c4;--node-glow:rgba(65,230,164,.36)}
+.node-hero{left:50%;top:16.8%;--node-accent:#7cc8ff;--node-glow:rgba(47,157,255,.3);--node-rgb:124,200,255;--node-idle-duration:5.8s;--node-idle-delay:-1.4s;--node-sheen-duration:9.8s;--node-sheen-delay:-2.3s}
+.node-quests{left:14%;top:34%;--node-accent:var(--abyss-aqua);--node-glow:rgba(53,244,230,.3);--node-rgb:53,244,230;--node-idle-duration:5.2s;--node-idle-delay:-3.1s;--node-sheen-duration:8.9s;--node-sheen-delay:-6.2s}
+.node-skill{left:86%;top:34%;--node-accent:#9aa7ff;--node-glow:rgba(139,92,246,.15);--node-rgb:154,167,255;--node-idle-duration:6.1s;--node-idle-delay:-.7s;--node-sheen-duration:10.4s;--node-sheen-delay:-4.1s;pointer-events:none;cursor:default}
+.node-rewards{left:18%;top:74%;--node-accent:var(--abyss-gold);--node-glow:rgba(247,201,72,.28);--node-rgb:247,201,72;--node-idle-duration:5.6s;--node-idle-delay:-4.2s;--node-sheen-duration:9.4s;--node-sheen-delay:-7.3s}
+.node-boss{left:50%;top:82%;--node-accent:#ff6f9a;--node-glow:rgba(255,92,122,.27);--node-rgb:255,111,154;--node-idle-duration:6.3s;--node-idle-delay:-2.5s;--node-sheen-duration:10.1s;--node-sheen-delay:-5.4s}
+.node-stats{left:82%;top:74%;--node-accent:#41e6c4;--node-glow:rgba(65,230,164,.25);--node-rgb:65,230,196;--node-idle-duration:5.4s;--node-idle-delay:-.2s;--node-sheen-duration:9.1s;--node-sheen-delay:-1.2s}
 
 .quest-alert{
   position:absolute;
@@ -2013,6 +2109,16 @@ body::after{
   100%{opacity:1;transform:scale(1);filter:none}
 }
 
+@keyframes constellationNodeIdleGlow{
+  0%,100%{opacity:.88;filter:brightness(.96)}
+  50%{opacity:1;filter:brightness(1.04)}
+}
+
+@keyframes constellationGlassSheen{
+  0%,58%{background-position:145% 0,0 0,0 0,0 0,0 0}
+  76%,100%{background-position:-42% 0,0 0,0 0,0 0,0 0}
+}
+
 @keyframes neutronCoreWake{
   0%{opacity:0;transform:scale(.32);filter:brightness(2.4) blur(5px)}
   38%{opacity:1;transform:scale(1.18);filter:brightness(1.8) blur(0)}
@@ -2103,7 +2209,11 @@ body::after{
 }
 
 @media (prefers-reduced-motion:reduce){
+  .screen.abyss-home.shield-gate::before,
+  .screen.abyss-home.shield-gate::after{animation:none;transform:none}
   .gated-node.is-node-awake .node-frame{animation:none}
+  .shield-gate.is-settled .node-frame::before{animation:none}
+  .shield-gate.is-settled .node-frame::after{animation:none}
   .constellation-node.is-node-pressed{transform:translate(-50%,-50%) scale(1.04)}
   .shield-body.directional-hit{animation:none}
   .fracture-path{animation:none;stroke-dashoffset:0;opacity:.82}
@@ -2255,8 +2365,11 @@ body::after{
 .birth-counter-step{width:100%;height:28px;border:0;background:transparent;color:rgba(141,239,255,.42);cursor:pointer;transition:color .16s,background .16s}
 .birth-counter-step:active{color:#d8ffff;background:rgba(53,244,230,.08)}
 .birth-counter-step i{font-size:15px}
-.birth-counter-display{position:relative;min-width:0;align-self:stretch;display:flex;flex-direction:column;align-items:center;justify-content:center;border-top:1px solid rgba(141,239,255,.08);border-bottom:1px solid rgba(141,239,255,.08);background:linear-gradient(180deg,rgba(47,157,255,.035),rgba(53,244,230,.06),rgba(47,157,255,.035));overflow:hidden}
-.birth-counter-display strong{color:#65f7dc;font:700 20px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em;text-shadow:0 0 10px rgba(53,244,230,.52)}
+.birth-counter-display{position:relative;min-width:0;align-self:stretch;display:flex;flex-direction:column;align-items:center;justify-content:center;border-top:1px solid rgba(141,239,255,.08);border-bottom:1px solid rgba(141,239,255,.08);background:linear-gradient(180deg,rgba(47,157,255,.035),rgba(53,244,230,.06),rgba(47,157,255,.035));overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;cursor:ns-resize}
+.birth-counter-display strong{color:#65f7dc;font:700 20px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em;text-shadow:0 0 10px rgba(53,244,230,.52);opacity:var(--birth-drag-opacity,1);transform:translateY(var(--birth-drag-offset,0));transition:transform .08s linear,opacity .08s linear}
+.birth-counter-unit.dragging .birth-counter-display{border-color:rgba(53,244,230,.34);background:linear-gradient(180deg,rgba(47,157,255,.055),rgba(53,244,230,.11),rgba(47,157,255,.055));box-shadow:inset 0 0 18px rgba(53,244,230,.055)}
+.birth-counter-unit.dragging .birth-counter-display strong{transition:none}
+.birth-counter-unit.dragging.roll-up .birth-counter-display strong,.birth-counter-unit.dragging.roll-down .birth-counter-display strong{animation:none}
 .birth-counter-year .birth-counter-display strong{font-size:18px}
 .birth-counter-display small{margin-top:5px;color:rgba(141,239,255,.4);font:7px/1 var(--abyss-font);letter-spacing:.12em}
 .birth-counter-divider{position:relative;z-index:2;color:rgba(141,239,255,.28);font:20px/1 ui-monospace,SFMono-Regular,Consolas,monospace;text-align:center}
@@ -2358,5 +2471,6 @@ body::after{
   .onboarding-network-main path,.onboarding-network-branches path{stroke-dashoffset:0}
   .profile-onboarding.completing .onboarding-welcome,.profile-onboarding.completing .onboarding-welcome strong{animation:none;opacity:1;transform:none;filter:none}
   .onboarding-name-field .onboarding-input-shell.terminal-keyed::after,.birth-counter-unit.roll-up .birth-counter-display strong,.birth-counter-unit.roll-down .birth-counter-display strong{animation:none}
+  .birth-counter-display strong{transition:none}
   .onboarding-name-field .onboarding-input-shell:focus-within .onboarding-block-caret{animation:none;opacity:1}
 }

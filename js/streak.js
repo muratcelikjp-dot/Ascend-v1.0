@@ -31,6 +31,23 @@ const Streak = (function () {
     return DateUtils.getLocalDateKey(yesterdayDate);
   }
 
+  function recordSuccessfulDay(state, dateKey) {
+    const key = String(dateKey || "");
+    if (!DateUtils.parseLocalDateKey(key)) {
+      return { counted: false, oldStreak: state.streak, newStreak: state.streak, dateKey: null };
+    }
+
+    const lastCountedDate = String(state.streakLastCountedDate || "");
+    if (lastCountedDate && key <= lastCountedDate) {
+      return { counted: false, oldStreak: state.streak, newStreak: state.streak, dateKey: key };
+    }
+
+    const oldStreak = Math.max(0, Number(state.streak) || 0);
+    state.streak = oldStreak + 1;
+    state.streakLastCountedDate = key;
+    return { counted: true, oldStreak, newStreak: state.streak, dateKey: key };
+  }
+
   // Evaluates one or more newly logged local calendar dates in order.
   // This preserves the existing rules while allowing a single app open
   // after several days away to catch up each missed day exactly once.
@@ -83,10 +100,12 @@ const Streak = (function () {
       }
 
       if (!dayMissed) {
-        if (summary.oldStreak === undefined) summary.oldStreak = state.streak;
-        state.streak += 1;
-        summary.streakChanged = true;
-        summary.newStreak = state.streak;
+        const outcome = recordSuccessfulDay(state, dateKey);
+        if (outcome.counted) {
+          if (summary.oldStreak === undefined) summary.oldStreak = outcome.oldStreak;
+          summary.streakChanged = true;
+          summary.newStreak = outcome.newStreak;
+        }
       }
     });
 
@@ -100,7 +119,7 @@ const Streak = (function () {
     return "on_track";
   }
 
-  return { evaluateDailyStreak, countConsecutiveMisses, getStreakStatus, PENALTY_XP, PENALTY_ATTRIBUTES };
+  return { evaluateDailyStreak, recordSuccessfulDay, countConsecutiveMisses, getStreakStatus, PENALTY_XP, PENALTY_ATTRIBUTES };
 })();
 
 if (typeof window !== "undefined") window.Streak = Streak;

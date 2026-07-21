@@ -10,6 +10,14 @@
 
 const Quests = (function () {
 
+  function getCreditReward(questOrDifficulty) {
+    const difficulty = typeof questOrDifficulty === "string"
+      ? questOrDifficulty
+      : questOrDifficulty && questOrDifficulty.difficulty;
+    const rewardsByDifficulty = SEED_DATA.creditRewards && SEED_DATA.creditRewards.questByDifficulty;
+    return Math.max(0, Number(rewardsByDifficulty && rewardsByDifficulty[difficulty]) || 0);
+  }
+
   function todayDateString() {
     return DateUtils.getLocalDateKey(); // "2026-06-22"
   }
@@ -226,7 +234,9 @@ const Quests = (function () {
         newMilestoneTitles: [],
         newSkills: [],
         activatedEffects: [],
-        consumedEffects: []
+        consumedEffects: [],
+        streakResult: null,
+        creditsEarned: 0
       };
     }
 
@@ -250,7 +260,9 @@ const Quests = (function () {
       newMilestoneTitles: [],
       newSkills: [],
       activatedEffects: [],
-      consumedEffects: []
+      consumedEffects: [],
+      streakResult: null,
+      creditsEarned: 0
     };
 
     if (result.completed) {
@@ -277,6 +289,13 @@ const Quests = (function () {
       state.level = playerProgress.level;
       result.playerLeveledUp = state.level > prevPlayerLevel;
 
+      // Credit income is based only on difficulty. XP multipliers can speed
+      // character growth without inflating the spendable reward economy.
+      const creditsEarned = getCreditReward(quest);
+      state.rewards.credits += creditsEarned;
+      state.rewards.totalCreditsEarned += creditsEarned;
+      result.creditsEarned = creditsEarned;
+
       // 2. Attribute XP
       result.attributeResult = Attributes.applyXp(state, quest.attribute, effectiveXp);
 
@@ -298,6 +317,11 @@ const Quests = (function () {
       state.dailyLog[today].questsCompleted += 1;
       state.dailyLog[today].attributeXp[quest.attribute] = (state.dailyLog[today].attributeXp[quest.attribute] || 0) + effectiveXp;
 
+      // A successful day should feel successful immediately. The streak
+      // module owns the one-count-per-local-date guard, so completing more
+      // quests today cannot inflate the streak.
+      result.streakResult = Streak.recordSuccessfulDay(state, today);
+
       // 4. Skill tree auto-unlock check (level-gated, no perk points in this version)
       result.newSkills = Skills.checkAndUnlock(state, quest.attribute);
 
@@ -318,6 +342,8 @@ const Quests = (function () {
 
       // 6. Achievement check (runs last so it can see all the updated counters)
       result.newAchievements = [...(bossOutcome.newAchievements || []), ...Achievements.checkAll(state)];
+      const comebackAchievement = Achievements.checkComeback(state);
+      if (comebackAchievement) result.newAchievements.push(comebackAchievement);
       result.newMilestoneTitles = [...(bossOutcome.newMilestoneTitles || []), ...Ranks.checkMilestoneTitles(state)];
 
       if (effectBonus.effect) {
@@ -432,7 +458,7 @@ const Quests = (function () {
     return state.quests.active.find(quest => quest.questType === "minimum" || quest.isMinimumQuest === true) || null;
   }
 
-  return { ensureDailyReset, addQuest, addMinimumQuest, removeQuest, toggleQuest, getActiveQuests, getMainQuest, getMainQuestCandidates, setMainQuest, getMinimumQuest, todayDateString };
+  return { ensureDailyReset, addQuest, addMinimumQuest, removeQuest, toggleQuest, getActiveQuests, getMainQuest, getMainQuestCandidates, setMainQuest, getMinimumQuest, getCreditReward, todayDateString };
 })();
 
 if (typeof window !== "undefined") window.Quests = Quests;

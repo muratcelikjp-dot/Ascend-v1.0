@@ -12,7 +12,10 @@ function hitShield(evt){
   hitCount++;
 
   let hitResult;
-  gs=GameState.set(state=>{ hitResult=Shield.applyHit(state,hitCount); });
+  gs=GameState.set(state=>{
+    hitResult=Shield.applyHit(state,hitCount);
+    if(hitResult.broken) hitResult.nightOwlAchievement=Achievements.checkNightOwl(state);
+  });
 
   const impact=getShieldImpact(evt,hitCount);
   updateHpBar(gs);

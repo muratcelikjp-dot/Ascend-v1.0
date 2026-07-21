@@ -16,6 +16,7 @@
   const welcome = document.getElementById("onboarding-welcome");
   const welcomeName = document.getElementById("onboarding-welcome-name");
   const dateButtons = Array.from(document.querySelectorAll("[data-date-part]"));
+  const dateDragSurfaces = Array.from(document.querySelectorAll(".birth-counter-display"));
   const dateOutputs = {
     day: document.getElementById("birth-day"),
     month: document.getElementById("birth-month"),
@@ -172,12 +173,88 @@
     syncBirthValue();
   }
 
+  function bindBirthDrag(surface) {
+    const unit = surface.closest("[data-date-unit]");
+    if (!unit) return;
+
+    const part = unit.dataset.dateUnit;
+    const pixelsPerStep = 22;
+    let drag = null;
+
+    function resetSurface() {
+      unit.classList.remove("dragging");
+      surface.style.removeProperty("--birth-drag-offset");
+      surface.style.removeProperty("--birth-drag-opacity");
+    }
+
+    function finishDrag(event) {
+      if (!drag || event.pointerId !== drag.pointerId) return;
+      const velocity = drag.velocity;
+      drag = null;
+      resetSurface();
+
+      if (reducedMotion || Math.abs(velocity) < 0.35) return;
+      const direction = velocity < 0 ? 1 : -1;
+      const momentumSteps = Math.min(3, Math.max(1, Math.round(Math.abs(velocity) * 2)));
+      for (let index = 0; index < momentumSteps; index += 1) {
+        setTimeout(() => stepBirthPart(part, direction), index * 70);
+      }
+    }
+
+    surface.addEventListener("pointerdown", event => {
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+      drag = {
+        pointerId: event.pointerId,
+        anchorY: event.clientY,
+        sampleY: event.clientY,
+        sampleTime: event.timeStamp,
+        velocity: 0
+      };
+      unit.classList.add("dragging");
+      try { surface.setPointerCapture(event.pointerId); } catch (captureError) { /* capture is optional */ }
+    });
+
+    surface.addEventListener("pointermove", event => {
+      if (!drag || event.pointerId !== drag.pointerId) return;
+      event.preventDefault();
+
+      const elapsed = Math.max(1, event.timeStamp - drag.sampleTime);
+      drag.velocity = (event.clientY - drag.sampleY) / elapsed;
+      drag.sampleY = event.clientY;
+      drag.sampleTime = event.timeStamp;
+
+      let delta = event.clientY - drag.anchorY;
+      const direction = delta < 0 ? 1 : -1;
+      const stepCount = Math.floor(Math.abs(delta) / pixelsPerStep);
+
+      if (stepCount > 0) {
+        for (let index = 0; index < stepCount; index += 1) stepBirthPart(part, direction);
+        drag.anchorY += (direction > 0 ? -1 : 1) * pixelsPerStep * stepCount;
+        delta = event.clientY - drag.anchorY;
+      }
+
+      const offset = Math.max(-10, Math.min(10, delta * 0.42));
+      surface.style.setProperty("--birth-drag-offset", offset + "px");
+      surface.style.setProperty("--birth-drag-opacity", String(1 - Math.min(0.28, Math.abs(offset) / 42)));
+    }, { passive: false });
+
+    surface.addEventListener("pointerup", finishDrag);
+    surface.addEventListener("pointercancel", finishDrag);
+    surface.addEventListener("lostpointercapture", event => {
+      if (drag && event.pointerId === drag.pointerId) {
+        drag = null;
+        resetSurface();
+      }
+    });
+  }
+
   nameInput.addEventListener("input", updateCallsign);
   dateButtons.forEach(button => {
     button.addEventListener("click", () => {
       stepBirthPart(button.dataset.datePart, Number(button.dataset.dateDirection));
     });
   });
+  dateDragSurfaces.forEach(bindBirthDrag);
 
   goalGrid.addEventListener("click", event => {
     const button = event.target.closest("[data-goal-id]");

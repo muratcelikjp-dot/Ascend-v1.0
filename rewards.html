@@ -154,6 +154,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;background:re
 .vault-balance::after{content:"";position:absolute;right:-24px;bottom:-34px;width:108px;height:108px;border:1px solid rgba(247,201,72,.08);border-radius:50%;box-shadow:0 0 0 17px rgba(247,201,72,.025),0 0 0 34px rgba(247,201,72,.012);pointer-events:none}
 .balance-emblem{width:46px;height:46px;display:grid;place-items:center;flex:0 0 auto;border:1px solid rgba(247,201,72,.36);border-radius:7px;background:rgba(247,201,72,.07);color:var(--abyss-gold);box-shadow:inset 0 0 18px rgba(247,201,72,.035)}
 .balance-emblem i{font-size:23px}.balance-copy{min-width:0;flex:1}.balance-label{font-size:8px;color:var(--abyss-muted);text-transform:uppercase;letter-spacing:.13em}.balance-value{display:flex;align-items:baseline;gap:7px;margin-top:3px}.balance-value strong{font-size:27px;line-height:1;color:var(--abyss-text);font-weight:650}.balance-value span{font-size:9px;color:var(--abyss-gold);letter-spacing:.1em}.balance-state{font-size:8px;color:rgba(141,239,255,.48);text-transform:uppercase;letter-spacing:.08em;text-align:right}
+.rw-cost i{margin-right:4px;font-size:12px;vertical-align:-1px}
 
 .vault-section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:0 1px 10px}.vault-section-kicker{display:flex;align-items:center;gap:6px;color:var(--abyss-gold);font-size:8px;text-transform:uppercase;letter-spacing:.14em}.vault-section-kicker i{font-size:14px}.vault-section-title{margin-top:4px;font-size:17px;color:var(--abyss-text);font-weight:600}.vault-section-status{color:var(--abyss-muted);font-size:8px;text-transform:uppercase;letter-spacing:.09em}
 .cat-all{--cat-color:#35f4e6;--cat-rgb:53,244,230}.cat-entertainment{--cat-color:#ff5fa2;--cat-rgb:255,95,162}.cat-food{--cat-color:#ff9f43;--cat-rgb:255,159,67}.cat-shopping{--cat-color:#f7c948;--cat-rgb:247,201,72}.cat-rest{--cat-color:#9b8cff;--cat-rgb:155,140,255}.cat-social{--cat-color:#41e6a4;--cat-rgb:65,230,164}.cat-other{--cat-color:#4fa8ff;--cat-rgb:79,168,255}
@@ -200,10 +201,10 @@ window.addEventListener('error', function(e){
   </header>
 
   <section class="vault-balance">
-    <div class="balance-emblem"><i class="ti ti-bolt"></i></div>
+    <div class="balance-emblem"><i class="ti ti-coin"></i></div>
     <div class="balance-copy">
-      <div class="balance-label">Available progression</div>
-      <div class="balance-value"><strong id="xp-balance">0</strong><span>XP</span></div>
+      <div class="balance-label">Available Credits</div>
+      <div class="balance-value"><strong id="credit-balance">0</strong><span>CR</span></div>
     </div>
     <div class="balance-state" id="balance-state">Vault scanning</div>
   </section>
@@ -238,7 +239,7 @@ window.addEventListener('error', function(e){
     <div class="m-title" id="modal-title">Add reward</div>
     <label class="m-lbl">Reward name</label>
     <input class="m-input" id="rw-name" placeholder="e.g. Watch anime episode" />
-    <label class="m-lbl">XP cost</label>
+    <label class="m-lbl">Credit cost</label>
     <input class="m-input" id="rw-cost" type="number" min="1" placeholder="e.g. 250" />
     <label class="m-lbl">Category</label>
     <div class="m-cat-grid" id="m-cat-grid"></div>
@@ -284,22 +285,23 @@ function escapeRewardUi(value){
 }
 
 function renderBalance(){
-  document.getElementById('xp-balance').textContent=gs.xp;
+  const credits=Number(gs.rewards.credits)||0;
+  document.getElementById('credit-balance').textContent=credits;
   const rewards=Rewards.getByCategory(gs,'all');
-  const ready=rewards.filter(r=>!Rewards.isLocked(gs,r)&&gs.xp>=r.cost).length;
+  const ready=rewards.filter(r=>!Rewards.isLocked(gs,r)&&credits>=r.cost).length;
   const state=document.getElementById('balance-state');
-  state.textContent=ready>0?`${ready} reward${ready===1?'':'s'} ready`:(rewards.length?'Gather more XP':'Vault empty');
+  state.textContent=ready>0?`${ready} reward${ready===1?'':'s'} ready`:(rewards.length?'Gather more Credits':'Vault empty');
 }
 
 function renderStats(){
-  document.getElementById('s-spent').textContent=Rewards.getTotalXpSpent(gs);
+  document.getElementById('s-spent').textContent=Rewards.getTotalCreditsSpent(gs);
   document.getElementById('s-purchases').textContent=gs.rewards.purchased.length;
   const breakdown=Rewards.getCategoryBreakdown(gs);
   const cats=Object.keys(breakdown);
   if(cats.length===0){
     document.getElementById('s-favcat').textContent='—';
   }else{
-    const top=cats.reduce((a,b)=>breakdown[a].totalXp>breakdown[b].totalXp?a:b);
+    const top=cats.reduce((a,b)=>breakdown[a].totalCredits>breakdown[b].totalCredits?a:b);
     const catMeta=SEED_DATA.rewardCategories.find(c=>c.id===top);
     document.getElementById('s-favcat').textContent=catMeta?catMeta.label:top;
   }
@@ -318,6 +320,7 @@ function setCategory(id){
 }
 
 function renderRewards(){
+  const credits=Number(gs.rewards.credits)||0;
   const rewards=Rewards.getByCategory(gs,activeCategory);
   const list=document.getElementById('reward-list');
   if(rewards.length===0){
@@ -325,10 +328,10 @@ function renderRewards(){
     return;
   }
   list.innerHTML=rewards.map((r,index)=>{
-    const canAfford=gs.xp>=r.cost;
+    const canAfford=credits>=r.cost;
     const locked=Rewards.isLocked(gs,r);
-    const progress=Math.min(100,Math.round((gs.xp/r.cost)*100));
-    const remaining=Math.max(0,r.cost-gs.xp);
+    const progress=Math.min(100,Math.round((credits/r.cost)*100));
+    const remaining=Math.max(0,r.cost-credits);
     const catMeta=SEED_DATA.rewardCategories.find(c=>c.id===r.category)||{icon:'ti-gift'};
     let cls=`rw-card cat-${r.category}`;
     if(r.isPremium) cls+=' premium';
@@ -341,8 +344,8 @@ function renderRewards(){
         <div class="rw-name">${escapeRewardUi(r.name)}${r.isPremium?'<span class="rw-premium-tag">Premium</span>':''}</div>
         ${locked?`<div class="rw-lock-msg">Unlocks at level ${r.requiredLevel}</div>`:`
           <div class="rw-cost-line">
-            <div class="rw-cost">${r.cost} XP</div>
-            <div class="rw-readiness">${canAfford?'Redeem available':remaining+' XP remaining'}</div>
+            <div class="rw-cost"><i class="ti ti-coin" aria-hidden="true"></i>${r.cost} CR</div>
+            <div class="rw-readiness">${canAfford?'Redeem available':remaining+' CR remaining'}</div>
           </div>
           <div class="rw-progress" aria-hidden="true"><span class="rw-progress-fill" style="width:${progress}%"></span></div>`}
       </div>
@@ -363,13 +366,13 @@ function renderCategoryBreakdown(){
     list.innerHTML='<div class="empty-state">No spending yet.</div>';
     return;
   }
-  list.innerHTML=cats.sort((a,b)=>breakdown[b].totalXp-breakdown[a].totalXp).map(catId=>{
+  list.innerHTML=cats.sort((a,b)=>breakdown[b].totalCredits-breakdown[a].totalCredits).map(catId=>{
     const meta=SEED_DATA.rewardCategories.find(c=>c.id===catId)||{label:catId,icon:'ti-dots'};
     const d=breakdown[catId];
     return `<div class="cb-row">
       <div class="cb-icon"><i class="ti ${meta.icon}"></i></div>
       <div class="cb-label">${meta.label}</div>
-      <div class="cb-stat">${d.count} buys · ${d.totalXp} XP</div>
+      <div class="cb-stat">${d.count} buys · ${d.totalCredits} CR</div>
     </div>`;
   }).join('');
 }
@@ -382,7 +385,7 @@ function renderHistory(){
     return;
   }
   list.innerHTML=history.map(h=>
-    `<div class="hist-row"><span class="hist-name">${escapeRewardUi(h.rewardName)}</span><span class="hist-cost">-${h.cost} XP</span></div>`
+    `<div class="hist-row"><span class="hist-name">${escapeRewardUi(h.rewardName)}</span><span class="hist-cost">-${h.cost} CR</span></div>`
   ).join('');
 }
 
@@ -430,7 +433,7 @@ function buyReward(rewardId){
       cardEl.classList.add('purchased-flash');
       const burst=document.createElement('div');
       burst.className='coin-burst';
-      burst.textContent='-'+result.reward.cost+' XP';
+      burst.textContent='-'+result.reward.cost+' CR';
       cardEl.appendChild(burst);
       requestAnimationFrame(()=>burst.classList.add('fire'));
       setTimeout(()=>burst.remove(),850);
@@ -438,8 +441,8 @@ function buyReward(rewardId){
     if(result.newAchievements&&result.newAchievements.length){
       result.newAchievements.forEach(a=>showAchievementPopup(a));
     }
-  }else if(result.reason==='insufficient_xp'){
-    showToast('fail','Need '+result.shortfall+' more XP');
+  }else if(result.reason==='insufficient_credits'){
+    showToast('fail','Need '+result.shortfall+' more Credits');
   }else if(result.reason==='level_locked'){
     showToast('fail','Requires level '+result.requiredLevel);
   }

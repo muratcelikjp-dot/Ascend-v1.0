@@ -1,12 +1,8 @@
 // js/rewards.js
 //
-// Custom reward CRUD plus purchase logic. Purchasing deducts from the
-// player's current xp (spendable currency), not lifetimeXp — lifetimeXp
-// is a permanent achievement/stats counter and should never be reduced by
-// spending, only by the penalty system reducing actual level progress.
-// This means buying rewards can lower your effective level (since level is
-// derived from current xp), which is an intentional trade-off: rewards
-// cost real progress, not free points layered on top.
+// Custom reward CRUD plus purchase logic. Credits are earned alongside XP
+// but remain a separate spendable balance, so redeeming a real-life reward
+// can never lower the player's level or erase character progression.
 
 const Rewards = (function () {
 
@@ -52,31 +48,31 @@ const Rewards = (function () {
     const reward = state.rewards.custom.find(r => r.id === rewardId);
     if (!reward) return { success: false, reason: "not_found" };
     if (isLocked(state, reward)) return { success: false, reason: "level_locked", requiredLevel: reward.requiredLevel, currentLevel: state.level };
-    if (state.xp < reward.cost) return { success: false, reason: "insufficient_xp", shortfall: reward.cost - state.xp };
+    const cost = Math.max(0, Number(reward.cost) || 0);
+    if (state.rewards.credits < cost) return { success: false, reason: "insufficient_credits", shortfall: cost - state.rewards.credits };
 
-    state.xp -= reward.cost;
-    state.level = Leveling.levelFromTotalXp(state.xp);
-    if (!state.rewards.totalXpSpent) state.rewards.totalXpSpent = 0;
-    state.rewards.totalXpSpent += reward.cost;
+    state.rewards.credits -= cost;
+    state.rewards.totalCreditsSpent += cost;
 
     state.rewards.purchased.push({
       id: "pur_" + Date.now(),
       rewardId: reward.id,
       rewardName: reward.name,
       category: reward.category,
-      cost: reward.cost,
+      cost,
+      currency: "credits",
       purchasedAt: new Date().toISOString()
     });
 
     // Check achievements right after the purchase counters update, so
     // "First Purchase" and "Big Spender" (both defined against
-    // rewards.purchased.length / rewards.totalXpSpent) can actually
+    // rewards.purchased.length / rewards.totalCreditsSpent) can actually
     // unlock. Without this call they were dead data — defined in the
     // roster but never evaluated by anything.
     const newAchievements = Achievements.checkAll(state);
     const newMilestoneTitles = Ranks.checkMilestoneTitles(state);
 
-    return { success: true, reward, newXp: state.xp, newLevel: state.level, newAchievements, newMilestoneTitles };
+    return { success: true, reward, newCredits: state.rewards.credits, newAchievements, newMilestoneTitles };
   }
 
   function getAll(state) {
@@ -92,8 +88,8 @@ const Rewards = (function () {
     return state.rewards.purchased;
   }
 
-  function getTotalXpSpent(state) {
-    return state.rewards.totalXpSpent || 0;
+  function getTotalCreditsSpent(state) {
+    return state.rewards.totalCreditsSpent || 0;
   }
 
   // Breaks down purchase history by category, for the rewards stats panel.
@@ -101,14 +97,14 @@ const Rewards = (function () {
     const breakdown = {};
     state.rewards.purchased.forEach(p => {
       const cat = p.category || "other";
-      if (!breakdown[cat]) breakdown[cat] = { count: 0, totalXp: 0 };
+      if (!breakdown[cat]) breakdown[cat] = { count: 0, totalCredits: 0 };
       breakdown[cat].count += 1;
-      breakdown[cat].totalXp += p.cost;
+      breakdown[cat].totalCredits += p.cost;
     });
     return breakdown;
   }
 
-  return { addReward, editReward, deleteReward, purchaseReward, isLocked, getAll, getByCategory, getPurchaseHistory, getTotalXpSpent, getCategoryBreakdown };
+  return { addReward, editReward, deleteReward, purchaseReward, isLocked, getAll, getByCategory, getPurchaseHistory, getTotalCreditsSpent, getCategoryBreakdown };
 })();
 
 if (typeof window !== "undefined") window.Rewards = Rewards;

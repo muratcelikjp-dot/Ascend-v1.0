@@ -177,6 +177,12 @@ const GameState = (function () {
 
   function migrateIfNeeded(state) {
     const currentVersion = Number(state.version) || 0;
+    const legacyRewards = isPlainObject(state.rewards) ? state.rewards : null;
+    const hadCredits = legacyRewards && Number.isFinite(Number(legacyRewards.credits));
+    const hadTotalCreditsEarned = legacyRewards && Number.isFinite(Number(legacyRewards.totalCreditsEarned));
+    const hadTotalCreditsSpent = legacyRewards && Number.isFinite(Number(legacyRewards.totalCreditsSpent));
+    const legacyXpBalance = Math.max(0, Number(state.xp) || 0);
+    const legacyXpSpent = legacyRewards ? Math.max(0, Number(legacyRewards.totalXpSpent) || 0) : 0;
     fillMissingDefaults(state, SEED_DATA.defaultState);
     if (currentVersion < ATTRIBUTE_SCHEMA_VERSION) migrateFourAttributeModel(state);
     state.version = SEED_DATA.defaultState.version;
@@ -252,7 +258,19 @@ const GameState = (function () {
       });
       state.bosses.legacyContractsMigrated = true;
     }
-    if (state.rewards && typeof state.rewards.totalXpSpent !== "number") state.rewards.totalXpSpent = 0;
+    if (state.rewards) {
+      // Version 14 separates character progression from reward spending.
+      // Preserve existing purchasing power once by mirroring the old XP
+      // balance into Credits during migration.
+      if (!hadCredits) state.rewards.credits = legacyXpBalance;
+      if (!hadTotalCreditsSpent) state.rewards.totalCreditsSpent = legacyXpSpent;
+      if (!hadTotalCreditsEarned) {
+        state.rewards.totalCreditsEarned = state.rewards.credits + state.rewards.totalCreditsSpent;
+      }
+      state.rewards.credits = Math.max(0, Number(state.rewards.credits) || 0);
+      state.rewards.totalCreditsEarned = Math.max(0, Number(state.rewards.totalCreditsEarned) || 0);
+      state.rewards.totalCreditsSpent = Math.max(0, Number(state.rewards.totalCreditsSpent) || 0);
+    }
     if (!state.milestoneTitlesEarned) state.milestoneTitlesEarned = [];
     if (!state.skills) state.skills = deepClone(SEED_DATA.defaultState.skills);
     if (!Array.isArray(state.skills.legacyUnlocked)) state.skills.legacyUnlocked = [];

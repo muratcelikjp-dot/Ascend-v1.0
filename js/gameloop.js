@@ -51,11 +51,30 @@ const GameLoop = (function () {
       if (report.questsReset) {
         report.streakResult = Streak.evaluateDailyStreak(state, resetResult.streakEvaluationDates);
 
+        // Streak thresholds are counter achievements, so evaluate them at
+        // the exact point the streak changes instead of waiting for a later
+        // quest completion or reward purchase.
+        report.newAchievements.push(...Achievements.checkAll(state));
+
         // Check the Comeback secret achievement right after the streak
         // updates, since that's the only moment state.streak actually
         // changes day-to-day.
         const comebackDef = Achievements.checkComeback(state);
         if (comebackDef) report.newAchievements.push(comebackDef);
+      } else {
+        // Existing saves may already contain a completed quest for today
+        // when this version first loads. Count that day once without asking
+        // the user to redo or unlock an already-cleared quest.
+        const completedToday = state.quests.lastResetDate === DateUtils.getLocalDateKey()
+          && state.quests.active.some(quest => quest && quest.done);
+        if (completedToday) {
+          report.streakResult = Streak.recordSuccessfulDay(state, DateUtils.getLocalDateKey());
+          if (report.streakResult.counted) {
+            report.newAchievements.push(...Achievements.checkAll(state));
+            const comebackDef = Achievements.checkComeback(state);
+            if (comebackDef) report.newAchievements.push(comebackDef);
+          }
+        }
       }
 
       // Dominance grows from elapsed real time, not from page-load count.

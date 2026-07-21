@@ -12,6 +12,7 @@ const gameStateSource = fs.readFileSync(path.join(ROOT, "js", "gamestate.js"), "
 const attributesSource = fs.readFileSync(path.join(ROOT, "js", "attributes.js"), "utf8");
 const skillsSource = fs.readFileSync(path.join(ROOT, "js", "skills.js"), "utf8");
 const achievementsSource = fs.readFileSync(path.join(ROOT, "js", "achievements.js"), "utf8");
+const streakSource = fs.readFileSync(path.join(ROOT, "js", "streak.js"), "utf8");
 const activeEffectsSource = fs.readFileSync(path.join(ROOT, "js", "active-effects.js"), "utf8");
 const weeklyRecapSource = fs.readFileSync(path.join(ROOT, "js", "weekly-recap.js"), "utf8");
 const progressiveUnlocksSource = fs.readFileSync(path.join(ROOT, "js", "progressive-unlocks.js"), "utf8");
@@ -21,6 +22,9 @@ const ranksSource = fs.readFileSync(path.join(ROOT, "js", "ranks.js"), "utf8");
 const prestigeSource = fs.readFileSync(path.join(ROOT, "js", "prestige.js"), "utf8");
 const dailyStateSource = fs.readFileSync(path.join(ROOT, "js", "daily-state.js"), "utf8");
 const questsSource = fs.readFileSync(path.join(ROOT, "js", "quests.js"), "utf8");
+const shieldSource = fs.readFileSync(path.join(ROOT, "js", "shield.js"), "utf8");
+const gameLoopSource = fs.readFileSync(path.join(ROOT, "js", "gameloop.js"), "utf8");
+const rewardsSource = fs.readFileSync(path.join(ROOT, "js", "rewards.js"), "utf8");
 const proofSource = fs.readFileSync(path.join(ROOT, "js", "proof.js"), "utf8");
 const profileSource = fs.readFileSync(path.join(ROOT, "js", "profile.js"), "utf8");
 const saveVaultSource = fs.readFileSync(path.join(ROOT, "js", "save-vault.js"), "utf8");
@@ -83,6 +87,7 @@ function createRuntime(storage) {
   vm.runInContext(attributesSource + ";globalThis.Attributes=Attributes;", context);
   vm.runInContext(skillsSource + ";globalThis.Skills=Skills;", context);
   vm.runInContext(achievementsSource + ";globalThis.Achievements=Achievements;", context);
+  vm.runInContext(streakSource + ";globalThis.Streak=Streak;", context);
   vm.runInContext(activeEffectsSource, context);
   vm.runInContext(proofSource, context);
   vm.runInContext(weeklyRecapSource, context);
@@ -93,6 +98,9 @@ function createRuntime(storage) {
   vm.runInContext(prestigeSource + ";globalThis.Prestige=Prestige;", context);
   vm.runInContext(dailyStateSource, context);
   vm.runInContext(questsSource + ";globalThis.Quests=Quests;", context);
+  vm.runInContext(shieldSource + ";globalThis.Shield=Shield;", context);
+  vm.runInContext(gameLoopSource + ";globalThis.GameLoop=GameLoop;", context);
+  vm.runInContext(rewardsSource + ";globalThis.Rewards=Rewards;", context);
   vm.runInContext(profileSource, context);
   vm.runInContext(saveVaultSource, context);
 
@@ -104,6 +112,9 @@ function createRuntime(storage) {
     ProgressiveUnlocks: context.ProgressiveUnlocks,
     JourneyTimeline: context.JourneyTimeline,
     DailyState: context.DailyState,
+    Achievements: context.Achievements,
+    GameLoop: context.GameLoop,
+    Rewards: context.Rewards,
     Quests: context.Quests,
     Proof: context.Proof,
     Prestige: context.Prestige,
@@ -129,6 +140,27 @@ test("fresh state is created and persisted", () => {
   assert.equal(persisted.version, SEED_DATA.defaultState.version);
   assert.equal(persisted.level, 1);
   assert.equal(persisted.bosses.currentBossId, "procrastination");
+  assert.equal(persisted.rewards.credits, 0);
+});
+
+test("version 13 saves receive Credits without losing their old purchasing power", () => {
+  const bootstrap = createRuntime(new MemoryStorage());
+  const legacyState = clone(bootstrap.SEED_DATA.defaultState);
+  legacyState.version = 13;
+  legacyState.xp = 425;
+  legacyState.rewards.totalXpSpent = 150;
+  delete legacyState.rewards.credits;
+  delete legacyState.rewards.totalCreditsEarned;
+  delete legacyState.rewards.totalCreditsSpent;
+
+  const storage = new MemoryStorage({ rpg_state: JSON.stringify(legacyState) });
+  const { GameState } = createRuntime(storage);
+  const migrated = GameState.get();
+
+  assert.equal(migrated.xp, 425);
+  assert.equal(migrated.rewards.credits, 425);
+  assert.equal(migrated.rewards.totalCreditsSpent, 150);
+  assert.equal(migrated.rewards.totalCreditsEarned, 575);
 });
 
 test("nested progress survives a new app runtime", () => {
@@ -1123,4 +1155,242 @@ test("prestige resets only current leveling progress and preserves the character
   assert.deepEqual(clone(after.dailyLog), preserved.dailyLog);
   assert.equal(after.achievements.unlocked.includes("first_blood"), true);
   assert.equal(after.achievements.unlocked.includes("legend_prestige_1"), true);
+});
+
+test("daily bootstrap unlocks streak counter achievements when the streak changes", () => {
+  const storage = new MemoryStorage();
+  const { GameState, GameLoop, DateUtils } = createRuntime(storage);
+  const today = DateUtils.getLocalDateKey();
+  const yesterday = DateUtils.getLocalDateKey(DateUtils.addDaysLocal(today, -1));
+
+  GameState.set(state => {
+    state.streak = 6;
+    state.quests.lastResetDate = yesterday;
+    state.quests.active = [{
+      id: "streak_quest",
+      title: "Protect the streak",
+      attribute: "willpower",
+      difficulty: "easy",
+      xp: 50,
+      done: true,
+      dateAssigned: yesterday,
+      questType: "side",
+      priority: "normal",
+      tags: []
+    }];
+  });
+
+  const report = GameLoop.bootstrapDay();
+  const state = GameState.get();
+
+  assert.equal(state.streak, 7);
+  assert.ok(state.achievements.unlocked.includes("iron_will_streak"));
+  assert.ok(report.newAchievements.some(definition => definition.id === "iron_will_streak"));
+});
+
+test("the first completed quest counts today's streak exactly once", () => {
+  const storage = new MemoryStorage();
+  const { GameState, GameLoop, Quests, DateUtils } = createRuntime(storage);
+  const today = DateUtils.getLocalDateKey();
+
+  GameLoop.bootstrapDay();
+  let questId;
+  GameState.set(state => {
+    questId = Quests.addQuest(state, {
+      title: "Start the streak",
+      attribute: "willpower",
+      difficulty: "easy",
+      xp: 50
+    }).id;
+  });
+
+  const first = GameLoop.completeQuestFlow(questId);
+  const repeated = GameLoop.completeQuestFlow(questId);
+  const state = GameState.get();
+
+  assert.equal(first.result.streakResult.counted, true);
+  assert.equal(repeated.result.locked, true);
+  assert.equal(state.streak, 1);
+  assert.equal(state.streakLastCountedDate, today);
+  assert.equal(first.result.creditsEarned, 10);
+  assert.equal(state.rewards.credits, 10);
+  assert.equal(state.rewards.totalCreditsEarned, 10);
+});
+
+test("quest Credits follow difficulty and ignore XP multipliers", () => {
+  const storage = new MemoryStorage();
+  const { GameState, GameLoop, Quests } = createRuntime(storage);
+  let questId;
+
+  GameLoop.bootstrapDay();
+  GameState.set(state => {
+    state.prestige.permanentXpBonus = 0.5;
+    questId = Quests.addQuest(state, {
+      title: "Hard economy test",
+      attribute: "intelligence",
+      difficulty: "hard",
+      xp: 200
+    }).id;
+  });
+
+  const outcome = GameLoop.completeQuestFlow(questId);
+  const state = GameState.get();
+
+  assert.equal(Quests.getCreditReward("easy"), 10);
+  assert.equal(Quests.getCreditReward("normal"), 25);
+  assert.equal(Quests.getCreditReward("hard"), 50);
+  assert.equal(outcome.result.creditsEarned, 50);
+  assert.equal(state.rewards.credits, 50);
+  assert.equal(state.xp, 300);
+});
+
+test("reward purchases spend Credits without reducing XP or level", () => {
+  const storage = new MemoryStorage();
+  const { GameState, Rewards } = createRuntime(storage);
+  let result;
+
+  GameState.set(state => {
+    state.xp = 640;
+    state.level = 3;
+    state.rewards.credits = 300;
+    state.rewards.totalCreditsEarned = 300;
+    result = Rewards.purchaseReward(state, "r_watch_anime");
+  });
+
+  const state = GameState.get();
+  assert.equal(result.success, true);
+  assert.equal(result.newCredits, 50);
+  assert.equal(state.rewards.credits, 50);
+  assert.equal(state.rewards.totalCreditsSpent, 250);
+  assert.equal(state.xp, 640);
+  assert.equal(state.level, 3);
+  assert.equal(state.rewards.purchased[0].currency, "credits");
+});
+
+test("reward purchases reject an insufficient Credit balance even when XP is high", () => {
+  const storage = new MemoryStorage();
+  const { GameState, Rewards } = createRuntime(storage);
+  let result;
+
+  GameState.set(state => {
+    state.xp = 5000;
+    state.rewards.credits = 20;
+    result = Rewards.purchaseReward(state, "r_watch_anime");
+  });
+
+  const state = GameState.get();
+  assert.equal(result.success, false);
+  assert.equal(result.reason, "insufficient_credits");
+  assert.equal(result.shortfall, 230);
+  assert.equal(state.xp, 5000);
+  assert.equal(state.rewards.credits, 20);
+  assert.equal(state.rewards.purchased.length, 0);
+});
+
+test("daily reset does not count an already-counted successful day twice", () => {
+  const storage = new MemoryStorage();
+  const { GameState, GameLoop, DateUtils } = createRuntime(storage);
+  const today = DateUtils.getLocalDateKey();
+  const yesterday = DateUtils.getLocalDateKey(DateUtils.addDaysLocal(today, -1));
+
+  GameState.set(state => {
+    state.streak = 4;
+    state.streakLastCountedDate = yesterday;
+    state.quests.lastResetDate = yesterday;
+    state.quests.active = [{
+      id: "already_counted",
+      title: "Already counted",
+      attribute: "willpower",
+      difficulty: "easy",
+      xp: 50,
+      done: true,
+      dateAssigned: yesterday,
+      questType: "side",
+      priority: "normal",
+      tags: []
+    }];
+  });
+
+  GameLoop.bootstrapDay();
+
+  assert.equal(GameState.get().streak, 4);
+  assert.equal(GameState.get().streakLastCountedDate, yesterday);
+});
+
+test("one missed day keeps grace and today's completion resumes the streak", () => {
+  const storage = new MemoryStorage();
+  const { GameState, GameLoop, Quests, DateUtils } = createRuntime(storage);
+  const today = DateUtils.getLocalDateKey();
+  const yesterday = DateUtils.getLocalDateKey(DateUtils.addDaysLocal(today, -1));
+  const twoDaysAgo = DateUtils.getLocalDateKey(DateUtils.addDaysLocal(today, -2));
+
+  GameState.set(state => {
+    state.streak = 3;
+    state.streakLastCountedDate = twoDaysAgo;
+    state.quests.lastResetDate = yesterday;
+    state.quests.active = [];
+  });
+
+  GameLoop.bootstrapDay();
+  assert.equal(GameState.get().streak, 3);
+  assert.equal(GameState.get().planning.missedDayLog[yesterday], true);
+
+  let questId;
+  GameState.set(state => {
+    questId = Quests.addQuest(state, {
+      title: "Return today",
+      attribute: "willpower",
+      difficulty: "easy"
+    }).id;
+  });
+  GameLoop.completeQuestFlow(questId);
+
+  assert.equal(GameState.get().streak, 4);
+  assert.equal(GameState.get().streakLastCountedDate, today);
+});
+
+test("multiple missed days still reset the streak before today's completion", () => {
+  const storage = new MemoryStorage();
+  const { GameState, GameLoop, Quests, DateUtils } = createRuntime(storage);
+  const today = DateUtils.getLocalDateKey();
+  const threeDaysAgo = DateUtils.getLocalDateKey(DateUtils.addDaysLocal(today, -3));
+
+  GameState.set(state => {
+    state.streak = 5;
+    state.streakLastCountedDate = threeDaysAgo;
+    state.quests.lastResetDate = threeDaysAgo;
+    state.quests.active = [];
+  });
+
+  GameLoop.bootstrapDay();
+  assert.equal(GameState.get().streak, 0);
+
+  let questId;
+  GameState.set(state => {
+    questId = Quests.addQuest(state, {
+      title: "Begin again",
+      attribute: "willpower",
+      difficulty: "easy"
+    }).id;
+  });
+  GameLoop.completeQuestFlow(questId);
+
+  assert.equal(GameState.get().streak, 1);
+  assert.equal(GameState.get().streakLastCountedDate, today);
+});
+
+test("Night Owl unlocks once during the local midnight window", () => {
+  const storage = new MemoryStorage();
+  const { GameState, Achievements } = createRuntime(storage);
+  let firstUnlock;
+  let repeatedUnlock;
+
+  GameState.set(state => {
+    firstUnlock = Achievements.checkNightOwl(state, new Date(2026, 6, 21, 2, 30));
+    repeatedUnlock = Achievements.checkNightOwl(state, new Date(2026, 6, 21, 3, 0));
+  });
+
+  assert.equal(firstUnlock.id, "secret_night_owl");
+  assert.equal(repeatedUnlock, null);
+  assert.ok(GameState.get().achievements.unlocked.includes("secret_night_owl"));
 });

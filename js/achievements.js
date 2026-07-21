@@ -51,8 +51,8 @@ const Achievements = (function () {
   // "Night Owl" — break the daily seal after midnight (00:00-04:59 local
   // time, treated as "still up way too late" rather than "early riser").
   // Called from index.html at the exact moment the shield breaks.
-  function checkNightOwl(state) {
-    const hour = new Date().getHours();
+  function checkNightOwl(state, now = new Date()) {
+    const hour = now.getHours();
     if (hour >= 0 && hour < 5) {
       return unlockEvent(state, "secret_night_owl");
     }

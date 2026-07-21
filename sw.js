@@ -9,7 +9,7 @@
 //
 // CACHE_VERSION must be bumped on any meaningful app-shell file change.
 const CACHE_PREFIX = "rpg-app-";
-const CACHE_VERSION = "v160";
+const CACHE_VERSION = "v176";
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
 
 const PRECACHE_URLS = [
@@ -29,6 +29,7 @@ const PRECACHE_URLS = [
   "assets/bosses/procrastination-v2-base.png",
   "assets/bosses/procrastination-v2-left.png",
   "assets/bosses/procrastination-v2-right.png",
+  "assets/abyss-cosmos-bg.jpg",
   "manifest.json",
   "data/seed-data.js",
   "js/gamestate.js",
@@ -78,8 +79,8 @@ const PRECACHE_URLS = [
   "icons/icon-maskable-512.png",
   "icons/attribute-intelligence.svg",
   "icons/attribute-strength.svg",
-  "icons/attribute-strength-logo.jpg",
-  "icons/attribute-charisma-logo.png",
+  "icons/attribute-strength-logo.png",
+  "icons/attribute-charisma-clean.png",
   "icons/attribute-willpower-logo.png",
   "icons/node-quests.png",
   "icons/node-stats-dashboard.png",

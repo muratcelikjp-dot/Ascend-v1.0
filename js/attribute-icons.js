@@ -11,8 +11,8 @@ const AttributeIcons = (function () {
         <circle cx="36" cy="34" r="2.7"/><circle cx="36" cy="38" r="2.7"/>
       </g>
     </svg>`,
-    strength: `<span class="attribute-glyph attribute-strength-glyph" aria-hidden="true"><img src="icons/attribute-strength-logo.jpg" alt=""></span>`,
-    charisma: `<span class="attribute-glyph attribute-charisma-glyph" aria-hidden="true"><img src="icons/attribute-charisma-logo.png" alt=""></span>`,
+    strength: `<span class="attribute-glyph attribute-strength-glyph" aria-hidden="true"><img src="icons/attribute-strength-logo.png" alt=""></span>`,
+    charisma: `<span class="attribute-glyph attribute-charisma-glyph" aria-hidden="true"><img src="icons/attribute-charisma-clean.png" alt=""></span>`,
     willpower: `<span class="attribute-glyph attribute-willpower-glyph" aria-hidden="true"><img src="icons/attribute-willpower-logo.png" alt=""></span>`
   };
 

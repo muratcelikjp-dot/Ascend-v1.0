@@ -16,9 +16,9 @@ const PlanModal = (function () {
   };
 
   const difficulties = {
-    easy: { label: "Easy", xp: 50, icon: "ti-feather", color: "#41E6A4" },
-    normal: { label: "Normal", xp: 100, icon: "ti-bolt", color: "#35F4E6" },
-    hard: { label: "Hard", xp: 200, icon: "ti-flame", color: "#FF5C7A" }
+    easy: { label: "Easy", xp: 50, credits: Quests.getCreditReward("easy"), icon: "ti-feather", color: "#41E6A4" },
+    normal: { label: "Normal", xp: 100, credits: Quests.getCreditReward("normal"), icon: "ti-bolt", color: "#35F4E6" },
+    hard: { label: "Hard", xp: 200, credits: Quests.getCreditReward("hard"), icon: "ti-flame", color: "#FF5C7A" }
   };
 
   function escapeHtml(value) {
@@ -75,7 +75,7 @@ const PlanModal = (function () {
               <div class="plan-output" id="pm-output">
                 <div class="plan-output-icon" id="pm-output-icon"></div>
                 <div class="plan-output-body"><div class="plan-output-kicker">Deployment Output</div><div class="plan-output-name" id="pm-output-name"></div></div>
-                <div class="plan-output-xp" id="pm-xp-preview">+100<small>XP</small></div>
+                <div class="plan-output-xp" id="pm-xp-preview"><span><i class="ti ti-dna-2"></i>100 XP</span><small><i class="ti ti-coin"></i>25 CR</small></div>
               </div>
               <div class="plan-limit" id="pm-limit"></div>
               <button class="plan-add" type="button" onclick="PlanModal.addGoal()"><i class="ti ti-rocket"></i>Deploy for tomorrow</button>
@@ -247,7 +247,7 @@ const PlanModal = (function () {
     output.style.setProperty("--xp-color", difficulty.color);
     document.getElementById("pm-output-icon").innerHTML = AttributeIcons.markup(selectedAttribute, attribute.icon);
     document.getElementById("pm-output-name").textContent = attribute.label + " / " + difficulty.label;
-    document.getElementById("pm-xp-preview").innerHTML = "+" + difficulty.xp + "<small>XP</small>";
+    document.getElementById("pm-xp-preview").innerHTML = '<span><i class="ti ti-dna-2"></i>' + difficulty.xp + ' XP</span><small><i class="ti ti-coin"></i>' + difficulty.credits + ' CR</small>';
   }
 
   function renderQuestControls() {
@@ -255,7 +255,7 @@ const PlanModal = (function () {
       `<button class="plan-type${selectedQuestType === type ? " selected-" + type : ""}" type="button" onclick="PlanModal.selectQuestType('${type}')"><i class="ti ${type === "main" ? "ti-crown" : "ti-route"}"></i><span>${type} quest</span></button>`
     ).join("");
     document.getElementById("pm-difficulty-grid").innerHTML = Object.entries(difficulties).map(([id, difficulty]) =>
-      `<button class="plan-difficulty${selectedDifficulty === id ? " selected-" + id : ""}" type="button" onclick="PlanModal.selectDifficulty('${id}')"><i class="ti ${difficulty.icon}"></i><strong>${difficulty.label}</strong><span>+${difficulty.xp}</span></button>`
+      `<button class="plan-difficulty${selectedDifficulty === id ? " selected-" + id : ""}" type="button" onclick="PlanModal.selectDifficulty('${id}')"><i class="ti ${difficulty.icon}"></i><strong>${difficulty.label}</strong><span>${difficulty.xp} XP / ${difficulty.credits} CR</span></button>`
     ).join("");
     renderOutput();
     renderLimit();
@@ -286,7 +286,7 @@ const PlanModal = (function () {
       return `<article class="plan-item" style="--item-color:${meta.color};--item-bg:${meta.bg};--item-border:${meta.border}">
         <div class="plan-item-icon">${AttributeIcons.markup(attributeId, meta.icon)}</div>
         <div class="plan-item-body"><div class="plan-item-title">${escapeHtml(goal.text)}</div><div class="plan-item-meta"><span class="plan-item-type${isMain ? " main" : ""}">${isMain ? "Main Quest" : "Side Quest"}</span>${meta.label} / ${difficulty}${goal.scheduledTime ? " / " + escapeHtml(goal.scheduledTime) : ""}</div></div>
-        <div class="plan-item-xp" style="--xp-color:${difficultyMeta.color}">+${goal.xp} XP</div>
+        <div class="plan-item-xp" style="--xp-color:${difficultyMeta.color}"><span><i class="ti ti-dna-2"></i>${goal.xp} XP</span><small><i class="ti ti-coin"></i>${difficultyMeta.credits} CR</small></div>
         <button class="plan-icon-btn" type="button" onclick="PlanModal.removeGoal(${index})" aria-label="Remove quest"><i class="ti ti-x"></i></button>
       </article>`;
     }).join("");
@@ -303,7 +303,7 @@ const PlanModal = (function () {
       return `<article class="plan-item${selected ? " selected" : ""}" style="--item-color:${meta.color};--item-bg:${meta.bg};--item-border:${meta.border}">
         <button class="plan-routine-toggle" type="button" onclick="PlanModal.toggleRoutine('${template.id}')" aria-label="${selected ? "Remove" : "Add"} ${escapeHtml(template.title)}">${selected ? '<i class="ti ti-check"></i>' : ""}</button>
         <div class="plan-item-icon">${AttributeIcons.markup(template.attribute, meta.icon)}</div>
-        <div class="plan-item-body"><div class="plan-item-title">${escapeHtml(template.title)}</div><div class="plan-item-meta">${meta.label} / <span class="plan-routine-xp" style="--xp-color:${difficultyMeta.color}">+${template.xp} XP</span></div></div>
+        <div class="plan-item-body"><div class="plan-item-title">${escapeHtml(template.title)}</div><div class="plan-item-meta">${meta.label} / <span class="plan-routine-xp" style="--xp-color:${difficultyMeta.color}"><i class="ti ti-dna-2"></i>${template.xp} XP / <i class="ti ti-coin"></i>${difficultyMeta.credits} CR</span></div></div>
         ${selected ? `<button class="plan-routine-time" type="button" onclick="PlanModal.pickRoutineTime('${template.id}','${entry && entry.scheduledTime || ""}')" aria-label="Choose scheduled time"><i class="ti ti-clock"></i><span>${entry && entry.scheduledTime || "--:--"}</span></button>` : ""}
       </article>`;
     }).join("");
