@@ -36,6 +36,16 @@
 
     const key = dateKey || getDateKey();
     const dailyState = ensureState(state);
+    const existing = dailyState.checkIns[key];
+    if (existing) {
+      return {
+        ok: false,
+        reason: "already-checked-in",
+        error: "Daily capacity is already locked for this local day.",
+        dateKey: key,
+        entry: existing
+      };
+    }
     const entry = {
       capacity,
       checkedAt: Date.now()

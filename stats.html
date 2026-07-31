@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <link rel="stylesheet" href="css/attribute-icons.css">
 <link rel="stylesheet" href="css/panel-navigation.css">
+<link rel="stylesheet" href="css/daily-checkin.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{color-scheme:dark;--abyss-black:#020713;--abyss-deep:#071326;--abyss-ocean:#091b2f;--abyss-rift:#0b2744;--abyss-blue:#2f9dff;--abyss-aqua:#35f4e6;--abyss-cyan:#8defff;--abyss-purple:#8b5cf6;--abyss-gold:#f7c948;--abyss-green:#41e6a4;--abyss-coral:#ff5c7a;--abyss-text:#eaf8ff;--abyss-soft:#a7c7d9;--abyss-muted:#6f8ea3;--abyss-border:rgba(141,239,255,.18);--ab:var(--abyss-black);--ab2:var(--abyss-deep);--ab3:var(--abyss-ocean);--neon:var(--abyss-aqua);--oc:var(--abyss-blue);--ocd:rgba(47,157,255,.4);--bd:var(--abyss-border);--bd2:rgba(141,239,255,.34);--tx:var(--abyss-text);--txd:var(--abyss-muted);--txm:var(--abyss-soft);--am:var(--abyss-gold);--gr:var(--abyss-green)}
@@ -140,6 +141,7 @@ window.addEventListener('error', function(e){
 <script src="js/skills.js"></script>
 <script src="js/achievements.js"></script>
 <script src="js/date-utils.js"></script>
+<script src="js/daily-state.js"></script>
 <script src="js/proof.js"></script>
 <script src="js/active-effects.js"></script>
 <script src="js/bosses.js"></script>
@@ -295,6 +297,7 @@ function renderHeatmap(){
 
 hideUnavailableCharts();renderMetrics();renderWeeklyRecap();renderRangeToggle();renderDailyChart();renderRangeSummary();renderAttrs();renderBattleImpact();renderHeatmap();
 </script>
+<script src="js/daily-checkin.js"></script>
 <script src="js/panel-navigation.js"></script>
 <script src="js/sw-register.js"></script>
 <script src="js/app-version.js"></script>

@@ -14,6 +14,7 @@
 <title>RPG — Rewards</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <link rel="stylesheet" href="css/panel-navigation.css">
+<link rel="stylesheet" href="css/daily-checkin.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--ab:#020D18;--ab2:#04192E;--ab3:#071F38;--neon:#00E5FF;--oc:#00B4D8;--ocd:#005F87;--bd:rgba(0,180,216,0.18);--bd2:rgba(0,180,216,0.36);--tx:#C8EAF5;--txd:#4A7A90;--am:#EF9F27;--gr:#1D9E75;--re:#E24B4A;--pu:#7F77DD}
@@ -263,6 +264,7 @@ window.addEventListener('error', function(e){
 <script src="js/skills.js"></script>
 <script src="js/achievements.js"></script>
 <script src="js/date-utils.js"></script>
+<script src="js/daily-state.js"></script>
 <script src="js/active-effects.js"></script>
 <script src="js/bosses.js"></script>
 <script src="js/streak.js"></script>
@@ -526,6 +528,7 @@ function showToast(type,msg){
 
 renderAll();
 </script>
+<script src="js/daily-checkin.js"></script>
 <script src="js/panel-navigation.js"></script>
 <script src="js/app-version.js"></script>
 <script src="js/sw-register.js"></script>

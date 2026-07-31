@@ -398,12 +398,16 @@ test("version 9 saves gain daily state and explicit quest types", () => {
 test("daily capacity check-ins persist under their local date key", () => {
   const storage = new MemoryStorage();
   const first = createRuntime(storage);
+  let secondAttempt;
   first.GameState.set(state => {
     first.DailyState.set(state, "steady", "2026-07-15");
+    secondAttempt = first.DailyState.set(state, "strong", "2026-07-15");
   });
 
   const second = createRuntime(storage);
   const reloaded = second.GameState.get();
+  assert.equal(secondAttempt.ok, false);
+  assert.equal(secondAttempt.reason, "already-checked-in");
   assert.equal(second.DailyState.get(reloaded, "2026-07-15").capacity, "steady");
   assert.equal(second.DailyState.get(reloaded, "2026-07-16"), null);
 });

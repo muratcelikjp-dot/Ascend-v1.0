@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="css/attribute-icons.css">
 <link rel="stylesheet" href="css/plan-modal.css">
 <link rel="stylesheet" href="css/panel-navigation.css">
+<link rel="stylesheet" href="css/daily-checkin.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--ab:#020D18;--ab2:#04192E;--ab3:#071F38;--neon:#00E5FF;--oc:#00B4D8;--ocd:#005F87;--bd:rgba(0,180,216,0.18);--bd2:rgba(0,180,216,0.36);--tx:#C8EAF5;--txd:#4A7A90;--txm:#7BAFC8;--am:#EF9F27;--gr:#1D9E75;--re:#E24B4A}
@@ -173,6 +174,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .daily-state{position:relative;margin-top:11px;padding-top:10px;border-top:1px solid rgba(141,239,255,.12)}
 .daily-state-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px}.daily-state-title{display:flex;align-items:center;gap:6px;color:var(--abyss-soft);font-size:8px;text-transform:uppercase;letter-spacing:.11em}.daily-state-title i{font-size:13px;color:var(--abyss-aqua)}.daily-state-value{color:var(--abyss-muted);font-size:7px;text-transform:uppercase;letter-spacing:.08em}
 .daily-state-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.daily-state-option{--state-color:var(--abyss-aqua);min-width:0;height:34px;display:flex;align-items:center;justify-content:center;gap:5px;border:1px solid rgba(141,239,255,.13);border-radius:5px;background:rgba(2,7,19,.34);color:var(--abyss-muted);font-size:8px;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;transition:transform .15s,border-color .15s,background .15s,color .15s,box-shadow .15s}.daily-state-option i{font-size:13px}.daily-state-option:active{transform:scale(.97)}.daily-state-option.selected{border-color:color-mix(in srgb,var(--state-color) 52%,transparent);background:color-mix(in srgb,var(--state-color) 8%,rgba(2,7,19,.5));color:var(--state-color);box-shadow:0 0 16px color-mix(in srgb,var(--state-color) 8%,transparent)}
+.daily-state-option:disabled{cursor:default;opacity:.34}.daily-state-option.selected:disabled{opacity:1}.daily-state-option:disabled:active{transform:none}
 .daily-load{margin-top:9px}.daily-load[hidden]{display:none}.daily-load-head,.daily-load-meta{display:flex;align-items:center;justify-content:space-between;gap:10px}.daily-load-head span{color:var(--abyss-muted);font-size:7px;text-transform:uppercase;letter-spacing:.09em}.daily-load-head strong{color:var(--abyss-soft);font-size:7px;font-weight:600;text-transform:uppercase;letter-spacing:.07em}.daily-load-track{height:4px;margin-top:5px;border-radius:4px;background:rgba(2,7,19,.72);overflow:hidden}.daily-load-fill{width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--abyss-blue),var(--abyss-aqua));box-shadow:0 0 10px rgba(53,244,230,.24);transition:width .3s ease,background .2s}.daily-load-meta{margin-top:5px;color:var(--abyss-muted);font-size:7px;text-transform:uppercase;letter-spacing:.06em}.daily-load-meta strong{color:var(--abyss-cyan);font-weight:600}.daily-load.over .daily-load-fill{background:linear-gradient(90deg,var(--abyss-blue),var(--abyss-gold))}.daily-load.over .daily-load-meta strong{color:var(--abyss-gold)}.daily-load.clear .daily-load-fill{background:var(--abyss-green)}.daily-load.clear .daily-load-meta strong{color:var(--abyss-green)}
 .minimum-protocol{display:grid;grid-template-columns:30px minmax(0,1fr) auto;align-items:center;gap:8px;margin-top:8px;padding:8px;border:1px solid rgba(141,239,255,.16);border-radius:6px;background:rgba(2,7,19,.42)}.minimum-protocol[hidden]{display:none}.minimum-protocol-icon{width:30px;height:30px;display:grid;place-items:center;border:1px solid rgba(141,239,255,.24);border-radius:5px;background:rgba(141,239,255,.05);color:var(--abyss-cyan)}.minimum-protocol-icon i{font-size:15px}.minimum-protocol-body{min-width:0}.minimum-protocol-kicker{color:var(--abyss-cyan);font-size:7px;text-transform:uppercase;letter-spacing:.1em}.minimum-protocol-title{margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--abyss-soft);font-size:8px}.minimum-protocol-action{height:30px;padding:0 9px;border:1px solid rgba(141,239,255,.34);border-radius:5px;background:rgba(53,244,230,.07);color:var(--abyss-aqua);font-size:7px;font-weight:650;text-transform:uppercase;letter-spacing:.07em;cursor:pointer}.minimum-protocol-action:active{transform:scale(.96)}.minimum-protocol-action[hidden]{display:none}.minimum-protocol.secured{border-color:rgba(65,230,164,.22);background:rgba(65,230,164,.045)}.minimum-protocol.secured .minimum-protocol-icon,.minimum-protocol.secured .minimum-protocol-kicker{color:var(--abyss-green);border-color:rgba(65,230,164,.28)}
 .qc.minimum{border-color:rgba(141,239,255,.3);box-shadow:0 15px 36px rgba(0,0,0,.22),0 0 20px rgba(141,239,255,.055)}.qc.minimum .mission-state{color:var(--abyss-cyan)}
@@ -525,6 +527,7 @@ function renderDailyState(){
     const selected=!!entry&&button.dataset.capacity===entry.capacity;
     button.classList.toggle('selected',selected);
     button.setAttribute('aria-pressed',selected?'true':'false');
+    button.disabled=!!entry;
   });
   renderDailyLoad();
   renderMinimumProtocol();
@@ -624,7 +627,7 @@ function chooseMainQuest(questId){
 function setDailyCapacity(capacity){
   let result;
   gs=GameState.set(state=>{result=DailyState.setToday(state,capacity)});
-  if(!result||!result.ok)return;
+  if(!result||!result.ok){renderDailyState();return}
   renderDailyState();
 }
 
@@ -1348,6 +1351,11 @@ function addQ(){
 }
 
 if(window.TerminalCaret)TerminalCaret.bind(document.getElementById('qin'));
+window.addEventListener('daily-state:checked-in',()=>{
+  refreshFromGameState();
+  renderHeader();
+  renderQuests();
+});
 document.getElementById('main-picker').addEventListener('close',()=>document.body.classList.remove('main-picker-open'));
 refreshFromGameState();
 initializeGoalSuggestions();
@@ -1357,6 +1365,7 @@ if(new URLSearchParams(window.location.search).get('plan')==='1'){
   if(window.history&&window.history.replaceState) window.history.replaceState(null,'','quests.html');
 }
 </script>
+<script src="js/daily-checkin.js"></script>
 <script src="js/panel-navigation.js"></script>
 <script src="js/sw-register.js"></script>
 <script src="js/app-version.js"></script>

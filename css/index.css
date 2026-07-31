@@ -1046,6 +1046,7 @@ body::after{
   max-width:390px;
   height:100vh;
   height:100svh;
+  height:100dvh;
   min-height:0;
   padding:calc(8px + env(safe-area-inset-top,0px)) env(safe-area-inset-right,0px) calc(8px + env(safe-area-inset-bottom,0px)) env(safe-area-inset-left,0px);
   align-items:center;
@@ -1053,21 +1054,15 @@ body::after{
   overflow:hidden;
   touch-action:manipulation;
   background:
-    linear-gradient(180deg,rgba(1,5,14,.38),rgba(3,12,27,.28) 48%,rgba(1,4,12,.52)),
-    radial-gradient(ellipse at 50% 48%,rgba(53,244,230,.045),transparent 36%),
-    #01050e;
+    radial-gradient(ellipse at 50% 48%,rgba(53,244,230,.09),transparent 34%),
+    linear-gradient(180deg,#01050e 0%,#06162b 48%,#020713 100%);
 }
 
 .screen.abyss-home.shield-gate::before{
-  inset:-4%;
   background:
-    radial-gradient(circle at 50% 48%,transparent 0 42%,rgba(1,5,14,.13) 68%,rgba(1,4,12,.58) 100%),
-    linear-gradient(180deg,rgba(2,7,19,.08),transparent 34%,rgba(2,7,19,.24)),
-    url("../assets/abyss-cosmos-bg.jpg") center/cover no-repeat;
-  opacity:1;
-  transform:translate3d(-.5%,-.35%,0) scale(1.035);
-  will-change:transform;
-  animation:abyssCosmosDrift 48s ease-in-out infinite alternate;
+    repeating-linear-gradient(117deg,transparent 0 76px,rgba(141,239,255,.018) 77px 78px),
+    repeating-linear-gradient(0deg,transparent 0 54px,rgba(47,157,255,.015) 55px 56px);
+  opacity:.55;
 }
 
 .screen.abyss-home.shield-gate::after{
@@ -1082,21 +1077,7 @@ body::after{
     radial-gradient(circle at 27% 74%,rgba(139,92,246,.24) 0 1px,transparent 1.5px),
     radial-gradient(circle at 72% 88%,rgba(247,201,72,.18) 0 1px,transparent 1.5px);
   background-size:157px 181px,193px 163px,211px 197px,239px 223px;
-  opacity:.12;
-  will-change:transform,opacity;
-  animation:abyssCosmosStars 34s ease-in-out infinite alternate;
-}
-
-@keyframes abyssCosmosDrift{
-  0%{transform:translate3d(-.5%,-.35%,0) scale(1.035)}
-  50%{transform:translate3d(.45%,.2%,0) scale(1.045)}
-  100%{transform:translate3d(-.15%,.65%,0) scale(1.04)}
-}
-
-@keyframes abyssCosmosStars{
-  0%{opacity:.1;transform:translate3d(0,0,0)}
-  50%{opacity:.15;transform:translate3d(-5px,4px,0)}
-  100%{opacity:.11;transform:translate3d(4px,-3px,0)}
+  opacity:.28;
 }
 
 .constellation-shell{
@@ -1114,6 +1095,7 @@ body::after{
   width:100%;
   max-width:390px;
   height:min(560px,calc(100svh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 16px));
+  height:min(560px,calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 16px));
   min-height:500px;
   isolation:isolate;
 }
@@ -1304,6 +1286,7 @@ body::after{
   --node-accent:var(--abyss-aqua);
   --node-glow:rgba(53,244,230,.28);
   --node-rgb:53,244,230;
+  --node-hex:50% 0,93.301% 25%,93.301% 75%,50% 100%,6.699% 75%,6.699% 25%;
   position:absolute;
   z-index:3;
   width:clamp(76px,23%,90px);
@@ -1385,20 +1368,15 @@ body::after{
   content:"";
   position:absolute;
   inset:0;
-  clip-path:polygon(50% 0,91% 23%,91% 77%,50% 100%,9% 77%,9% 23%);
+  -webkit-clip-path:polygon(var(--node-hex));
+  clip-path:polygon(var(--node-hex));
 }
 
 .node-frame::before{
   z-index:0;
-  background:
-    linear-gradient(145deg,
-      rgba(236,253,255,.72) 0%,
-      rgba(var(--node-rgb),.64) 12%,
-      rgba(151,190,211,.28) 40%,
-      rgba(var(--node-rgb),.42) 72%,
-      rgba(232,252,255,.3) 100%);
+  background:rgba(var(--node-rgb),.52);
   box-shadow:
-    0 0 3px rgba(var(--node-rgb),.14),
+    0 0 3px rgba(var(--node-rgb),.2),
     0 0 12px var(--node-glow);
   transition:opacity .34s ease,filter .34s ease,box-shadow .34s ease;
 }
@@ -1537,6 +1515,370 @@ body::after{
   top:-3px;
   -webkit-mask-image:url("../icons/node-boss-eye.png");
   mask-image:url("../icons/node-boss-eye.png");
+}
+
+.node-icon-assembly{
+  position:absolute;
+  left:50%;
+  top:50%;
+  z-index:3;
+  opacity:0;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  filter:drop-shadow(0 0 2px currentColor) drop-shadow(0 0 6px var(--node-glow));
+}
+
+.node-icon-assembly .icon-piece{
+  position:absolute;
+  inset:0;
+  display:block;
+  background:currentColor;
+  opacity:0;
+  transform-origin:50% 50%;
+  -webkit-mask-repeat:no-repeat;
+  mask-repeat:no-repeat;
+  -webkit-mask-position:center top;
+  mask-position:center top;
+  -webkit-mask-size:100% auto;
+  mask-size:100% auto;
+}
+
+.icon-assembly-quests{width:56%;height:48%}
+.icon-assembly-hero{width:70%;height:54%}
+.icon-assembly-skill{width:56%;height:48%}
+.icon-assembly-rewards{width:60%;height:51%}
+.icon-assembly-boss{width:68%;height:48%;top:calc(50% - 3px)}
+
+.icon-assembly-quests .icon-piece{
+  -webkit-mask-image:url("../icons/node-quests.png");
+  mask-image:url("../icons/node-quests.png");
+}
+.icon-assembly-hero .icon-piece{
+  -webkit-mask-image:url("../icons/node-hero-helmet.png");
+  mask-image:url("../icons/node-hero-helmet.png");
+}
+.icon-assembly-skill .icon-piece{
+  -webkit-mask-image:url("../icons/node-skill-tree.png");
+  mask-image:url("../icons/node-skill-tree.png");
+}
+.icon-assembly-rewards .icon-piece{
+  -webkit-mask-image:url("../icons/node-rewards.png");
+  mask-image:url("../icons/node-rewards.png");
+}
+.icon-assembly-boss .icon-piece{
+  -webkit-mask-image:url("../icons/node-boss-eye.png");
+  mask-image:url("../icons/node-boss-eye.png");
+}
+
+.constellation-node.is-icon-opening .node-glyph-raster{opacity:0}
+.constellation-node.is-icon-opening .node-icon-assembly{opacity:1}
+.constellation-node.is-icon-complete .node-glyph-raster{opacity:0}
+.constellation-node.is-icon-complete .node-icon-assembly{opacity:1}
+.constellation-node.is-icon-complete .node-icon-assembly .icon-piece{
+  opacity:1;
+  transform:none;
+  filter:none;
+  animation:none;
+}
+.constellation-node.is-icon-complete .boss-pupil-cover,
+.constellation-node.is-icon-complete .boss-pupil-piece{opacity:1}
+
+/* Quest parchment: the rollers separate first, then the mission ink resolves. */
+.node-border-assembly{
+  position:absolute;
+  inset:0;
+  z-index:4;
+  width:100%;
+  height:100%;
+  overflow:visible;
+  pointer-events:none;
+  opacity:0;
+  filter:drop-shadow(0 0 3px currentColor) drop-shadow(0 0 7px var(--node-glow));
+}
+.node-border-assembly path{
+  fill:none;
+  stroke:currentColor;
+  stroke-linecap:round;
+  stroke-linejoin:bevel;
+  stroke-miterlimit:1;
+  vector-effect:non-scaling-stroke;
+  opacity:0;
+}
+.node-frame-progress{
+  stroke-width:1.15;
+  stroke-dasharray:1;
+  stroke-dashoffset:1;
+  filter:drop-shadow(0 0 2px currentColor) drop-shadow(0 0 5px var(--node-glow));
+}
+.node-frame-trace{
+  stroke-width:2.2;
+  stroke-dasharray:.035 .965;
+  stroke-dashoffset:0;
+  filter:drop-shadow(0 0 3px rgba(235,255,255,.95)) drop-shadow(0 0 8px var(--node-glow));
+}
+.node-frame-flash{
+  position:absolute;
+  inset:5px;
+  z-index:2;
+  pointer-events:none;
+  -webkit-clip-path:polygon(var(--node-hex));
+  clip-path:polygon(var(--node-hex));
+  background:
+    radial-gradient(circle at 50% 50%,rgba(235,255,255,.72) 0,rgba(var(--node-rgb),.34) 25%,rgba(var(--node-rgb),.08) 52%,transparent 74%);
+  opacity:0;
+  transform:scale(.84);
+  filter:blur(1px) drop-shadow(0 0 7px var(--node-glow));
+}
+.constellation-node.is-icon-opening .node-frame::before{animation:nodeFrameShellBoot 720ms cubic-bezier(.18,.74,.22,1) both}
+.constellation-node.is-icon-opening .node-frame::after{animation:nodeFrameGlassBoot 820ms cubic-bezier(.18,.72,.22,1) both}
+.constellation-node.is-icon-opening .node-border-assembly{opacity:1}
+.constellation-node.is-icon-opening .node-frame-progress{animation:none;opacity:0}
+.constellation-node.is-icon-opening .node-frame-trace{animation:none;opacity:0}
+.constellation-node.is-icon-opening .node-frame-flash{animation:nodeFrameFinalFlash 520ms cubic-bezier(.18,.74,.2,1) 2630ms both}
+.node-stats.is-icon-opening .node-glyph-raster,
+.node-stats.is-icon-complete .node-glyph-raster{opacity:1}
+.quest-sheet-piece{clip-path:inset(16% 8% 16% 8%)}
+.quest-roll-top{clip-path:inset(0 0 62% 0)}
+.quest-roll-bottom{clip-path:inset(62% 0 0 0)}
+.quest-ink-piece{clip-path:inset(27% 19% 27% 19%)}
+.quest-closed-roll{
+  position:absolute;
+  left:6%;
+  right:6%;
+  top:38%;
+  height:24%;
+  z-index:3;
+  border:1px solid currentColor;
+  border-radius:3px;
+  background:
+    linear-gradient(90deg,rgba(var(--node-rgb),.18),transparent 13% 87%,rgba(var(--node-rgb),.18)),
+    linear-gradient(180deg,rgba(238,255,255,.34),rgba(var(--node-rgb),.09) 39%,rgba(0,8,18,.62) 58%,rgba(var(--node-rgb),.2));
+  box-shadow:
+    inset 0 0 5px rgba(var(--node-rgb),.32),
+    0 0 4px currentColor,
+    0 0 9px var(--node-glow);
+  opacity:0;
+  transform-origin:50% 50%;
+}
+.quest-closed-roll::before,
+.quest-closed-roll::after{
+  content:"";
+  position:absolute;
+  top:50%;
+  width:19%;
+  aspect-ratio:1;
+  border:1px solid currentColor;
+  border-radius:50%;
+  background:
+    radial-gradient(circle,rgba(2,12,23,.96) 0 20%,currentColor 23% 31%,rgba(2,12,23,.94) 34% 100%);
+  box-shadow:inset 0 0 4px rgba(var(--node-rgb),.45),0 0 4px var(--node-glow);
+  transform:translateY(-50%);
+}
+.quest-closed-roll::before{left:-7%}
+.quest-closed-roll::after{right:-7%}
+.node-quests.is-icon-opening .quest-closed-roll{animation:questClosedRoll 2650ms linear both}
+.node-quests.is-icon-opening .quest-sheet-piece{animation:questParchmentUnfurl 2650ms linear both}
+.node-quests.is-icon-opening .quest-roll-top{animation:questRollTop 2650ms linear both}
+.node-quests.is-icon-opening .quest-roll-bottom{animation:questRollBottom 2650ms linear both}
+.node-quests.is-icon-opening .quest-ink-piece{animation:questInkResolve 2650ms linear both}
+
+/* Hero helmet: emerge, rise, fall with weight, then settle. */
+.node-hero.is-icon-opening .hero-helmet-piece{animation:heroHelmetDrop 1260ms cubic-bezier(.2,.78,.2,1) 20ms both}
+.icon-assembly-hero::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:84%;
+  width:64%;
+  height:10%;
+  border-radius:50%;
+  border:1px solid currentColor;
+  opacity:0;
+  transform:translate(-50%,-50%) scaleX(.2);
+  filter:blur(.2px) drop-shadow(0 0 5px var(--node-glow));
+}
+.node-hero.is-icon-opening .icon-assembly-hero::after{animation:heroHelmetImpact 480ms ease-out 790ms both}
+
+/* Skill Tree: top hex, branches, then terminal hexes. */
+.skill-tree-build{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  overflow:visible;
+  pointer-events:none;
+}
+.skill-tree-top-hex,
+.skill-tree-branch,
+.skill-tree-terminal{
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-opacity:.84;
+  stroke-linecap:round;
+  stroke-linejoin:miter;
+  vector-effect:non-scaling-stroke;
+  opacity:0;
+  transform-box:fill-box;
+  transform-origin:center;
+  filter:drop-shadow(0 0 .5px currentColor) drop-shadow(0 0 1.5px var(--node-glow));
+}
+.skill-tree-branch{stroke-linejoin:round}
+.skill-tree-branch{stroke-dasharray:1 1;stroke-dashoffset:1}
+.node-skill.is-icon-opening .skill-tree-top-hex{animation:skillTopHexAppear 520ms cubic-bezier(.18,.82,.2,1) 80ms both}
+.node-skill.is-icon-opening .skill-tree-trunk{animation:skillTreeBranchDraw 950ms linear 560ms both}
+.node-skill.is-icon-opening .skill-tree-main-branch{animation:skillTreeBranchDraw 1900ms linear 900ms both}
+.node-skill.is-icon-opening .branch-tier-1{animation:skillTreeBranchDraw 1300ms linear 1600ms both}
+.node-skill.is-icon-opening .branch-tier-2{animation:skillTreeBranchDraw 1250ms linear 1800ms both}
+.node-skill.is-icon-opening .branch-tier-3{animation:skillTreeBranchDraw 1200ms linear 2000ms both}
+.node-skill.is-icon-opening .branch-tier-4{animation:skillTreeBranchDraw 1100ms linear 2200ms both}
+.node-skill.is-icon-opening .terminal-pair-1{animation:skillTerminalHexAppear 420ms cubic-bezier(.16,.82,.2,1) 3280ms both}
+.node-skill.is-icon-opening .terminal-pair-2{animation:skillTerminalHexAppear 420ms cubic-bezier(.16,.82,.2,1) 3380ms both}
+.node-skill.is-icon-opening .terminal-pair-3{animation:skillTerminalHexAppear 420ms cubic-bezier(.16,.82,.2,1) 3480ms both}
+.node-skill.is-icon-opening .terminal-pair-4{animation:skillTerminalHexAppear 420ms cubic-bezier(.16,.82,.2,1) 3580ms both}
+.node-skill.is-icon-opening .terminal-final{animation:skillTerminalHexAppear 420ms cubic-bezier(.16,.82,.2,1) 3680ms both}
+.node-skill.is-icon-complete .skill-tree-top-hex,
+.node-skill.is-icon-complete .skill-tree-branch,
+.node-skill.is-icon-complete .skill-tree-terminal{opacity:1;transform:none;stroke-dashoffset:0}
+
+/* Rewards: the medal turns into place, the star and ribbons follow. */
+.rewards-wheel-piece{clip-path:inset(0 5% 29% 5%)}
+.rewards-star-piece{clip-path:circle(23% at 50% 40%)}
+.rewards-ribbon-left{clip-path:polygon(0 53%,52% 53%,52% 100%,0 100%);transform-origin:50% 54%}
+.rewards-ribbon-right{clip-path:polygon(48% 53%,100% 53%,100% 100%,48% 100%);transform-origin:50% 54%}
+.node-rewards.is-icon-opening .rewards-wheel-piece{animation:rewardsWheelDeploy 900ms cubic-bezier(.18,.74,.2,1) 20ms both}
+.node-rewards.is-icon-opening .rewards-star-piece{animation:rewardsStarIgnite 570ms cubic-bezier(.15,.82,.2,1) 590ms both}
+.node-rewards.is-icon-opening .rewards-ribbon-left,
+.node-rewards.is-icon-opening .rewards-ribbon-right{animation:rewardsRibbonReveal 560ms cubic-bezier(.16,.78,.2,1) 760ms both}
+
+/* Boss: targeting corners deploy, the eye opens, scans and locks on. */
+.boss-frame-tl{clip-path:inset(0 52% 52% 0);--frame-x:14px;--frame-y:10px;--frame-rotate:-7deg}
+.boss-frame-tr{clip-path:inset(0 0 52% 52%);--frame-x:-14px;--frame-y:10px;--frame-rotate:7deg}
+.boss-frame-bl{clip-path:inset(52% 52% 0 0);--frame-x:14px;--frame-y:-10px;--frame-rotate:7deg}
+.boss-frame-br{clip-path:inset(52% 0 0 52%);--frame-x:-14px;--frame-y:-10px;--frame-rotate:-7deg}
+.boss-eye-piece{clip-path:inset(24% 8% 24% 8%)}
+.node-boss.is-icon-opening .boss-frame-tl{animation:bossFrameDeploy 520ms cubic-bezier(.16,.78,.2,1) 20ms both}
+.node-boss.is-icon-opening .boss-frame-tr{animation:bossFrameDeploy 520ms cubic-bezier(.16,.78,.2,1) 80ms both}
+.node-boss.is-icon-opening .boss-frame-bl{animation:bossFrameDeploy 520ms cubic-bezier(.16,.78,.2,1) 140ms both}
+.node-boss.is-icon-opening .boss-frame-br{animation:bossFrameDeploy 520ms cubic-bezier(.16,.78,.2,1) 200ms both}
+.node-boss.is-icon-opening .boss-eye-piece{animation:bossEyeOpen 620ms cubic-bezier(.18,.8,.2,1) 460ms both}
+.boss-pupil-cover,
+.boss-pupil-piece{
+  position:absolute;
+  left:50%;
+  top:50%;
+  z-index:4;
+  display:block;
+  border-radius:50%;
+  opacity:0;
+  transform:translate(-50%,-50%);
+}
+.boss-pupil-cover{
+  width:18%;
+  height:34%;
+  background:#071326;
+  box-shadow:0 0 3px rgba(2,7,19,.9);
+}
+.boss-pupil-piece{
+  z-index:5;
+  width:7%;
+  height:27%;
+  background:currentColor;
+  box-shadow:0 0 4px currentColor,0 0 8px var(--node-glow);
+}
+.node-boss.is-icon-opening .boss-pupil-cover{animation:bossPupilCover 1320ms linear 760ms both}
+.node-boss.is-icon-opening .boss-pupil-piece{animation:bossPupilScan 1320ms cubic-bezier(.2,.68,.22,1) 760ms both}
+
+@keyframes questClosedRoll{
+  0%{opacity:0;transform:scaleX(.24) scaleY(.72);filter:blur(2px) brightness(1.5)}
+  10%{opacity:1;transform:scaleX(1.06) scaleY(1.05);filter:blur(0) brightness(1.35)}
+  15%{transform:scaleX(1) scaleY(1);filter:none}
+  28%{opacity:1;transform:scaleX(1) scaleY(1)}
+  36%{opacity:0;transform:scaleX(.94) scaleY(.72);filter:brightness(1.5)}
+  100%{opacity:0;transform:scaleX(.94) scaleY(.72)}
+}
+@keyframes nodeFrameShellBoot{
+  0%{opacity:.08;filter:brightness(.5);transform:scale(.84)}
+  44%{opacity:.52;filter:brightness(1.15);transform:scale(.96)}
+  76%{opacity:1;filter:brightness(1.7);transform:scale(1.018)}
+  100%{opacity:1;filter:none;transform:none}
+}
+@keyframes nodeFrameGlassBoot{
+  0%,18%{opacity:0;filter:brightness(.55);transform:scale(.9)}
+  58%{opacity:.48;filter:brightness(1.28);transform:scale(.985)}
+  82%{opacity:1;filter:brightness(1.12);transform:scale(1.012)}
+  100%{opacity:1;filter:none;transform:none}
+}
+@keyframes nodeFrameProgress{
+  0%{opacity:0;stroke-dashoffset:1}
+  5%{opacity:.34}
+  88%{opacity:.7}
+  100%{opacity:.18;stroke-dashoffset:0}
+}
+@keyframes nodeFrameTrace{
+  0%{opacity:0;stroke-dashoffset:0;stroke-width:1.7}
+  5%{opacity:.92}
+  50%{opacity:1;stroke-width:2.35}
+  94%{opacity:1;stroke-dashoffset:-.82;stroke-width:2.2}
+  100%{opacity:0;stroke-dashoffset:-.87;stroke-width:1.7}
+}
+@keyframes nodeFrameFinalFlash{
+  0%{opacity:0;transform:scale(.84);filter:blur(2px) drop-shadow(0 0 2px var(--node-glow))}
+  30%{opacity:.9;transform:scale(1.01);filter:blur(.35px) drop-shadow(0 0 12px var(--node-glow))}
+  55%{opacity:.62;transform:scale(1.045);filter:blur(.1px) drop-shadow(0 0 16px var(--node-glow))}
+  100%{opacity:0;transform:scale(1.11);filter:blur(1.3px) drop-shadow(0 0 3px var(--node-glow))}
+}
+@keyframes questParchmentUnfurl{
+  0%,30%{opacity:0;transform:scaleY(.025);filter:brightness(1.65)}
+  37%{opacity:.42}
+  68%{opacity:1;transform:scaleY(1.055);filter:brightness(1.18)}
+  76%,100%{opacity:1;transform:scaleY(1);filter:none}
+}
+@keyframes questRollTop{
+  0%,25%{opacity:0;transform:translateY(14px) scaleX(.82)}
+  30%{opacity:1;transform:translateY(14px) scaleX(1)}
+  68%{opacity:1;transform:translateY(-1px) scaleX(1.025)}
+  76%,100%{opacity:1;transform:none}
+}
+@keyframes questRollBottom{
+  0%,25%{opacity:0;transform:translateY(-14px) scaleX(.82)}
+  30%{opacity:1;transform:translateY(-14px) scaleX(1)}
+  68%{opacity:1;transform:translateY(1px) scaleX(1.025)}
+  76%,100%{opacity:1;transform:none}
+}
+@keyframes questInkResolve{
+  0%,73%{opacity:0;transform:scale(.82);filter:blur(2px)}
+  84%{opacity:.7;transform:scale(1.04);filter:blur(.35px) brightness(1.75)}
+  94%,100%{opacity:1;transform:none;filter:none}
+}
+@keyframes heroHelmetDrop{
+  0%{opacity:0;transform:translateY(8px) scale(.12);filter:blur(3px) brightness(2)}
+  18%{opacity:1}
+  50%{transform:translateY(-15px) scale(1.06);filter:blur(0) brightness(1.35)}
+  70%{transform:translateY(5px) scale(.97);filter:brightness(1.7) drop-shadow(0 0 7px currentColor)}
+  82%{transform:translateY(-2px) scale(1.018)}
+  92%{transform:translateY(1px) scale(.994)}
+  100%{opacity:1;transform:none;filter:none}
+}
+@keyframes heroHelmetImpact{0%{opacity:0;transform:translate(-50%,-50%) scaleX(.18)}26%{opacity:.8}100%{opacity:0;transform:translate(-50%,-50%) scaleX(1.45)}}
+@keyframes skillTopHexAppear{0%{opacity:0;transform:scale(.2)}72%{opacity:1;transform:scale(1.08)}100%{opacity:1;transform:none}}
+@keyframes skillTreeBranchDraw{0%{opacity:1;stroke-dashoffset:1}100%{opacity:1;stroke-dashoffset:0}}
+@keyframes skillTerminalHexAppear{0%{opacity:0;transform:scale(.15)}72%{opacity:1;transform:scale(1.12)}100%{opacity:1;transform:none}}
+@keyframes rewardsWheelDeploy{0%{opacity:0;transform:rotate(-150deg) scale(.18);filter:blur(2px)}42%{opacity:1}76%{transform:rotate(8deg) scale(1.06);filter:brightness(1.5)}100%{opacity:1;transform:none;filter:none}}
+@keyframes rewardsStarIgnite{0%{opacity:0;transform:scale(.15) rotate(34deg);filter:blur(2px)}58%{opacity:1;transform:scale(1.22) rotate(-4deg);filter:brightness(2) drop-shadow(0 0 7px currentColor)}100%{opacity:1;transform:none;filter:none}}
+@keyframes rewardsRibbonReveal{0%,24%{opacity:0;transform:translateY(-5px) scale(.92)}62%{opacity:.78;transform:translateY(1px) scale(1.025)}100%{opacity:1;transform:none}}
+@keyframes bossFrameDeploy{0%{opacity:0;transform:translate(var(--frame-x),var(--frame-y)) rotate(var(--frame-rotate)) scale(.45);filter:blur(1.5px)}62%{opacity:1;filter:brightness(1.5)}100%{opacity:1;transform:none;filter:none}}
+@keyframes bossEyeOpen{0%{opacity:0;transform:scaleX(.72) scaleY(.03);filter:brightness(2.2)}34%{opacity:1}72%{transform:scaleX(1.04) scaleY(1.14);filter:brightness(1.45)}100%{opacity:1;transform:none;filter:none}}
+@keyframes bossPupilCover{0%,100%{opacity:1}}
+@keyframes bossPupilScan{
+  0%{opacity:0;transform:translate(-50%,-50%) scaleY(.2)}
+  12%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  29%{transform:translate(calc(-50% - 6px),-50%) scaleX(.82)}
+  47%{transform:translate(calc(-50% + 6px),-50%) scaleX(.82)}
+  64%{transform:translate(calc(-50% - 3px),-50%) scaleX(.9)}
+  76%{transform:translate(-50%,-50%) scale(1);filter:none}
+  89%{transform:translate(-50%,-50%) scale(1.7);filter:brightness(1.8) drop-shadow(0 0 5px currentColor)}
+  100%{opacity:1;transform:translate(-50%,-50%) scale(1);filter:none}
 }
 
 .node-glyph-hero,
@@ -1941,7 +2283,9 @@ body::after{
   width:var(--core-surface-size,29%);
   aspect-ratio:1;
   border-radius:50%;
-  overflow:visible;
+  overflow:hidden;
+  clip-path:circle(50% at 50% 50%);
+  -webkit-clip-path:circle(50% at 50% 50%);
   transform-box:fill-box;
   transform-origin:center;
   box-shadow:

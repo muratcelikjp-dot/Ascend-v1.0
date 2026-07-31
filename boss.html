@@ -14,6 +14,7 @@
 <title>Ascend - Boss Encounter</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <link rel="stylesheet" href="css/panel-navigation.css">
+<link rel="stylesheet" href="css/daily-checkin.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -55,6 +56,19 @@ button{font:inherit}
 .claw-light{left:86%;top:87%;width:11%;aspect-ratio:1;background:radial-gradient(circle,rgba(247,201,72,.76),rgba(247,201,72,.16) 46%,transparent 72%);filter:blur(3px) brightness(var(--light-boost));animation:clawPulse var(--claw-speed) ease-in-out infinite}
 .part-damage{position:absolute;z-index:5;width:30px;height:30px;display:none;place-items:center;transform:translate(-50%,-50%);border:1px solid rgba(255,92,122,.58);border-radius:50%;background:rgba(2,7,19,.72);color:var(--danger);box-shadow:0 0 16px rgba(255,92,122,.24);pointer-events:none}.part-damage::before,.part-damage::after{content:"";position:absolute;width:22px;height:1px;background:currentColor;box-shadow:0 0 5px currentColor}.part-damage::before{transform:rotate(42deg)}.part-damage::after{transform:rotate(-52deg)}.part-damage i{position:relative;z-index:2;font-size:12px}.sensor-damage{left:50%;top:38%}.core-damage{left:50%;top:55.5%;width:42px;height:42px}.claw-damage{left:86%;top:87%}
 .boss-rig.sensor-broken .sensor-light{opacity:.06!important;animation:none}.boss-rig.sensor-broken .sensor-damage{display:grid}.boss-rig.core-broken .core-light{opacity:.08!important;animation:none;filter:blur(2px) saturate(.25)}.boss-rig.core-broken .core-damage{display:grid}.boss-rig.claw-broken .claw-light{opacity:.06!important;animation:none}.boss-rig.claw-broken .claw-damage{display:grid}.boss-rig.claw-broken .boss-arm-right{opacity:.45;filter:grayscale(.55) brightness(.58);animation:none;transform:rotate(5deg) translateY(7px)}
+.boss-rig-burnout{inset:-3% 4% -5%;filter:drop-shadow(0 20px 18px rgba(0,0,0,.5)) drop-shadow(0 0 var(--rig-glow) rgba(255,153,86,.2));animation:burnoutHover 5.8s ease-in-out infinite}
+.boss-rig-burnout::after{content:"";position:absolute;z-index:5;inset:0;pointer-events:none;background:radial-gradient(ellipse 43% 58% at 50% 48%,transparent 72%,rgba(4,15,29,.24) 89%,rgba(2,7,19,.54) 100%)}
+.boss-burnout-cloak{z-index:1;transform-origin:50% 43%;animation:burnoutCloak 5.2s ease-in-out infinite}
+.boss-burnout-base{z-index:2}
+.boss-burnout-arm{z-index:3;will-change:transform}
+.boss-burnout-left{transform-origin:32% 41%;animation:burnoutLeftArm 6.1s ease-in-out infinite}
+.boss-burnout-right{transform-origin:68% 41%;animation:burnoutRightArm 6.5s ease-in-out infinite}
+.boss-burnout-flames{z-index:4;transform-origin:50% 86%;mix-blend-mode:screen;animation:burnoutFlames 3.4s ease-in-out infinite}
+.burnout-heat{position:absolute;z-index:4;pointer-events:none;border-radius:50%;mix-blend-mode:screen}
+.burnout-collar-heat{left:50%;top:35%;width:25%;height:16%;transform:translate(-50%,-50%);background:radial-gradient(ellipse,rgba(255,181,102,.26),rgba(255,91,48,.1) 46%,transparent 74%);filter:blur(7px);animation:burnoutCollarGlow 3.8s ease-in-out infinite}
+.burnout-gauntlet-heat{top:76%;width:23%;height:22%;background:radial-gradient(circle,rgba(255,143,64,.24),rgba(255,77,35,.08) 48%,transparent 73%);filter:blur(8px);animation:burnoutGauntletGlow 4.2s ease-in-out infinite}
+.burnout-gauntlet-left{left:11%}.burnout-gauntlet-right{right:11%;animation-delay:-2.1s}
+.boss-identity-burnout h2{background:linear-gradient(90deg,#7e8a9f,#f6b56b 24%,#fff0d2 47%,#ff825f 65%,#4d5a70);background-clip:text;-webkit-background-clip:text;filter:drop-shadow(0 0 9px rgba(246,181,107,.2))}
 .encounter-stage.threat-warning{--threat-color:var(--gold)}.encounter-stage.threat-critical,.encounter-stage.threat-imminent{--threat-color:var(--danger)}.encounter-stage.threat-imminent{filter:saturate(1.08)}
 .connection-map{position:absolute;z-index:4;inset:0;width:100%;height:100%;pointer-events:none}
 .connection-map path{fill:none;stroke:var(--point-color,var(--cyan));stroke-width:.34;stroke-dasharray:1.2 1.1;opacity:.55;filter:drop-shadow(0 0 2px var(--point-color,var(--cyan)))}
@@ -64,6 +78,22 @@ button{font:inherit}
 .weakpoint-target::before{inset:5px;box-shadow:0 0 12px color-mix(in srgb,var(--point-color,var(--cyan)) 48%,transparent)}
 .weakpoint-target::after{inset:0;border-style:dashed;opacity:.5;animation:targetSpin 8s linear infinite}
 .weakpoint-target i{position:relative;z-index:2;font-size:13px;filter:drop-shadow(0 0 4px currentColor)}
+.weakpoint-region-target{position:absolute;z-index:6;display:block;padding:0;border:0;border-radius:8px;outline:0;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.weakpoint-region-target:focus-visible{outline:1px solid var(--point-color,var(--cyan));outline-offset:2px;background:color-mix(in srgb,var(--point-color,var(--cyan)) 4%,transparent)}
+.burnout-anatomy-map{position:absolute;z-index:6;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.burnout-scan-region{color:var(--point-color,var(--cyan));filter:drop-shadow(0 0 3px color-mix(in srgb,currentColor 32%,transparent));transition:filter .24s ease}
+.weakpoint-region-fill{fill:color-mix(in srgb,currentColor 3%,transparent);stroke:currentColor;stroke-width:2.8;vector-effect:non-scaling-stroke;opacity:.3;transition:opacity .24s ease,fill .24s ease}
+.weakpoint-region-grid{fill:none;stroke:currentColor;stroke-width:1.2;stroke-dasharray:9 14;vector-effect:non-scaling-stroke;opacity:.1;transition:opacity .24s ease}
+.weakpoint-region-trace{fill:none;stroke:currentColor;stroke-width:4.2;stroke-linecap:round;stroke-dasharray:13 87;vector-effect:non-scaling-stroke;opacity:.62;animation:regionTrace 7.8s linear infinite;animation-delay:var(--scan-delay,0s)}
+.weakpoint-region-sweep{opacity:.48;animation:regionSweep 7.8s cubic-bezier(.45,.05,.55,.95) infinite;animation-delay:var(--scan-delay,0s)}
+.weakpoint-region-raster-fill{fill:currentColor;opacity:.07;transition:opacity .24s ease}
+.weakpoint-region-raster-outline{opacity:.38;transition:opacity .24s ease}
+.burnout-scan-region-cooling_crown{filter:drop-shadow(0 0 2px color-mix(in srgb,currentColor 24%,transparent))}
+.burnout-scan-region-cooling_crown .weakpoint-region-fill{stroke-width:2;stroke-linejoin:bevel}
+.burnout-scan-region-cooling_crown .weakpoint-region-trace{stroke-width:3;stroke-linejoin:bevel}
+.burnout-scan-region.is-focused{filter:drop-shadow(0 0 6px currentColor) brightness(1.2)}.burnout-scan-region.is-focused .weakpoint-region-fill{fill:color-mix(in srgb,currentColor 8%,transparent);opacity:.72}.burnout-scan-region.is-focused .weakpoint-region-grid{opacity:.28}.burnout-scan-region.is-focused .weakpoint-region-raster-fill{opacity:.16}.burnout-scan-region.is-focused .weakpoint-region-raster-outline{opacity:.72}
+.burnout-scan-region.broken{--point-color:var(--green)!important;opacity:.48}.burnout-scan-region.broken .weakpoint-region-trace,.burnout-scan-region.broken .weakpoint-region-sweep{animation:none;opacity:.12}.burnout-scan-region.broken .weakpoint-region-fill{stroke-dasharray:5 7;fill:transparent}.burnout-scan-region.broken .weakpoint-region-raster-outline{opacity:.12}
+.burnout-scan-region-overdrive_claw{transform-box:view-box;transform-origin:68% 41%;will-change:transform;animation:burnoutRightArm 6.5s ease-in-out infinite}
 .weakpoint-callout{position:absolute;z-index:7;width:108px;min-height:46px;padding:7px 8px;border:1px solid color-mix(in srgb,var(--point-color,var(--cyan)) 46%,transparent);border-radius:6px;background:rgba(4,17,32,.88);color:var(--text);text-align:left;cursor:pointer;box-shadow:0 8px 18px rgba(0,0,0,.25),inset 0 0 14px color-mix(in srgb,var(--point-color,var(--cyan)) 6%,transparent)}
 .weakpoint-callout::before{content:"";position:absolute;left:0;top:7px;bottom:7px;width:2px;background:var(--point-color,var(--cyan));box-shadow:0 0 7px var(--point-color,var(--cyan))}
 .weakpoint-callout small{display:block;color:var(--point-color,var(--cyan));font-size:7px;line-height:1;text-transform:uppercase}
@@ -117,6 +147,15 @@ button{font:inherit}
 @keyframes sensorPulse{0%,100%{opacity:var(--light-low)}50%{opacity:var(--light-base)}}
 @keyframes clawPulse{0%,100%{opacity:var(--claw-low)}50%{opacity:var(--claw-high)}}
 @keyframes targetSpin{to{transform:rotate(360deg)}}
+@keyframes burnoutHover{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes burnoutLeftArm{0%,100%{transform:rotate(0) translateY(0)}50%{transform:rotate(-1.6deg) translateY(-2px)}}
+@keyframes burnoutRightArm{0%,100%{transform:rotate(0) translateY(0)}50%{transform:rotate(1.6deg) translateY(1px)}}
+@keyframes burnoutCloak{0%,100%{transform:scaleX(1) translateY(0)}50%{transform:scaleX(1.012) translateY(2px)}}
+@keyframes burnoutFlames{0%,100%{opacity:.58;transform:translateY(1px) scaleY(.97)}50%{opacity:.9;transform:translateY(-2px) scaleY(1.035)}}
+@keyframes burnoutCollarGlow{0%,100%{opacity:.42;transform:translate(-50%,-50%) scale(.96)}50%{opacity:.72;transform:translate(-50%,-50%) scale(1.04)}}
+@keyframes burnoutGauntletGlow{0%,100%{opacity:.34;transform:scale(.94)}50%{opacity:.64;transform:scale(1.04)}}
+@keyframes regionTrace{to{stroke-dashoffset:-100}}
+@keyframes regionSweep{0%,18%{transform:translateY(-220px);opacity:0}28%{opacity:.68}72%{opacity:.68}82%,100%{transform:translateY(1400px);opacity:0}}
 @media(max-width:350px){.app{padding-left:10px;padding-right:10px}.encounter-stage{width:calc(100% + 20px);margin-left:-10px;margin-right:-10px}.encounter-header{grid-template-columns:38px minmax(0,1fr)}.back-button{width:38px;height:38px}.status-chip{display:none}.boss-identity h2{font-size:31px}.weakpoint-callout{width:98px;padding:6px}.weakpoint-callout strong{font-size:8px}.combat-meters{margin-top:-5px}.mission-stats{grid-template-columns:1fr}.mission-stat+.mission-stat{border-left:0;border-top:1px solid var(--border)}.retreat-state{padding-left:13px;padding-right:13px}.defeat-overlay{padding-left:20px;padding-right:20px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.boss-rig,.boss-arm{transform:none!important}.boss-light{opacity:var(--light-base)!important}.boss-rig.sensor-broken .sensor-light,.boss-rig.core-broken .core-light,.boss-rig.claw-broken .claw-light{opacity:.06!important}.boss-rig.claw-broken .boss-arm-right{opacity:.45!important;filter:grayscale(.55) brightness(.58)!important}}
 </style>
@@ -200,6 +239,7 @@ window.addEventListener("error",function(e){
 <script src="js/skills.js"></script>
 <script src="js/achievements.js"></script>
 <script src="js/date-utils.js"></script>
+<script src="js/daily-state.js"></script>
 <script src="js/active-effects.js"></script>
 <script src="js/bosses.js"></script>
 <script src="js/streak.js"></script>
@@ -210,9 +250,36 @@ window.addEventListener("error",function(e){
 <script src="js/gameloop.js"></script>
 <script src="js/home-feed.js"></script>
 <script>
-const bootstrapReport=GameLoop.bootstrapDay();
+const previewBossId=(location.protocol==="file:"||location.hostname==="127.0.0.1"||location.hostname==="localhost")?new URLSearchParams(location.search).get("preview"):null;
+const bootstrapReport=previewBossId?{}:GameLoop.bootstrapDay();
 let gs=GameState.get();
 const BOSS_SEEN_KEY="rpg_boss_last_seen_defeated_count";
+const BURNOUT_SCAN_REGIONS={
+  cooling_crown:{
+    hotspot:{x:29,y:5,width:43,height:35},anchor:{x:50,y:24},delay:"0s",clipOutline:true,
+    paths:[
+      "M202 172 L198 188 L206 208 L216 228 L220 240 L210 252 L200 260 L222 268 L226 280 L230 292 L236 308 L242 320 L248 332 L252 344 L254 348 L256 348 L270 340 L288 332 L288 324 L282 312 L278 300 L272 284 L266 268 L260 256 L262 244 L270 240 L264 228 L236 224 L232 216 L226 204 L222 192 L212 172 Z",
+      "M328 60 L324 64 L320 72 L314 80 L316 88 L322 100 L322 148 L298 160 L298 180 L318 184 L320 200 L320 228 L322 244 L324 256 L328 264 L330 276 L332 284 L334 288 L336 284 L344 280 L350 276 L362 268 L368 264 L378 260 L376 244 L376 228 L374 212 L374 188 L372 180 L372 172 L374 168 L390 164 L388 152 L352 152 L348 136 L346 116 L344 88 L346 80 L342 72 L332 64 Z",
+      "M494 148 L482 156 L478 164 L478 176 L474 184 L476 200 L464 208 L466 216 L442 220 L442 228 L450 236 L448 248 L446 260 L444 272 L442 284 L438 296 L426 304 L422 316 L448 324 L470 316 L474 308 L476 300 L478 292 L480 284 L482 276 L484 268 L486 260 L488 252 L492 244 L504 240 L502 228 L494 224 L486 216 L488 204 L490 188 L492 176 L500 168 L500 152 Z",
+      "M578 232 L568 240 L568 252 L564 260 L562 272 L558 280 L554 288 L550 296 L530 300 L526 304 L532 312 L532 320 L528 324 L524 332 L520 340 L516 348 L550 344 L554 332 L566 324 L570 320 L576 308 L558 304 L564 300 L562 296 L566 284 L570 276 L574 264 L568 256 L582 252 L586 244 L578 236 Z"
+    ]
+  },
+  overload_core:{
+    hotspot:{x:32,y:31,width:36,height:27},anchor:{x:50,y:45},delay:"-2.6s",clipOutline:true,
+    paths:[
+      "M250 395 L304 374 L342 405 L383 432 L383 458 L342 446 L321 438 L288 466 L256 448 L242 422 Z",
+      "M518 395 L464 374 L426 405 L385 432 L385 458 L426 446 L447 438 L480 466 L512 448 L526 422 Z",
+      "M384 430 L410 453 L409 482 L384 514 L359 482 L358 453 Z",
+      "M288 466 L321 445 L359 462 L384 514 L384 556 L350 520 L318 502 Z",
+      "M480 466 L447 445 L409 462 L384 514 L384 556 L418 520 L450 502 Z"
+    ]
+  },
+  overdrive_claw:{
+    hotspot:{x:60,y:56,width:24,height:36},anchor:{x:72,y:76},delay:"-5.2s",
+    alphaMask:{src:"assets/bosses/burnout-v3-right.png",x:490,y:620,width:230,height:520},
+    paths:["M528 638 L616 651 L668 734 L708 849 L690 980 L640 1090 L558 1124 L505 1050 L493 900 L500 760 Z"]
+  }
+};
 let activeWeakPointId=null;
 let lastWeakPointTrigger=null;
 let missionTimer=null;
@@ -226,6 +293,17 @@ function getThreatState(dominance){
   if(dominance>=70)return{label:"Critical pressure",className:"critical",level:"critical"};
   if(dominance>=40)return{label:"Dominance rising",className:"warning",level:"warning"};
   return{label:"Threat suppressed",className:"suppressed",level:"suppressed"};
+}
+
+function getDisplayedBossProgress(){
+  const bossDef=previewBossId&&SEED_DATA.bosses[previewBossId];
+  if(!bossDef)return Bosses.getBossProgress(gs);
+  return{
+    id:bossDef.id,name:bossDef.name,icon:bossDef.icon,lore:bossDef.lore,ability:bossDef.ability,
+    description:bossDef.description,hp:bossDef.maxHp,maxHp:bossDef.maxHp,
+    dominance:Number(bossDef.startingDominance)||0,encounterStatus:"active",encounterAttempt:1,
+    rematchAvailableDate:null,pct:100,rewards:bossDef.rewards,weakPoints:bossDef.weakPoints||[],nextBossDef:null
+  };
 }
 
 function getThreatVisuals(dominance){
@@ -266,8 +344,13 @@ function getWeakPointState(progress,point){
   return point.durationMinutes==null?"pending":"available";
 }
 
-function weakPointPath(point){
-  const target=point.target||{x:50,y:50};
+function getWeakPointTarget(progress,point){
+  const region=progress.id==="burnout"&&BURNOUT_SCAN_REGIONS[point.id];
+  return region&&region.anchor?region.anchor:(point.target||{x:50,y:50});
+}
+
+function weakPointPath(point,target){
+  target=target||point.target||{x:50,y:50};
   const callout=point.callout||{x:4,y:10,side:"left"};
   const endX=callout.side==="right"?callout.x:callout.x+27;
   const endY=callout.y+5.5;
@@ -276,25 +359,88 @@ function weakPointPath(point){
   return"M "+target.x+" "+target.y+" Q "+controlX+" "+controlY+" "+endX+" "+endY;
 }
 
+function renderRegionTarget(point,state,region){
+  const hotspot=region.hotspot;
+  return`<button class="weakpoint-region-target" type="button" data-point-id="${esc(point.id)}" style="left:${hotspot.x}%;top:${hotspot.y}%;width:${hotspot.width}%;height:${hotspot.height}%;--point-color:${esc(point.color||"#8DEFFF")}" onpointerenter="setScanFocus('${esc(point.id)}',true)" onpointerleave="setScanFocus('${esc(point.id)}',false)" onfocus="setScanFocus('${esc(point.id)}',true)" onblur="setScanFocus('${esc(point.id)}',false)" onclick="openMissionSheet('${esc(point.id)}',this)" aria-label="Scan ${esc(point.name)}"></button>`;
+}
+
+function renderBurnoutScanMap(progress){
+  const points=progress.weakPoints||[];
+  const regions=points.map(function(point){
+    const region=BURNOUT_SCAN_REGIONS[point.id];
+    if(!region)return"";
+    const state=getWeakPointState(progress,point);
+    const clipId="anatomy-clip-"+point.id;
+    const gradientId="anatomy-gradient-"+point.id;
+    const alphaMaskId="anatomy-alpha-"+point.id;
+    const alphaClipId="anatomy-alpha-clip-"+point.id;
+    const alphaOutlineId="anatomy-alpha-outline-"+point.id;
+    const shapePaths=region.paths.map(function(path){return`<path d="${path}"></path>`;}).join("");
+    const outlines=region.paths.map(function(path){return`<path class="weakpoint-region-fill" d="${path}"></path><path class="weakpoint-region-trace" d="${path}" pathLength="100"></path>`;}).join("");
+    const renderedOutlines=region.clipOutline?`<g clip-path="url(#${clipId})">${outlines}</g>`:outlines;
+    const alpha=region.alphaMask;
+    const alphaDefs=alpha?`<mask id="${alphaMaskId}" maskUnits="userSpaceOnUse" x="0" y="0" width="768" height="1184" style="mask-type:alpha"><image href="${esc(alpha.src)}" x="0" y="0" width="768" height="1184"></image></mask>
+        <clipPath id="${alphaClipId}"><rect x="${alpha.x}" y="${alpha.y}" width="${alpha.width}" height="${alpha.height}"></rect></clipPath>
+        <filter id="${alphaOutlineId}" filterUnits="userSpaceOnUse" x="${alpha.x-8}" y="${alpha.y-8}" width="${alpha.width+16}" height="${alpha.height+16}" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="2" result="expanded"></feMorphology><feComposite in="expanded" in2="SourceAlpha" operator="out" result="edge"></feComposite><feFlood flood-color="${esc(point.color||"#8DEFFF")}" flood-opacity=".78" result="edgeColor"></feFlood><feComposite in="edgeColor" in2="edge" operator="in"></feComposite></filter>`:"";
+    const alphaScan=alpha?`<g clip-path="url(#${alphaClipId})">
+        <image class="weakpoint-region-raster-outline" href="${esc(alpha.src)}" x="0" y="0" width="768" height="1184" filter="url(#${alphaOutlineId})"></image>
+        <g mask="url(#${alphaMaskId})">
+          <rect class="weakpoint-region-raster-fill" x="${alpha.x}" y="${alpha.y}" width="${alpha.width}" height="${alpha.height}"></rect>
+          <path class="weakpoint-region-grid" d="M0 296 H768 M0 592 H768 M0 888 H768 M192 0 V1184 M384 0 V1184 M576 0 V1184"></path>
+          <rect class="weakpoint-region-sweep" x="0" y="-220" width="768" height="210" fill="url(#${gradientId})"></rect>
+        </g>
+      </g>`:"";
+    return`<g class="burnout-scan-region burnout-scan-region-${esc(point.id)}${state==="broken"?" broken":""}" data-point-id="${esc(point.id)}" style="--point-color:${esc(point.color||"#8DEFFF")};--scan-delay:${esc(region.delay||"0s")}">
+      <defs>
+        <clipPath id="${clipId}">${shapePaths}</clipPath>
+        <linearGradient id="${gradientId}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="currentColor" stop-opacity="0"></stop><stop offset=".52" stop-color="currentColor" stop-opacity=".72"></stop><stop offset="1" stop-color="currentColor" stop-opacity="0"></stop></linearGradient>
+        ${alphaDefs}
+      </defs>
+      ${alphaScan||`<g clip-path="url(#${clipId})"><path class="weakpoint-region-grid" d="M0 296 H768 M0 592 H768 M0 888 H768 M192 0 V1184 M384 0 V1184 M576 0 V1184"></path><rect class="weakpoint-region-sweep" x="0" y="-220" width="768" height="210" fill="url(#${gradientId})"></rect></g>`}
+      ${alpha?"":renderedOutlines}
+    </g>`;
+  }).join("");
+  return`<svg class="burnout-anatomy-map" viewBox="0 0 768 1184" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${regions}</svg>`;
+}
+
+function setScanFocus(pointId,active){
+  document.querySelectorAll(".burnout-scan-region").forEach(function(region){
+    if(region.getAttribute("data-point-id")===pointId)region.classList.toggle("is-focused",active);
+  });
+}
+
 function renderWeakPointNetwork(progress){
   const points=progress.weakPoints||[];
   const paths=points.map(function(point){
     const state=getWeakPointState(progress,point);
-    return`<path class="${state==="broken"?"broken":""}" style="--point-color:${esc(point.color||"#8DEFFF")}" d="${weakPointPath(point)}"></path>`;
+    return`<path class="${state==="broken"?"broken":""}" style="--point-color:${esc(point.color||"#8DEFFF")}" d="${weakPointPath(point,getWeakPointTarget(progress,point))}"></path>`;
   }).join("");
   const controls=points.map(function(point,index){
     const target=point.target||{x:50,y:50};
+    const region=progress.id==="burnout"?BURNOUT_SCAN_REGIONS[point.id]:null;
     const callout=point.callout||{x:4,y:10+(index*18),side:"left"};
     const state=getWeakPointState(progress,point);
     const stateLabel=state==="broken"?"Destroyed":state==="active"?"Mission active":state==="available"?"Mission available":state==="unavailable"?"Channel occupied":"Protocol pending";
     const classes=state==="broken"?" broken":"";
-    return`<button class="weakpoint-target${classes}" type="button" style="left:${target.x}%;top:${target.y}%;--point-color:${esc(point.color||"#8DEFFF")}" onclick="openMissionSheet('${esc(point.id)}',this)" aria-label="Inspect ${esc(point.name)}"><i class="ti ${esc(point.icon||"ti-crosshair")}"></i></button>
+    const targetControl=region?renderRegionTarget(point,state,region):`<button class="weakpoint-target${classes}" type="button" style="left:${target.x}%;top:${target.y}%;--point-color:${esc(point.color||"#8DEFFF")}" onclick="openMissionSheet('${esc(point.id)}',this)" aria-label="Inspect ${esc(point.name)}"><i class="ti ${esc(point.icon||"ti-crosshair")}"></i></button>`;
+    return`${targetControl}
       <button class="weakpoint-callout${classes}" type="button" style="left:${callout.x}%;top:${callout.y}%;--point-color:${esc(point.color||"#8DEFFF")}" onclick="openMissionSheet('${esc(point.id)}',this)"><small>Weak point 0${index+1}</small><strong>${esc(point.name)}</strong><span class="callout-state">${stateLabel}</span></button>`;
   }).join("");
   return`<svg class="connection-map" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${paths}</svg>${controls}`;
 }
 
 function renderBossArtwork(progress,visuals){
+  if(progress.id==="burnout")return`<div class="boss-rig boss-rig-burnout" style="${visuals.rigStyle}">
+    <img class="boss-layer boss-burnout-cloak" src="assets/bosses/burnout-v3-cloak.png" alt="" aria-hidden="true">
+    <img class="boss-layer boss-burnout-base" src="assets/bosses/burnout-v3-base.png" alt="Burnout, a sword-burdened mechanical wraith with a sealed pale helmet, massive magma gauntlets and a long burning cloak">
+    <img class="boss-layer boss-burnout-arm boss-burnout-left" src="assets/bosses/burnout-v3-left.png" alt="" aria-hidden="true">
+    <img class="boss-layer boss-burnout-arm boss-burnout-right" src="assets/bosses/burnout-v3-right.png" alt="" aria-hidden="true">
+    <img class="boss-layer boss-burnout-flames" src="assets/bosses/burnout-v3-flames.png" alt="" aria-hidden="true">
+    <span class="burnout-heat burnout-collar-heat" aria-hidden="true"></span>
+    <span class="burnout-heat burnout-gauntlet-heat burnout-gauntlet-left" aria-hidden="true"></span>
+    <span class="burnout-heat burnout-gauntlet-heat burnout-gauntlet-right" aria-hidden="true"></span>
+    ${renderBurnoutScanMap(progress)}
+  </div>`;
   if(progress.id!=="procrastination")return`<div class="fallback-boss"><i class="ti ${esc(progress.icon||"ti-skull")}"></i></div>`;
   const pointStates=gs.bosses.weakPointStates&&gs.bosses.weakPointStates[progress.id]||{};
   const damageClasses=[pointStates.focus_lens==="broken"?"sensor-broken":"",pointStates.delay_core==="broken"?"core-broken":"",pointStates.rear_leg==="broken"?"claw-broken":""].filter(Boolean).join(" ");
@@ -341,7 +487,7 @@ function renderRetreatedScreen(progress){
 }
 
 function renderBossScreen(){
-  const progress=Bosses.getBossProgress(gs);
+  const progress=getDisplayedBossProgress();
   if(!progress){
     clearInterval(missionTimer);missionTimer=null;
     document.getElementById("boss-content").innerHTML=`<header class="encounter-header panel-nav-header" style="--panel-progress:60%"><a class="back-button" href="index.html" aria-label="Return to command center"><i class="ti ti-home"></i></a><div class="header-copy"><span>Panel 03</span><h1>Boss</h1></div></header><section class="empty-state"><i class="ti ti-crown"></i><h2>All threats defeated</h2><p>Every current encounter has been cleared.</p></section>`;
@@ -356,7 +502,7 @@ function renderBossScreen(){
   const visuals=getThreatVisuals(dominance);
   document.getElementById("boss-content").innerHTML=`
       <header class="encounter-header panel-nav-header" style="--panel-progress:60%"><a class="back-button" href="index.html" aria-label="Return to command center"><i class="ti ti-home"></i></a><div class="header-copy"><span>Panel 03</span><h1>Boss</h1></div></header>
-    <section class="boss-identity"><div class="unit-label">Unit ${String(gs.bosses.defeated.length+1).padStart(2,"0")}</div><h2>${esc(progress.name)}</h2><p>${esc(progress.description)}</p></section>
+    <section class="boss-identity${progress.id==="burnout"?" boss-identity-burnout":""}"><div class="unit-label">Unit ${String(gs.bosses.defeated.length+1).padStart(2,"0")}</div><h2>${esc(progress.name)}</h2><p>${esc(progress.description)}</p></section>
     <section class="encounter-stage threat-${threat.level}" style="${visuals.stageStyle}" aria-label="${esc(progress.name)} weak-point map">${renderBossArtwork(progress,visuals)}${renderWeakPointNetwork(progress)}</section>
     <section class="combat-meters" aria-label="Encounter status">
       <div class="meter integrity"><div class="meter-head"><div class="meter-label"><i class="ti ti-shield-half"></i>Integrity</div><div class="meter-value">${Math.round(progress.hp)} <span>/ ${progress.maxHp}</span></div></div><div class="meter-track"><div class="meter-fill" style="width:${progress.pct}%"></div></div><div class="meter-foot"><span>Structural integrity</span><span>${progress.pct}%</span></div></div>
@@ -369,7 +515,7 @@ function renderBossScreen(){
 }
 
 function openMissionSheet(weakPointId,trigger){
-  const progress=Bosses.getBossProgress(gs);
+  const progress=getDisplayedBossProgress();
   const point=progress&&(progress.weakPoints||[]).find(function(item){return item.id===weakPointId;});
   if(!point)return;
   activeWeakPointId=weakPointId;lastWeakPointTrigger=trigger||null;
@@ -497,6 +643,7 @@ function updateMissionCountdown(){
 
 function startMissionTimer(){
   clearInterval(missionTimer);missionTimer=null;
+  if(previewBossId)return;
   if(!gs.bosses.activeMission)return;
   updateMissionCountdown();
   missionTimer=setInterval(function(){
@@ -594,10 +741,13 @@ function beginBossRematch(){
 }
 
 renderBossScreen();
-const defeatShown=checkForPendingDefeat();
-if(!defeatShown)checkForRecentVictory();
-if(!defeatShown&&bootstrapReport.missionExpiration&&bootstrapReport.missionExpiration.expired)setTimeout(openFailurePrompt,80);
+if(!previewBossId){
+  const defeatShown=checkForPendingDefeat();
+  if(!defeatShown)checkForRecentVictory();
+  if(!defeatShown&&bootstrapReport.missionExpiration&&bootstrapReport.missionExpiration.expired)setTimeout(openFailurePrompt,80);
+}
 </script>
+<script src="js/daily-checkin.js"></script>
 <script src="js/panel-navigation.js"></script>
 <script src="js/app-version.js"></script>
 <script src="js/sw-register.js"></script>

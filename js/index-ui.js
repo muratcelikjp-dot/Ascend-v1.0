@@ -22,6 +22,34 @@ function clearHomeGateTimers() {
   homeGateTimers = [];
 }
 
+function clearHomeNodeOpeningStates() {
+  document.querySelectorAll(HOME_NODE_SELECTOR).forEach(node => {
+    node.classList.remove("is-icon-opening");
+  });
+}
+
+function setHomeNodeIconsComplete(complete) {
+  document.querySelectorAll(HOME_NODE_SELECTOR + "[data-icon-animation]").forEach(node => {
+    node.classList.toggle("is-icon-complete", complete);
+  });
+}
+
+function playHomeNodeOpening(node) {
+  if (!node || !node.dataset.iconAnimation) return 0;
+
+  const duration = Math.max(0, Number(node.dataset.iconDuration) || 0);
+  node.classList.remove("is-icon-opening", "is-icon-complete");
+  void node.offsetWidth;
+  node.classList.add("is-icon-opening");
+
+  const timer = setTimeout(() => {
+    node.classList.remove("is-icon-opening");
+    node.classList.add("is-icon-complete");
+  }, duration);
+  homeGateTimers.push(timer);
+  return duration;
+}
+
 function setShieldInteractive(interactive) {
   const shield = document.getElementById("shield-wrap");
   if (!shield) return;
@@ -192,6 +220,8 @@ function bindHomeGateInteractions() {
 
 function showUnbrokenGate(state) {
   clearHomeGateTimers();
+  clearHomeNodeOpeningStates();
+  setHomeNodeIconsComplete(false);
   const gate = getHomeGate();
   if (!gate) return;
 
@@ -210,6 +240,8 @@ function showUnbrokenGate(state) {
 
 function showAlreadyDoneScreen(state) {
   clearHomeGateTimers();
+  clearHomeNodeOpeningStates();
+  setHomeNodeIconsComplete(true);
   const gate = getHomeGate();
   if (!gate) return;
 
@@ -245,6 +277,29 @@ function schedulePendingHomeFeed(delay) {
   homeGateTimers.push(timer);
 }
 
+function scheduleHomeNodeOpeningPreview() {
+  const isLocalPreview = window.location.protocol === "file:" ||
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1";
+  if (!isLocalPreview) return;
+
+  const preview = new URLSearchParams(window.location.search).get("preview");
+  if (preview !== "node-opening" && preview !== "quest-opening") return;
+
+  const nodes = preview === "quest-opening"
+    ? Array.from(document.querySelectorAll(".node-quests[data-icon-animation]"))
+    : Array.from(document.querySelectorAll(HOME_NODE_SELECTOR + "[data-icon-animation]"));
+
+  const previewTimer = setTimeout(() => {
+    nodes.forEach(node => {
+      const delay = preview === "quest-opening" ? 0 : Math.max(0, Number(node.dataset.wakeDelay || node.dataset.iconWakeDelay) || 0);
+      const nodeTimer = setTimeout(() => playHomeNodeOpening(node), delay);
+      homeGateTimers.push(nodeTimer);
+    });
+  }, 520);
+  homeGateTimers.push(previewTimer);
+}
+
 function initializeHomeGate(state) {
   bindHomeGateInteractions();
   updateHpBar(state);
@@ -255,6 +310,8 @@ function initializeHomeGate(state) {
   } else {
     showUnbrokenGate(state);
   }
+
+  scheduleHomeNodeOpeningPreview();
 }
 
 function updateHpBar(state) {
@@ -296,22 +353,33 @@ function showBrokenResultScreen() {
   wakeEnergyCore();
   fireConstellationRipple();
 
-  let longestDelay = 0;
+  let longestAnimationEnd = 0;
   document.querySelectorAll(HOME_GATE_NODE_SELECTOR).forEach(node => {
     const delay = Number(node.dataset.wakeDelay) || 0;
-    longestDelay = Math.max(longestDelay, delay);
+    const duration = Math.max(0, Number(node.dataset.iconDuration) || 0);
+    longestAnimationEnd = Math.max(longestAnimationEnd, delay + duration);
     const timer = setTimeout(() => {
       node.classList.add("is-node-awake");
       setNodeInteractive(node, true);
+      playHomeNodeOpening(node);
     }, delay);
     homeGateTimers.push(timer);
   });
+
+  const skillNode = document.querySelector(".node-skill[data-icon-animation]");
+  if (skillNode) {
+    const skillDelay = Math.max(0, Number(skillNode.dataset.iconWakeDelay) || 0);
+    const skillDuration = Math.max(0, Number(skillNode.dataset.iconDuration) || 0);
+    longestAnimationEnd = Math.max(longestAnimationEnd, skillDelay + skillDuration);
+    const skillTimer = setTimeout(() => playHomeNodeOpening(skillNode), skillDelay);
+    homeGateTimers.push(skillTimer);
+  }
 
   const settleTimer = setTimeout(() => {
     gate.classList.remove("is-breaking", "is-activating", "wave-fired");
     gate.classList.add("is-awake", "is-settled");
     setGateStatus("Navigation active");
-  }, longestDelay + 760);
+  }, longestAnimationEnd + 120);
   homeGateTimers.push(settleTimer);
 }
 

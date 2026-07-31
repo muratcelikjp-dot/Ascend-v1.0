@@ -14,6 +14,7 @@
 <title>Ascend Command Center</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <link rel="stylesheet" href="css/index.css">
+<link rel="stylesheet" href="css/daily-checkin.css">
 </head>
 <body>
 <div id="global-error-banner" style="display:none;position:fixed;top:0;left:0;right:0;background:#5a1010;color:#ffdede;padding:12px 14px;font-family:monospace;font-size:11px;z-index:99999;max-height:40vh;overflow-y:auto;white-space:pre-wrap;border-bottom:2px solid #ff4444"></div>
@@ -86,46 +87,129 @@ window.addEventListener('error', function(e){
         <circle class="activation-ripple activation-ripple-b" cx="195" cy="280" r="82"/>
       </svg>
 
-      <a class="constellation-node gated-node node-hero" href="hero.html" aria-label="Hero" aria-disabled="true" tabindex="-1" data-wake-delay="420">
+      <a class="constellation-node gated-node node-hero" href="hero.html" aria-label="Hero" aria-disabled="true" tabindex="-1" data-wake-delay="420" data-icon-animation="hero" data-icon-duration="3180">
         <span class="node-label node-label-top" aria-hidden="true">Hero</span>
         <span class="node-frame" aria-hidden="true">
           <span class="node-glyph node-glyph-raster node-glyph-hero"></span>
+          <span class="node-icon-assembly icon-assembly-hero">
+            <span class="icon-piece hero-helmet-piece"></span>
+          </span>
+          <svg class="node-border-assembly" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path class="node-frame-progress" pathLength="1" d="M50 0 L93.301 25 L93.301 75 L50 100 L6.699 75 L6.699 25 Z"/>
+            <path class="node-frame-trace" pathLength="1" d="M50 0 L93.301 25 L93.301 75 L50 100 L6.699 75 L6.699 25 Z"/>
+          </svg>
+          <span class="node-frame-flash"></span>
         </span>
       </a>
 
-      <a class="constellation-node gated-node node-quests" href="quests.html" aria-label="Quests" aria-disabled="true" tabindex="-1" data-wake-delay="260">
+      <a class="constellation-node gated-node node-quests" href="quests.html" aria-label="Quests" aria-disabled="true" tabindex="-1" data-wake-delay="260" data-icon-animation="quests" data-icon-duration="3180">
         <span class="node-label node-label-top" aria-hidden="true">Quests</span>
         <span class="node-frame" aria-hidden="true">
           <span class="node-glyph node-glyph-raster node-glyph-quests"></span>
+          <span class="node-icon-assembly icon-assembly-quests">
+            <span class="quest-closed-roll"></span>
+            <span class="icon-piece quest-sheet-piece"></span>
+            <span class="icon-piece quest-roll-piece quest-roll-top"></span>
+            <span class="icon-piece quest-roll-piece quest-roll-bottom"></span>
+            <span class="icon-piece quest-ink-piece"></span>
+          </span>
+          <svg class="node-border-assembly" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path class="node-frame-progress" pathLength="1" d="M50 0 L93.301 25 L93.301 75 L50 100 L6.699 75 L6.699 25 Z"/>
+            <path class="node-frame-trace" pathLength="1" d="M50 0 L93.301 25 L93.301 75 L50 100 L6.699 75 L6.699 25 Z"/>
+          </svg>
+          <span class="node-frame-flash"></span>
         </span>
         <span class="quest-alert" id="quest-alert" aria-hidden="true">!</span>
       </a>
 
-      <button class="constellation-node node-skill" type="button" aria-label="Skill Tree unavailable" aria-disabled="true" tabindex="-1">
+      <button class="constellation-node node-skill" type="button" aria-label="Skill Tree unavailable" aria-disabled="true" tabindex="-1" data-icon-animation="skill" data-icon-duration="4200" data-icon-wake-delay="340">
         <span class="node-label node-label-top" aria-hidden="true">Skill Tree</span>
         <span class="node-frame node-frame-preview" aria-hidden="true">
           <span class="node-glyph node-glyph-raster node-glyph-skill"></span>
+          <span class="node-icon-assembly icon-assembly-skill">
+            <svg class="skill-tree-build" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+              <polygon class="skill-tree-top-hex" points="50,3 64,11 64,27 50,35 36,27 36,11"/>
+              <path class="skill-tree-branch skill-tree-trunk" pathLength="1" d="M50 35 L50 55"/>
+              <path class="skill-tree-branch skill-tree-main-branch" pathLength="1" d="M40 31 L25 43 L25 79"/>
+              <path class="skill-tree-branch skill-tree-main-branch" pathLength="1" d="M60 31 L75 43 L75 79"/>
+              <path class="skill-tree-branch skill-tree-secondary-branch branch-tier-1" pathLength="1" d="M25 49 L13 49"/>
+              <path class="skill-tree-branch skill-tree-secondary-branch branch-tier-1" pathLength="1" d="M75 49 L87 49"/>
+              <path class="skill-tree-branch skill-tree-secondary-branch branch-tier-2" pathLength="1" d="M25 64 L13 64"/>
+              <path class="skill-tree-branch skill-tree-secondary-branch branch-tier-2" pathLength="1" d="M75 64 L87 64"/>
+              <path class="skill-tree-branch skill-tree-secondary-branch branch-tier-3" pathLength="1" d="M25 77 L13 84"/>
+              <path class="skill-tree-branch skill-tree-secondary-branch branch-tier-3" pathLength="1" d="M75 77 L87 84"/>
+              <path class="skill-tree-branch skill-tree-main-branch" pathLength="1" d="M50 55 L50 87"/>
+              <path class="skill-tree-branch skill-tree-secondary-branch branch-tier-4" pathLength="1" d="M50 61 L38 74 L38 87"/>
+              <path class="skill-tree-branch skill-tree-secondary-branch branch-tier-4" pathLength="1" d="M50 61 L62 74 L62 87"/>
+              <g class="skill-tree-terminals">
+                <polygon class="skill-tree-terminal terminal-pair-1" points="13,44 17.5,46.5 17.5,51.5 13,54 8.5,51.5 8.5,46.5"/>
+                <polygon class="skill-tree-terminal terminal-pair-1" points="87,44 91.5,46.5 91.5,51.5 87,54 82.5,51.5 82.5,46.5"/>
+                <polygon class="skill-tree-terminal terminal-pair-2" points="13,59 17.5,61.5 17.5,66.5 13,69 8.5,66.5 8.5,61.5"/>
+                <polygon class="skill-tree-terminal terminal-pair-2" points="87,59 91.5,61.5 91.5,66.5 87,69 82.5,66.5 82.5,61.5"/>
+                <polygon class="skill-tree-terminal terminal-pair-3" points="13,79 17.5,81.5 17.5,86.5 13,89 8.5,86.5 8.5,81.5"/>
+                <polygon class="skill-tree-terminal terminal-pair-3" points="87,79 91.5,81.5 91.5,86.5 87,89 82.5,86.5 82.5,81.5"/>
+                <polygon class="skill-tree-terminal terminal-pair-4" points="38,82 42.5,84.5 42.5,89.5 38,92 33.5,89.5 33.5,84.5"/>
+                <polygon class="skill-tree-terminal terminal-pair-4" points="62,82 66.5,84.5 66.5,89.5 62,92 57.5,89.5 57.5,84.5"/>
+                <polygon class="skill-tree-terminal terminal-final" points="50,82 54.5,84.5 54.5,89.5 50,92 45.5,89.5 45.5,84.5"/>
+              </g>
+            </svg>
+          </span>
+          <svg class="node-border-assembly" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path class="node-frame-progress" pathLength="1" d="M50 0 L93.301 25 L93.301 75 L50 100 L6.699 75 L6.699 25 Z"/>
+            <path class="node-frame-trace" pathLength="1" d="M50 0 L93.301 25 L93.301 75 L50 100 L6.699 75 L6.699 25 Z"/>
+          </svg>
+          <span class="node-frame-flash"></span>
         </span>
       </button>
 
-      <a class="constellation-node gated-node node-rewards" href="rewards.html" aria-label="Rewards" aria-disabled="true" tabindex="-1" data-wake-delay="380">
+      <a class="constellation-node gated-node node-rewards" href="rewards.html" aria-label="Rewards" aria-disabled="true" tabindex="-1" data-wake-delay="380" data-icon-animation="rewards" data-icon-duration="3180">
         <span class="node-label node-label-bottom" aria-hidden="true">Rewards</span>
         <span class="node-frame" aria-hidden="true">
           <span class="node-glyph node-glyph-raster node-glyph-rewards"></span>
+          <span class="node-icon-assembly icon-assembly-rewards">
+            <span class="icon-piece rewards-wheel-piece"></span>
+            <span class="icon-piece rewards-star-piece"></span>
+            <span class="icon-piece rewards-ribbon-piece rewards-ribbon-left"></span>
+            <span class="icon-piece rewards-ribbon-piece rewards-ribbon-right"></span>
+          </span>
+          <svg class="node-border-assembly" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path class="node-frame-progress" pathLength="1" d="M50 0 L93.301 25 L93.301 75 L50 100 L6.699 75 L6.699 25 Z"/>
+            <path class="node-frame-trace" pathLength="1" d="M50 0 L93.301 25 L93.301 75 L50 100 L6.699 75 L6.699 25 Z"/>
+          </svg>
+          <span class="node-frame-flash"></span>
         </span>
       </a>
 
-      <a class="constellation-node gated-node node-boss" href="boss.html" aria-label="Boss" aria-disabled="true" tabindex="-1" data-wake-delay="400">
+      <a class="constellation-node gated-node node-boss" href="boss.html" aria-label="Boss" aria-disabled="true" tabindex="-1" data-wake-delay="400" data-icon-animation="boss" data-icon-duration="3180">
         <span class="node-label node-label-bottom" aria-hidden="true">Boss</span>
         <span class="node-frame" aria-hidden="true">
           <span class="node-glyph node-glyph-raster node-glyph-boss"></span>
+          <span class="node-icon-assembly icon-assembly-boss">
+            <span class="icon-piece boss-frame-piece boss-frame-tl"></span>
+            <span class="icon-piece boss-frame-piece boss-frame-tr"></span>
+            <span class="icon-piece boss-frame-piece boss-frame-bl"></span>
+            <span class="icon-piece boss-frame-piece boss-frame-br"></span>
+            <span class="icon-piece boss-eye-piece"></span>
+            <span class="boss-pupil-cover"></span>
+            <span class="boss-pupil-piece"></span>
+          </span>
+          <svg class="node-border-assembly" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path class="node-frame-progress" pathLength="1" d="M50 0 L93.301 25 L93.301 75 L50 100 L6.699 75 L6.699 25 Z"/>
+            <path class="node-frame-trace" pathLength="1" d="M50 0 L93.301 25 L93.301 75 L50 100 L6.699 75 L6.699 25 Z"/>
+          </svg>
+          <span class="node-frame-flash"></span>
         </span>
       </a>
 
-      <a class="constellation-node gated-node node-stats" href="stats.html" aria-label="Stats" aria-disabled="true" tabindex="-1" data-wake-delay="380">
+      <a class="constellation-node gated-node node-stats" href="stats.html" aria-label="Stats" aria-disabled="true" tabindex="-1" data-wake-delay="380" data-icon-animation="stats" data-icon-duration="3180">
         <span class="node-label node-label-bottom" aria-hidden="true">Stats</span>
         <span class="node-frame" aria-hidden="true">
           <span class="node-glyph node-glyph-raster node-glyph-stats"></span>
+          <svg class="node-border-assembly" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path class="node-frame-progress" pathLength="1" d="M50 0 L93.301 25 L93.301 75 L50 100 L6.699 75 L6.699 25 Z"/>
+            <path class="node-frame-trace" pathLength="1" d="M50 0 L93.301 25 L93.301 75 L50 100 L6.699 75 L6.699 25 Z"/>
+          </svg>
+          <span class="node-frame-flash"></span>
         </span>
       </a>
 
@@ -315,6 +399,7 @@ window.addEventListener('error', function(e){
 <script src="js/skills.js"></script>
 <script src="js/achievements.js"></script>
 <script src="js/date-utils.js"></script>
+<script src="js/daily-state.js"></script>
 <script src="js/active-effects.js"></script>
 <script src="js/profile.js"></script>
 <script src="js/bosses.js"></script>
@@ -330,6 +415,7 @@ window.addEventListener('error', function(e){
 <script src="js/index.js"></script>
 <script src="js/terminal-caret.js"></script>
 <script src="js/profile-onboarding.js"></script>
+<script src="js/daily-checkin.js"></script>
 <script src="js/sw-register.js"></script>
 <script src="js/app-version.js"></script>
 </body>
