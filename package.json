@@ -2,6 +2,8 @@
   "name": "rpg-self-improvement-app",
   "private": true,
   "scripts": {
-    "test": "node --test tests/gamestate.persistence.test.js"
+    "check:syntax": "node scripts/check-js.mjs",
+    "test": "node --test tests/gamestate.persistence.test.js",
+    "verify": "npm run check:syntax && npm test"
   }
 }
