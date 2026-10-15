@@ -1,0 +1,19 @@
+# Local diagnostics and temporary inspection output
+*.log
+.tmp-*/
+tmp/
+
+# Editor and operating-system files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Dependency and coverage output
+node_modules/
+coverage/
